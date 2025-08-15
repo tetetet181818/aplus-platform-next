@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import NoteCard from "@/components/shared/NoteCard";
 
 const NotesGrid = ({ notes }) => {
-  const containerVariants = {
+  const Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -26,7 +26,7 @@ const NotesGrid = ({ notes }) => {
   return (
     <motion.div
       className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-      variants={containerVariants}
+      variants={Variants}
       initial="hidden"
       animate="show"
     >

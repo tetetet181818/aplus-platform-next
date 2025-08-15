@@ -27,7 +27,7 @@ const ProfileInfoTab = ({
     visible: { opacity: 1, y: 0 },
   };
 
-  const containerVariants = {
+  const Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -46,7 +46,7 @@ const ProfileInfoTab = ({
       <motion.div
         initial="hidden"
         animate="visible"
-        variants={containerVariants}
+        variants={Variants}
         className="w-full max-w-3xl mx-auto"
       >
         <Card className="shadow-lg border-gray-200 dark:border-gray-700">

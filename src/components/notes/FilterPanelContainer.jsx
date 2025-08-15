@@ -1,6 +1,6 @@
 import FilterPanel from "@/components/notes/FilterPanel";
 
-export default function FilterPanelContainer({
+export default function FilterPanel({
   filters,
   onFilterChange,
   onClearFilters,

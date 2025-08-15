@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import FilterPanelContainer from "@/components/notes/FilterPanelContainer";
+import FilterPanel from "@/components/notes/FilterPanel";
 
 export default function NotesFilterSection({
   filters,
@@ -16,7 +16,7 @@ export default function NotesFilterSection({
       transition={{ duration: 0.3 }}
       className="mb-8"
     >
-      <FilterPanelContainer
+      <FilterPanel
         filters={filters}
         onFilterChange={onFilterChange}
         onClearFilters={onClearFilters}

@@ -32,7 +32,7 @@ const Footer = () => {
 
   return (
     <footer className="bg-background border-t">
-      <div className="container py-12 px-4 md:px-6">
+      <div className=" py-12 px-4 md:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           <div className="space-y-4 lg:col-span-2">
             <div className="flex items-center gap-2">

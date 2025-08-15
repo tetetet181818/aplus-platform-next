@@ -117,7 +117,7 @@ const ProfilePage = () => {
 
   if (!isAuthenticated || !user) {
     return (
-      <div className="container py-12 px-4 md:px-6 flex justify-center items-center min-h-[calc(100vh-200px)]">
+      <div className=" py-12 px-4 md:px-6 flex justify-center items-center min-h-[calc(100vh-200px)]">
         <Card className="w-full max-w-md shadow-xl">
           <CardHeader className="text-center">
             <User className="h-16 w-16 mx-auto text-primary mb-4" />
@@ -147,7 +147,7 @@ const ProfilePage = () => {
         <meta name="keywords" content="ملخصات, دراسية, جامعة, طالب, تعليم" />
       </Head>
 
-      <main className="container py-12 px-4 md:px-6">
+      <main className=" py-12 px-4 md:px-6">
         <motion.h1
           className="text-4xl font-extrabold mb-10 text-center bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-600 dark:from-sky-400 dark:to-blue-500"
           initial={{ opacity: 0, y: -20 }}

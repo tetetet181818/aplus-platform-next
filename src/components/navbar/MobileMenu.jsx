@@ -45,7 +45,7 @@ const MobileMenu = ({
       transition={{ duration: 0.2 }}
       aria-label="Mobile navigation menu"
     >
-      <div className="container py-4 px-5 space-y-4">
+      <div className=" py-4 px-5 space-y-4">
         <form
           onSubmit={onSearchSubmit}
           className="relative w-full"

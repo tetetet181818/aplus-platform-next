@@ -7,7 +7,7 @@ const HeroSection = () => {
   return (
     <header className="relative py-20 md:py-32 text-center overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-blue-600/80 opacity-90 transform -skew-y-3 z-0"></div>
-      <div className="container relative z-10 px-4 md:px-6">
+      <div className=" relative z-10 px-4 md:px-6">
         <motion.h1
           className="text-4xl md:text-6xl font-extrabold text-white mb-6 tracking-tight"
           initial={{ opacity: 0, y: -20 }}
@@ -32,7 +32,9 @@ const HeroSection = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
         >
-          <p className="text-white mb-4">وفّر وقتك، وابدأ رحلتك الأكاديمية الذكية</p>
+          <p className="text-white mb-4">
+            وفّر وقتك، وابدأ رحلتك الأكاديمية الذكية
+          </p>
 
           <ul className="space-y-3 text-white/90 text-sm md:text-base">
             <li className="flex items-start gap-2">

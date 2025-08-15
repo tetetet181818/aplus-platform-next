@@ -6,7 +6,7 @@ import { BookOpen, PlusCircle } from "lucide-react";
 const CallToActionSection = () => {
   return (
     <section className="py-16 md:py-24 bg-gradient-to-br from-primary to-blue-600 dark:from-gray-800 dark:to-gray-900 text-white">
-      <div className="container px-4 md:px-6 text-center">
+      <div className=" px-4 md:px-6 text-center">
         <motion.h2
           className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6"
           initial={{ opacity: 0, y: 20 }}

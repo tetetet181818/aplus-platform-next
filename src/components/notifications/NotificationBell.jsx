@@ -441,7 +441,7 @@ function NotificationItem({
   );
 }
 
-export function ToastContainer() {
+export function Toast() {
   const { toastNotifications, markAsRead } = useNotificationsStore();
   const isMobile = useIsMobile("(max-width: 640px)");
 

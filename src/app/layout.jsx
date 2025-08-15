@@ -55,6 +55,8 @@ export default function RootLayout({ children }) {
       <body
         style={{
           fontFamily: "Tajawal, sans-serif",
+          width: "100%",
+          overflowX: "hidden",
         }}
       >
         <LayoutClient>{children}</LayoutClient>

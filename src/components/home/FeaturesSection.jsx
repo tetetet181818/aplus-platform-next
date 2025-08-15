@@ -32,7 +32,7 @@ const FeatureCard = ({ icon, title, description, delay }) => (
 const FeaturesSection = () => {
   return (
     <section className="py-16 md:py-24 bg-gradient-to-b from-transparent to-sky-50 dark:to-gray-800/30">
-      <div className="container px-4 md:px-6">
+      <div className=" px-4 md:px-6">
         <motion.h2
           className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-800 dark:text-white"
           initial={{ opacity: 0, y: 20 }}

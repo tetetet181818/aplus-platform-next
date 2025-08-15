@@ -26,7 +26,7 @@ export default function GetSingleStudentDialog({
     visible: { opacity: 1, y: 0 },
   };
 
-  const containerVariants = {
+  const Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -48,7 +48,7 @@ export default function GetSingleStudentDialog({
         <motion.div
           initial="hidden"
           animate="visible"
-          variants={containerVariants}
+          variants={Variants}
           className="w-full"
         >
           <Card>

@@ -140,7 +140,7 @@ const SellerProfilePage = () => {
   }
 
   return (
-    <div className="container py-12 px-4 md:px-6">
+    <div className=" py-12 px-4 md:px-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

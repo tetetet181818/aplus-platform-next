@@ -173,7 +173,7 @@ const NotesListPage = () => {
 
   if (error && !isTyping) {
     return (
-      <div className="container py-12 px-4 md:px-6">
+      <div className=" py-12 px-4 md:px-6">
         <div className="text-red-500 p-4 bg-red-50 rounded-lg">{error}</div>
       </div>
     );
@@ -181,7 +181,7 @@ const NotesListPage = () => {
 
   return (
     <>
-      <div className="container py-12 px-4 md:px-6">
+      <div className=" py-12 px-4 md:px-6">
         <NotesListHeader
           onToggleFilters={toggleFilters}
           showFilters={showFilters}

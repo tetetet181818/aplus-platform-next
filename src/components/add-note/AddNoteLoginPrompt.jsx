@@ -10,7 +10,7 @@ import { LogIn } from "lucide-react";
 
 const AddNoteLoginPrompt = ({ onNavigate }) => {
   return (
-    <div className="container py-12 px-4 md:px-6 flex justify-center items-center min-h-[calc(100vh-200px)]">
+    <div className=" py-12 px-4 md:px-6 flex justify-center items-center min-h-[calc(100vh-200px)]">
       <Card className="w-full max-w-md text-center shadow-xl">
         <CardHeader>
           <div className="mx-auto bg-primary/10 p-3 rounded-full w-fit mb-4">

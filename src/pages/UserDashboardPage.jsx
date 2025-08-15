@@ -230,9 +230,8 @@ const UserDashboardPage = () => {
 
   return (
     <>
-  
       <motion.div
-        className="container py-8 px-4 md:px-6"
+        className=" py-8 px-4 md:px-6"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
