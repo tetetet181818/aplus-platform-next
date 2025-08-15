@@ -9,7 +9,6 @@ import NotesSortDropdown from "./NotesSortDropdown";
 import NotesFilterSection from "./NotesFilterSection";
 import NotesResultsSection from "./NotesResultsSection";
 import Pagination from "@/components/ui/Pagination";
-import Head from "next/head";
 export const metaData = {
   title: "تصفح وابحث عن الملخصات",
   description: "تصفح وابحث عن أفضل الملخصات الدراسية الجامعية",
@@ -109,16 +108,16 @@ const NotesListPage = () => {
   // Fetch colleges when university changes
   useEffect(() => {
     const fetchColleges = async () => {
-      if (!filters.university) return;
+      if (!filters?.university) return;
       try {
-        await getCollegesByUniversity(filters.university);
+        await getCollegesByUniversity(filters?.university);
       } catch (err) {
         console.error("Error fetching colleges:", err);
       }
     };
 
     fetchColleges();
-  }, [filters.university, getCollegesByUniversity]);
+  }, [filters?.university, getCollegesByUniversity]);
 
   const years = useMemo(
     () =>

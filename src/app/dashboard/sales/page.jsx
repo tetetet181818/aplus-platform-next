@@ -45,7 +45,7 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import SalesDetailsDialog from "./SalesDetailsDialog";
+import SalesDetailsDialog from "@/components/SalesDetailsDialog";
 
 const statusOptions = [
   { value: "all", label: "جميع الحالات" },
@@ -56,7 +56,7 @@ const statusOptions = [
 
 const commissionRate = 0.15;
 
-export default function SalesContent() {
+export default function SalesDashboard() {
   const { toast } = useToast();
   const {
     sales,

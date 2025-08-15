@@ -1,9 +1,11 @@
-import SellerProfilePage from "@/pages/SellerProfilePage";
+import { Suspense } from "react";
+import SellerProfilePage from "./SellerClient";
+import LoadingSpinner from "@/components/shared/LoadingSpinner";
 
-export default function Seller() {
+export default function page() {
   return (
-    <div>
+    <Suspense fallback={<LoadingSpinner message="جاري البحث..." />}>
       <SellerProfilePage />
-    </div>
+    </Suspense>
   );
 }

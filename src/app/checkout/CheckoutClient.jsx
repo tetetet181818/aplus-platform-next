@@ -1,12 +1,13 @@
+// CheckoutClient.tsx
 "use client";
+
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useFileStore } from "@/stores/useFileStore";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import Head from "next/head";
 
-const CheckoutPage = () => {
+export default function CheckoutClient() {
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
@@ -15,6 +16,7 @@ const CheckoutPage = () => {
   const noteId = searchParams.get("noteId");
   const userId = searchParams.get("userId");
   const amount = searchParams.get("amount");
+
   const handlePay = async () => {
     if (!noteId || !userId || !amount) {
       toast({
@@ -26,7 +28,6 @@ const CheckoutPage = () => {
     }
 
     setLoading(true);
-
     try {
       const res = await createPaymentLink({ noteId, userId, amount });
 
@@ -53,49 +54,36 @@ const CheckoutPage = () => {
   };
 
   return (
-    <>
-      <Head>
-        <title>إتمام الدفع | منصة أ+</title>
-        <meta
-          name="description"
-          content="إتمام عملية الدفع لشراء الملخصات الدراسية"
-        />
-        <meta name="robots" content="noindex, nofollow" />
-      </Head>
+    <main className="min-h-3/6 flex items-center justify-center p-4">
+      <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 text-center">
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
+          إتمام عملية الشراء
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400 mb-6">
+          سيتم تحويلك إلى بوابة الدفع الآمنة لإتمام عملية الشراء
+        </p>
 
-      <main className="min-h-3/6 flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 text-center">
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
-            إتمام عملية الشراء
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
-            سيتم تحويلك إلى بوابة الدفع الآمنة لإتمام عملية الشراء
-          </p>
-
-          <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg mb-6">
-            <p className="font-medium text-gray-800 dark:text-gray-200">
-              المبلغ:{" "}
-              <span className="text-primary dark:text-primary-light">
-                {amount} ريال
-              </span>
-            </p>
-          </div>
-
-          <Button
-            onClick={handlePay}
-            disabled={loading}
-            className="w-full py-3 text-lg"
-          >
-            {loading ? "جاري التحميل..." : "الانتقال للدفع"}
-          </Button>
-
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">
-            عملية الدفع آمنة ومشفرة بالكامل
+        <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg mb-6">
+          <p className="font-medium text-gray-800 dark:text-gray-200">
+            المبلغ:{" "}
+            <span className="text-primary dark:text-primary-light">
+              {amount} ريال
+            </span>
           </p>
         </div>
-      </main>
-    </>
-  );
-};
 
-export default CheckoutPage;
+        <Button
+          onClick={handlePay}
+          disabled={loading}
+          className="w-full py-3 text-lg"
+        >
+          {loading ? "جاري التحميل..." : "الانتقال للدفع"}
+        </Button>
+
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">
+          عملية الدفع آمنة ومشفرة بالكامل
+        </p>
+      </div>
+    </main>
+  );
+}

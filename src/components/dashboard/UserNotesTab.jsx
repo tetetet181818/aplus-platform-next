@@ -44,6 +44,8 @@ const UserNotesTab = ({
                 alt={note.title}
                 className="w-full h-full object-cover"
                 src={note.cover_url}
+                width={500}
+                height={500}
               />
             </div>
             <div className="p-4 flex-1 flex flex-col justify-between">

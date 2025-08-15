@@ -38,7 +38,7 @@ import { Calendar as CalendarComp } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import SectionHeader from "@/components/ui/SectionHeader";
-import GetSingleStudentDialog from "./GetSingleStudentDialog";
+import GetSingleStudentDialog from "@/components/GetSingleStudentDialog";
 import Head from "next/head";
 import {
   Select,
@@ -49,7 +49,7 @@ import {
 } from "@/components/ui/select";
 import { universities } from "@/constants/index";
 
-export default function StudentsContent() {
+export default function StudentsDashboard() {
   const router = useRouter();
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);

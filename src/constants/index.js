@@ -67,11 +67,26 @@ export const universityColleges = {
 };
 
 export const navigationItems = [
-  { title: "لوحة التحكم", icon: BarChart3, id: "dashboard" },
-  { title: "الطلاب", icon: Users, id: "students" },
-  { title: "الملفات", icon: FileText, id: "files" },
-  { title: "المبيعات", icon: DollarSign, id: "sales" },
-  { title: "السحوبات", icon: Download, id: "withdrawals" },
+  {
+    title: "لوحة التحكم",
+    icon: BarChart3,
+    id: "dashboard",
+    href: "/dashboard",
+  },
+  { title: "الطلاب", icon: Users, id: "students", href: "/dashboard/students" },
+  { title: "الملفات", icon: FileText, id: "files", href: "/dashboard/files" },
+  {
+    title: "المبيعات",
+    icon: DollarSign,
+    id: "sales",
+    href: "/dashboard/sales",
+  },
+  {
+    title: "السحوبات",
+    icon: Download,
+    id: "withdrawals",
+    href: "/dashboard/withdrawals",
+  },
 ];
 
 export const MAX_NOTES_PER_USER = 50;

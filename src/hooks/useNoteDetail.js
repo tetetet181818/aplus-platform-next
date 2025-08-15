@@ -5,10 +5,9 @@ import { useToast } from "@/components/ui/use-toast";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useFileStore } from "@/stores/useFileStore";
 
-const useNoteDetail = () => {
+const useNoteDetail = ({ id }) => {
   const router = useRouter();
   const { toast } = useToast();
-  const { id } = useParams();
 
   const {
     user: currentUser,

@@ -10,7 +10,7 @@ import { motion } from "framer-motion";
 import LoadingSpinner from "@/components/shared/LoadingSpinner";
 import { BookOpen, School, Star, UserCircle, RefreshCw } from "lucide-react";
 import NoteCard from "@/components/shared/NoteCard";
-import { useFileStore } from "../stores/useFileStore";
+import { useFileStore } from "@/stores/useFileStore";
 import { useToast } from "@/components/ui/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
@@ -36,9 +36,9 @@ const SellerProfilePage = () => {
     clearError: clearNotesError,
   } = useFileStore();
 
-  useEffect(() => {
+  useEffect(async () => {
     if (userId) {
-      getUserById(userId);
+      await getUserById(userId);
     }
   }, [userId]);
 
@@ -141,7 +141,6 @@ const SellerProfilePage = () => {
 
   return (
     <div className="container py-12 px-4 md:px-6">
-      {/* Seller Profile Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -152,7 +151,6 @@ const SellerProfilePage = () => {
           <CardContent className="p-6 pt-0 -mt-16">
             <div className="flex flex-col items-center md:flex-row md:items-end md:space-x-6">
               <Avatar className="h-32 w-32 border-4 border-background shadow-md">
-                <AvatarImage src={seller?.avatar} />
                 <AvatarFallback className="text-4xl bg-gray-200">
                   {seller?.full_name?.charAt(0) || "?"}
                 </AvatarFallback>

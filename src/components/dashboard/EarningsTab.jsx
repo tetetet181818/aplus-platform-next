@@ -27,7 +27,6 @@ import {
 import { Info } from "lucide-react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import Image from "next/image";
 import WithdrawalForm from "./WithdrawalForm";
 import { useWithdrawalsStore } from "@/stores/useWithdrawalsStore";
 

@@ -85,10 +85,10 @@ const NotesLikedTab = () => {
               <div className="relative sm:w-1/3 lg:w-1/4 aspect-video sm:aspect-[4/3] bg-gray-100 dark:bg-gray-800">
                 <Image
                   alt={note.title}
-                  fill
-                  className="object-cover"
+                  className="object-cover w-full h-full"
                   src={note.cover_url}
-                  sizes="(max-width: 768px) 100vw, 33vw"
+                  width={500}
+                  height={500}
                 />
               </div>
               <div className="p-4 flex-1 flex flex-col justify-between">
@@ -97,7 +97,12 @@ const NotesLikedTab = () => {
                     <h2 className="font-bold text-lg text-gray-800 dark:text-white">
                       {note.title}
                     </h2>
-                    <Badge variant="secondary">{note.price} ريال</Badge>
+                    <Badge
+                      variant="primary"
+                      className="text-sm bg-gradient-to-r from-blue-400 to-blue-500 rounded-3xl text-white"
+                    >
+                      {note.price} ريال
+                    </Badge>
                   </div>
                   <p className="text-gray-600 dark:text-gray-400 text-sm mb-3 line-clamp-2">
                     {note.description}

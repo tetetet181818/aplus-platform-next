@@ -3,7 +3,7 @@ import WithdrawalHistoryTable from "@/components/ui/WithdrawalHistoryTable";
 import { useWithdrawalsStore } from "@/stores/useWithdrawalsStore";
 import { useEffect } from "react";
 
-export default function WithdrawalsContent() {
+export default function WithdrawalsDashboard() {
   const {
     loading,
     withdrawals,

@@ -13,12 +13,9 @@ import {
   SidebarMenuButton,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import Link from "next/link";
 
-export default function AppSidebar({
-  navigationItems,
-  activeSection,
-  setActiveSection,
-}) {
+export default function AppSidebar({ navigationItems }) {
   return (
     <Sidebar className="border-0 shadow-xl" side="right">
       <SidebarHeader className="border-b mt-16 border-muted/20 bg-gradient-to-r from-primary/5 to-blue-500/5">
@@ -40,15 +37,15 @@ export default function AppSidebar({
             <SidebarMenu className="space-y-1 px-2">
               {navigationItems?.map((item) => (
                 <SidebarMenuItem key={item.id}>
-                  <SidebarMenuButton
-                    onClick={() => setActiveSection(item.id)}
-                    isActive={activeSection === item.id}
-                    className="w-full justify-start px-4 py-3 rounded-xl transition-all duration-200 hover:bg-primary/10 data-[active=true]:bg-primary/15 data-[active=true]:text-primary data-[active=true]:shadow-md"
-                    aria-label={item.title}
-                  >
-                    <item.icon className="h-5 w-5" />
-                    <span className="font-medium">{item.title}</span>
-                  </SidebarMenuButton>
+                  <Link href={item.href}>
+                    <SidebarMenuButton
+                      className="w-full justify-start px-4 py-3 rounded-xl transition-all duration-200 hover:bg-primary/10 data-[active=true]:bg-primary/15 data-[active=true]:text-primary data-[active=true]:shadow-md"
+                      aria-label={item.title}
+                    >
+                      <item.icon className="h-5 w-5" />
+                      <span className="font-medium">{item.title}</span>
+                    </SidebarMenuButton>
+                  </Link>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>

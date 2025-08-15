@@ -84,6 +84,8 @@ const NoteSaleItem = ({ note }) => (
       alt={note.title}
       src={note.previewImage || "/default-note-image.jpg"}
       className="h-16 w-16 rounded-md object-cover"
+      width={500}
+      height={500}
       onError={(e) => {
         e.target.src = "/default-note-image.jpg";
       }}

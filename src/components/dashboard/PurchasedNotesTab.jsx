@@ -42,8 +42,8 @@ const PurchasedNotesTab = ({
                 <Image
                   alt={note.title}
                   className="w-full h-full object-cover"
-                  width={"100%"}
-                  height={"100%"}
+                  width={500}
+                  height={500}
                   src={note?.cover_url}
                 />
               </div>

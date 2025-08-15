@@ -20,9 +20,8 @@ import NoteReviews from "@/components/notes/NoteReviews";
 import ReviewDialog from "@/components/dashboard/ReviewDialog";
 import Head from "next/head";
 
-const NoteDetailPage = () => {
+const NoteDetailPage = ({ id }) => {
   const router = useRouter();
-
   const {
     note,
     currentUser,
@@ -49,24 +48,27 @@ const NoteDetailPage = () => {
     removeNoteFromLikeList,
     likeLoading,
     downloadLoading,
-  } = useNoteDetail();
+  } = useNoteDetail({ id });
   if (loading && !note) {
     return <LoadingSpinner message="جاري تحميل الملخص..." />;
   }
-
-  if (error || !note) {
-    return (
-      <NoResults
-        icon={<AlertTriangle className="h-16 w-16 text-red-500 mx-auto mb-4" />}
-        title="حدث خطأ"
-        message={error || "الملخص غير موجود"}
-        actionButton={
-          <Button onClick={() => router.push("/notes")}>
-            العودة إلى قائمة الملخصات
-          </Button>
-        }
-      />
-    );
+  if (!loading) {
+    if (error || !note) {
+      return (
+        <NoResults
+          icon={
+            <AlertTriangle className="h-16 w-16 text-red-500 mx-auto mb-4" />
+          }
+          title="حدث خطأ"
+          message={error || "الملخص غير موجود"}
+          actionButton={
+            <Button onClick={() => router.push("/notes")}>
+              العودة إلى قائمة الملخصات
+            </Button>
+          }
+        />
+      );
+    }
   }
 
   return (
@@ -98,19 +100,19 @@ const NoteDetailPage = () => {
             transition={{ duration: 0.5, delay: 0.1 }}
           >
             <NoteHeader
-              title={note.title}
-              price={note.price}
-              rating={note.rating}
-              noteId={note.id}
+              title={note?.title}
+              price={note?.price}
+              rating={note?.rating}
+              noteId={note?.id}
               addNoteToLikeList={addNoteToLikeList}
               removeNoteFromLikeList={removeNoteFromLikeList}
               user={currentUser}
               likeLoading={likeLoading}
             />
 
-            <NoteImage src={note.cover_url} alt={note.title} />
-            <NoteDescription description={note.description} />
-            <NoteReviews reviews={note.reviews || []} noteId={note.id} />
+            <NoteImage src={note?.cover_url} alt={note?.title} />
+            <NoteDescription description={note?.description} />
+            <NoteReviews reviews={note?.reviews || []} noteId={note?.id} />
           </motion.div>
 
           <motion.div
@@ -138,7 +140,7 @@ const NoteDetailPage = () => {
               hasPurchased={hasPurchased}
               price={note.price}
               onPurchase={handlePurchase}
-              onEdit={() => router.push(`/add-note/${note.id}`)}
+              onEdit={() => router.push(`/add-note/${note?.id}`)}
               onDelete={() => setIsDeleteConfirmOpen(true)}
               onDownload={handleDownloadFile}
               downloadLoading={downloadLoading}
@@ -176,7 +178,7 @@ const NoteDetailPage = () => {
             existingReview={note.reviews?.find(
               (r) => r.userId === currentUser?.id
             )}
-            noteId={note.id}
+            noteId={note?.id}
             addReviewToNote={addReviewToNote}
           />
         )}

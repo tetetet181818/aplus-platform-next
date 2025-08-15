@@ -6,7 +6,7 @@ import { useToast } from "@/components/ui/use-toast";
 import LoadingSpinner from "@/components/shared/LoadingSpinner";
 import Head from "next/head";
 
-const PaymentSuccess = () => {
+const PaymentSuccessClient = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { toast } = useToast();
@@ -52,12 +52,6 @@ const PaymentSuccess = () => {
 
   return (
     <>
-      <Head>
-        <title>تأكيد الدفع | منصة أ+</title>
-        <meta name="description" content="صفحة تأكيد عملية الدفع الناجحة" />
-        <meta name="robots" content="noindex, nofollow" />
-      </Head>
-
       <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gray-50 dark:bg-gray-900">
         {loading ? (
           <LoadingSpinner message="جاري تأكيد عملية الدفع..." />
@@ -82,4 +76,4 @@ const PaymentSuccess = () => {
   );
 };
 
-export default PaymentSuccess;
+export default PaymentSuccessClient;

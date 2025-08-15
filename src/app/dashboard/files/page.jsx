@@ -44,7 +44,7 @@ const truncateText = (text, maxLength = 20) => {
   return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
 };
 
-export default function FilesContent() {
+export default function FilesDashboard() {
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);

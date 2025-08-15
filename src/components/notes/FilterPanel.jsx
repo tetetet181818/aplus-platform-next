@@ -23,11 +23,11 @@ const FilterPanel = ({
   const [isLoadingColleges, setIsLoadingColleges] = useState(false);
 
   // Extract universities from universityData
-  const universities = universityData.map((university) => university.name);
+  const universities = universityData?.map((university) => university?.name);
 
   useEffect(() => {
     const loadColleges = async () => {
-      if (!filters.university) {
+      if (!filters?.university) {
         setAvailableColleges([]);
         return;
       }
@@ -35,8 +35,8 @@ const FilterPanel = ({
       setIsLoadingColleges(true);
       try {
         // Find the selected university in universityData
-        const selectedUniversity = universityData.find(
-          (uni) => uni.name === filters.university
+        const selectedUniversity = universityData?.find(
+          (uni) => uni.name === filters?.university
         );
 
         // Get colleges from the university data or empty array if not found
@@ -51,7 +51,7 @@ const FilterPanel = ({
     };
 
     loadColleges();
-  }, [filters.university]);
+  }, [filters?.university]);
 
   const renderSelectOptions = (items, placeholder) => {
     if (isLoadingColleges) {
@@ -62,7 +62,7 @@ const FilterPanel = ({
       );
     }
 
-    if (!items || items.length === 0) {
+    if (!items || items?.length === 0) {
       return (
         <SelectItem value="no-options" disabled>
           {placeholder}
@@ -73,7 +73,7 @@ const FilterPanel = ({
     return (
       <>
         <SelectItem value="all">الكل</SelectItem>
-        {items.map((item) => (
+        {items?.map((item) => (
           <SelectItem key={item} value={item}>
             {item}
           </SelectItem>
@@ -110,14 +110,14 @@ const FilterPanel = ({
           <div className="space-y-2">
             <Label htmlFor="university">الجامعة</Label>
             <Select
-              value={filters.university || ""}
+              value={filters?.university || ""}
               onValueChange={(value) => handleValueChange("university", value)}
-              disabled={universities.length === 0}
+              disabled={universities?.length === 0}
             >
               <SelectTrigger id="university" className="w-full">
                 <SelectValue
                   placeholder={
-                    universities.length === 0
+                    universities?.length === 0
                       ? "لا توجد جامعات متاحة"
                       : "اختر الجامعة"
                   }
@@ -132,11 +132,11 @@ const FilterPanel = ({
           <div className="space-y-2">
             <Label htmlFor="college">الكلية</Label>
             <Select
-              value={filters.college || ""}
+              value={filters?.college || ""}
               onValueChange={(value) => handleValueChange("college", value)}
               disabled={
                 isLoadingColleges ||
-                !filters.university ||
+                !filters?.university ||
                 availableColleges.length === 0
               }
             >
@@ -145,7 +145,7 @@ const FilterPanel = ({
                   placeholder={
                     isLoadingColleges
                       ? "جاري التحميل..."
-                      : !filters.university
+                      : !filters?.university
                       ? "اختر جامعة أولاً"
                       : availableColleges.length === 0
                       ? "لا توجد كليات متاحة"
@@ -162,7 +162,7 @@ const FilterPanel = ({
           <div className="space-y-2">
             <Label htmlFor="year">السنة</Label>
             <Select
-              value={filters.year?.toString() || ""}
+              value={filters?.year?.toString() || ""}
               onValueChange={(value) => handleValueChange("year", value)}
               disabled={years.length === 0}
             >
