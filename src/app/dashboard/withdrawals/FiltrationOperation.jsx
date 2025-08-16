@@ -58,61 +58,71 @@ export default function FiltrationOperation() {
   }, []);
 
   return (
-    <div className="flex flex-col md:flex-row gap-4 mb-6 p-4 bg-card rounded-lg border shadow-sm">
-      {/* Search Input */}
-      <div className="relative flex-1">
+    <div className="flex flex-col gap-4 mb-6 p-4 bg-card rounded-lg border shadow-sm">
+      {/* Search Input - Full width on mobile, stays full width on desktop */}
+      <div className="relative w-full">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
           placeholder="ابحث بالاسم, البنك, IBAN..."
-          className="pl-10 pr-4 py-2"
+          className="pl-10 pr-4 py-2 w-full"
           value={searchQuery}
           onChange={(e) => handleFilterChange(setSearchQuery, e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSearch()}
         />
       </div>
 
-      <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-        <Select
-          value={statusFilter ?? "all"}
-          onValueChange={(value) =>
-            handleFilterChange(setStatusFilter, value === "all" ? null : value)
-          }
-        >
-          <SelectTrigger className="w-full md:w-[180px]">
-            <SelectValue placeholder="حالة الطلب" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">الكل</SelectItem>
-            {Object.entries(statusLabelMap)?.map(([value, label]) => (
-              <SelectItem key={value} value={value}>
-                {label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      {/* Filter controls - column on mobile, row on desktop */}
+      <div className="flex flex-col sm:flex-row gap-3 w-full">
+        {/* Status filter - full width on mobile, fixed width on larger screens */}
+        <div className="w-full sm:w-[180px]">
+          <Select
+            value={statusFilter ?? "all"}
+            onValueChange={(value) =>
+              handleFilterChange(
+                setStatusFilter,
+                value === "all" ? null : value
+              )
+            }
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="حالة الطلب" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">الكل</SelectItem>
+              {Object.entries(statusLabelMap)?.map(([value, label]) => (
+                <SelectItem key={value} value={value}>
+                  {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-        <Input
-          type="date"
-          placeholder="من تاريخ"
-          className="w-full md:w-[150px]"
-          value={dateFrom}
-          onChange={(e) => handleFilterChange(setDateFrom, e.target.value)}
-        />
+        {/* Date inputs - stack on mobile, inline on larger screens */}
+        <div className="flex flex-col sm:flex-row gap-3 flex-1">
+          <Input
+            type="date"
+            placeholder="من تاريخ"
+            className="w-full sm:w-[150px]"
+            value={dateFrom}
+            onChange={(e) => handleFilterChange(setDateFrom, e.target.value)}
+          />
 
-        <Input
-          type="date"
-          placeholder="إلى تاريخ"
-          className="w-full md:w-[150px]"
-          value={dateTo}
-          onChange={(e) => handleFilterChange(setDateTo, e.target.value)}
-          min={dateFrom}
-        />
+          <Input
+            type="date"
+            placeholder="إلى تاريخ"
+            className="w-full sm:w-[150px]"
+            value={dateTo}
+            onChange={(e) => handleFilterChange(setDateTo, e.target.value)}
+            min={dateFrom}
+          />
+        </div>
 
-        {/* Actions */}
-        <div className="flex gap-2">
+        {/* Buttons - full width on mobile, auto width on larger screens */}
+        <div className="flex flex-col xs:flex-row gap-2 w-full sm:w-auto">
           <Button
             onClick={handleSearch}
-            className="flex-1"
+            className="flex-1 sm:flex-none sm:w-[120px]"
             disabled={!filtersChanged}
           >
             <Search className="h-4 w-4 ml-2" />
@@ -121,7 +131,7 @@ export default function FiltrationOperation() {
           <Button
             variant="outline"
             onClick={handleReset}
-            className="flex-1"
+            className="flex-1 sm:flex-none sm:w-[120px]"
             disabled={!searchQuery && !statusFilter && !dateFrom && !dateTo}
           >
             <X className="h-4 w-4 ml-2" />
