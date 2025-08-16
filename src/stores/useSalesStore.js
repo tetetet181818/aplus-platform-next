@@ -13,7 +13,7 @@ export const useSalesStore = create((set, get) => ({
   platformProfit: 0,
   growthRate: 0,
   monthlySales: [],
-  selectSalesDetails: null,
+  singleSale: null,
   setLoading: (loading) => set(() => ({ loading })),
 
   setCurrentPage: (page) => set(() => ({ currentPage: page })),
@@ -271,7 +271,8 @@ export const useSalesStore = create((set, get) => ({
         .eq("id", salesId)
         .single();
       if (error) throw new Error(error.message);
-      set({ selectSalesDetails: data });
+      console.log(data);
+      set({ singleSale: data });
       return data;
     } catch (err) {
       throw new Error(err.message);

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,12 +15,10 @@ import { useToast } from "@/components/ui/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 
-const SellerProfilePage = () => {
-  const { userId } = useParams();
+const SellerProfilePage = ({ userId }) => {
   const router = useRouter();
   const { toast } = useToast();
   const [sellerNotes, setSellerNotes] = useState([]);
-
   const {
     getUserById,
     loading: sellerLoading,
@@ -36,10 +34,11 @@ const SellerProfilePage = () => {
     clearError: clearNotesError,
   } = useFileStore();
 
-  useEffect(async () => {
-    if (userId) {
-      await getUserById(userId);
-    }
+  useEffect(() => {
+    const getSeller = async () => {
+      await getUserById({ id: userId });
+    };
+    getSeller();
   }, [userId]);
 
   useEffect(() => {
@@ -147,7 +146,7 @@ const SellerProfilePage = () => {
         transition={{ duration: 0.5 }}
       >
         <Card className="mb-8 overflow-hidden shadow-lg">
-          <div className="h-40 bg-gradient-to-r from-primary to-blue-500"></div>
+          <div className="h-20 bg-gradient-to-r from-primary to-blue-500"></div>
           <CardContent className="p-6 pt-0 -mt-16">
             <div className="flex flex-col items-center md:flex-row md:items-end md:space-x-6">
               <Avatar className="h-32 w-32 border-4 border-background shadow-md">
@@ -155,7 +154,7 @@ const SellerProfilePage = () => {
                   {seller?.full_name?.charAt(0) || "?"}
                 </AvatarFallback>
               </Avatar>
-              <div className="mt-4 md:mt-0 text-center md:text-left">
+              <div className="mt-4 md:mt-0 text-center md:text-left my-5">
                 <h1 className="text-3xl font-bold">
                   {seller?.full_name || "بائع غير معروف"}
                 </h1>

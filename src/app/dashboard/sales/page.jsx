@@ -6,6 +6,7 @@ import {
   Loader2,
   Search,
   ExternalLink,
+  CalendarIcon,
 } from "lucide-react";
 import {
   Card,
@@ -72,7 +73,6 @@ export default function SalesDashboard() {
     setCurrentPage,
     setItemsPerPage,
     getDetailsOfSales,
-    selectSalesDetails,
   } = useSalesStore();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -85,7 +85,6 @@ export default function SalesDashboard() {
     () => Math.ceil(totalSales / itemsPerPage),
     [totalSales, itemsPerPage]
   );
-
   const filters = useMemo(
     () => ({
       search: searchQuery,
@@ -212,7 +211,7 @@ export default function SalesDashboard() {
         label: "المبلغ",
         customRender: (amount) => (
           <div className="flex flex-col">
-            <span>${(amount || 0).toLocaleString()} ر.س</span>
+            <span>{(amount || 0).toLocaleString()} ر.س</span>
             <span className="text-xs text-muted-foreground">
               العمولة: {calculateCommission(amount)} ر.س
             </span>
@@ -261,8 +260,7 @@ export default function SalesDashboard() {
             size="sm"
             onClick={() => {
               setShowDetailsDialog(true);
-              setSelectedSalesId(sales?.id);
-              getDetailsOfSales({ salesId: sales?.id });
+              setSelectedSalesId(id);
             }}
           >
             <ExternalLink className="h-4 w-4 mr-2" />
@@ -277,25 +275,21 @@ export default function SalesDashboard() {
 
   const renderMobileCard = (sale) => {
     return (
-      <Card
-        key={sale.id}
-        className="mb-4"
-        onChange={() => setSelectedSalesId(sale?.id)}
-      >
+      <Card key={sale?.id} className="mb-4">
         <CardContent className="p-4 space-y-3">
           <div className="flex justify-between">
             <span className="font-medium">الدورة:</span>
-            <span>{sale.files?.title || "غير محدد"}</span>
+            <span>{sale?.files?.title || "غير محدد"}</span>
           </div>
           <div className="flex justify-between">
             <span className="font-medium">الطالب:</span>
-            <span>{sale.users?.full_name || "غير محدد"}</span>
+            <span>{sale?.users?.full_name || "غير محدد"}</span>
           </div>
           <div className="flex justify-between items-center">
             <span className="font-medium">رقم العملية:</span>
             <div className="flex items-center gap-2">
-              {sale.invoice_id || "غير متوفر"}
-              {sale.invoice_id && (
+              {sale?.invoice_id || "غير متوفر"}
+              {sale?.invoice_id && (
                 <Button
                   variant="ghost"
                   size="icon"
@@ -310,7 +304,7 @@ export default function SalesDashboard() {
           <div className="flex justify-between">
             <span className="font-medium">المبلغ:</span>
             <div className="flex flex-col items-end">
-              <span>${(sale.amount || 0).toLocaleString()} ر.س</span>
+              <span>{(sale.amount || 0).toLocaleString()} ر.س</span>
               <span className="text-xs text-muted-foreground">
                 العمولة: {calculateCommission(sale.amount)} ر.س
               </span>
@@ -319,8 +313,8 @@ export default function SalesDashboard() {
           <div className="flex justify-between">
             <span className="font-medium">التاريخ:</span>
             <span>
-              {sale.created_at
-                ? formatArabicDate(sale.created_at, { hijri: true })
+              {sale?.created_at
+                ? formatArabicDate(sale?.created_at, { hijri: true })
                 : "غير محدد"}
             </span>
           </div>
@@ -332,14 +326,14 @@ export default function SalesDashboard() {
                   completed: "default",
                   pending: "secondary",
                   failed: "destructive",
-                }[sale.status] || "secondary"
+                }[sale?.status] || "secondary"
               }
             >
               {{
                 completed: "مكتمل",
                 pending: "قيد الانتظار",
                 failed: "فشل",
-              }[sale.status] || sale.status}
+              }[sale?.status] || sale?.status}
             </Badge>
           </div>
           <Button
@@ -348,7 +342,7 @@ export default function SalesDashboard() {
             className="w-full mt-2"
             onClick={() => {
               setShowDetailsDialog(true);
-              getDetailsOfSales({ salesId: sale.id });
+              setSelectedSalesId(sale?.id);
             }}
           >
             <ExternalLink className="h-4 w-4 mr-2" />
@@ -447,27 +441,32 @@ export default function SalesDashboard() {
                   أحدث مشتريات الدورات والمعاملات
                 </CardDescription>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3">
                 <div className="relative col-span-1 sm:col-span-2 lg:col-span-1">
-                  <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     type="text"
                     placeholder="ابحث عن مبيعات..."
-                    className="w-full pl-9"
+                    className="w-full pl-9 h-10"
                     value={searchQuery}
                     onChange={handleSearchInputChange}
+                    disabled={loading}
                   />
                 </div>
+
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
-                      className="w-full justify-start text-left font-normal"
+                      className="w-full h-10 justify-start text-left font-normal"
                       disabled={loading}
                     >
-                      {dateFilter
-                        ? format(dateFilter, "yyyy-MM-dd")
-                        : "فلترة بالتاريخ"}
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {dateFilter ? (
+                        format(dateFilter, "yyyy-MM-dd")
+                      ) : (
+                        <span>فلترة بالتاريخ</span>
+                      )}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
@@ -479,12 +478,13 @@ export default function SalesDashboard() {
                     />
                   </PopoverContent>
                 </Popover>
+
                 <Select
                   value={statusFilter}
                   onValueChange={handleStatusFilterChange}
                   disabled={loading}
                 >
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full h-10">
                     <SelectValue placeholder="حالة البيع" />
                   </SelectTrigger>
                   <SelectContent>
@@ -495,6 +495,19 @@ export default function SalesDashboard() {
                     ))}
                   </SelectContent>
                 </Select>
+
+                <Button
+                  variant="outline"
+                  className="h-10"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setDateFilter(null);
+                    setStatusFilter("all");
+                  }}
+                  disabled={loading}
+                >
+                  مسح الفلاتر
+                </Button>
               </div>
             </div>
           </CardHeader>
@@ -502,7 +515,7 @@ export default function SalesDashboard() {
             <div className="block md:hidden">
               {loading ? (
                 <div className="space-y-4">
-                  {[1, 2, 3].map((i) => (
+                  {[1, 2, 3, 4, 5].map((i) => (
                     <Card key={i}>
                       <CardContent className="p-4 space-y-3">
                         <Skeleton className="h-4 w-full" />
@@ -605,7 +618,7 @@ export default function SalesDashboard() {
                     disabled={currentPage === 1 || loading}
                     onClick={() => handlePageChange(currentPage - 1)}
                   >
-                    <ChevronRight className="h-4 w-4" />
+                    <ChevronLeft className="h-4 w-4" />
                   </Button>
                   <div className="flex items-center justify-center min-w-[120px]">
                     <span className="text-sm">
@@ -622,7 +635,7 @@ export default function SalesDashboard() {
                     disabled={currentPage >= totalPages || loading}
                     onClick={() => handlePageChange(currentPage + 1)}
                   >
-                    <ChevronLeft className="h-4 w-4" />
+                    <ChevronRight className="h-4 w-4" />
                   </Button>
                   <Button
                     variant="outline"
@@ -641,7 +654,7 @@ export default function SalesDashboard() {
       <SalesDetailsDialog
         open={showDetailsDialog}
         onClose={() => setShowDetailsDialog(false)}
-        selectSalesDetails={selectSalesDetails}
+        salesId={selectedSalesId}
       />
     </>
   );
