@@ -38,6 +38,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { useDebounce } from "@/hooks/useDebounce";
 import Head from "next/head";
+import { universityData } from "@/data/universityData";
 
 const truncateText = (text, maxLength = 20) => {
   if (!text) return "N/A";
@@ -56,7 +57,7 @@ export default function FilesDashboard() {
     year: "",
     priceMin: "",
     priceMax: "",
-    priceOperator: "", // 'gt' (greater than), 'lt' (less than), or empty
+    priceOperator: "",
   });
   const [showFilters, setShowFilters] = useState(false);
 
@@ -68,12 +69,10 @@ export default function FilesDashboard() {
     error,
     notes,
     downloadNote,
-    getUniversities,
-    getCollegesByUniversity,
     downloadLoading,
   } = useFileStore();
 
-  const [universities, setUniversities] = useState([]);
+  const universities = universityData.map((uni) => uni.name);
   const [colleges, setColleges] = useState([]);
 
   useEffect(() => {
@@ -82,7 +81,11 @@ export default function FilesDashboard() {
 
   useEffect(() => {
     if (filters.university) {
-      fetchColleges(filters.university);
+      // Find the selected university in universityData
+      const selectedUniversity = universityData.find(
+        (uni) => uni.name === filters.university
+      );
+      setColleges(selectedUniversity?.colleges || []);
     } else {
       setColleges([]);
       setFilters((prev) => ({ ...prev, college: "" }));
@@ -95,11 +98,6 @@ export default function FilesDashboard() {
       ...filters,
     });
     if (result) setTotalItems(result.totalItems);
-  };
-
-  const fetchColleges = async (university) => {
-    const data = await getCollegesByUniversity(university);
-    setColleges(data);
   };
 
   const handlePageChange = (newPage) => {
@@ -224,7 +222,7 @@ export default function FilesDashboard() {
                 <div className="w-full p-4 bg-muted/50 rounded-lg mb-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 w-full">
                     <Select
-                      value={filters.university}
+                      value={filters?.university}
                       onValueChange={(value) =>
                         handleFilterChange("university", value)
                       }
@@ -236,7 +234,7 @@ export default function FilesDashboard() {
                         </div>
                       </SelectTrigger>
                       <SelectContent>
-                        {universities.map((uni) => (
+                        {universities?.map((uni) => (
                           <SelectItem key={uni} value={uni}>
                             {uni}
                           </SelectItem>

@@ -68,7 +68,6 @@ export default function Dashboard() {
               نظرة عامة على منصتك التعليمية
             </p>
           </div>
-
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
             <StatCard
               title="إجمالي الطلاب"
@@ -85,7 +84,6 @@ export default function Dashboard() {
               color="green"
             />
           </div>
-
           <div className="grid gap-6 md:grid-cols-2">
             <RecentStudentsCard students={newStudents} />
             <RecentSalesCard sales={sales?.slice(0, 5)} />
