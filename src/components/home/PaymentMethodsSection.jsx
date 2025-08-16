@@ -48,7 +48,7 @@ const PaymentMethodsSection = () => {
         طرق الدفع
       </h3>
       <motion.div
-        className="grid grid-cols-2 gap-3"
+        className="flex gap-2"
         variants={sectionVariants}
         initial="hidden"
         animate="visible"
@@ -57,7 +57,7 @@ const PaymentMethodsSection = () => {
           <motion.div
             key={method.name}
             variants={itemVariants}
-            className="p-3 bg-gray-100 dark:bg-gray-800 rounded-md flex flex-col items-center justify-center"
+            className="p-3 bg-gray-100 dark:bg-gray-800 rounded-md flex flex-col flex-1 text-center items-center justify-center"
           >
             <div className="mb-1">{method.icon}</div>
             <p className="text-xs font-medium text-gray-600 dark:text-gray-400">

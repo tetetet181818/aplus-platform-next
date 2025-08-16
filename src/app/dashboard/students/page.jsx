@@ -509,13 +509,11 @@ export default function StudentsDashboard() {
         </Card>
       </div>
 
-      {showUser && (
-        <GetSingleStudentDialog
-          open={showUser}
-          onOpenChange={setShowUser}
-          student={selectedUser}
-        />
-      )}
+      <GetSingleStudentDialog
+        open={showUser}
+        onClose={() => setShowUser(false)}
+        student={selectedUser}
+      />
     </>
   );
 }

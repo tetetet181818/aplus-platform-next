@@ -14,7 +14,7 @@ const HeroSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          مرحبًا بك في منصة A+
+          مرحبًا بك في منصة أ+
         </motion.h1>
 
         <motion.p

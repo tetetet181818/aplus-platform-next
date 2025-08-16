@@ -37,6 +37,7 @@
     "formik": "^2.4.6",
     "framer-motion": "^12.23.12",
     "ldrs": "^1.1.7",
+    "lodash": "^4.17.21",
     "lucide-react": "^0.536.0",
     "next": "15.4.5",
     "react": "19.1.0",

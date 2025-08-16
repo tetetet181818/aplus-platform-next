@@ -16,11 +16,7 @@ import {
 import { User, Mail, School, DollarSign } from "lucide-react";
 import { motion } from "framer-motion";
 
-export default function GetSingleStudentDialog({
-  showUser,
-  setShowUser,
-  selectUser,
-}) {
+export default function GetSingleStudentDialog({ open, onClose, student }) {
   const infoItemVariants = {
     hidden: { opacity: 0, y: 10 },
     visible: { opacity: 1, y: 0 },
@@ -38,7 +34,7 @@ export default function GetSingleStudentDialog({
   };
 
   return (
-    <Dialog open={showUser} onOpenChange={setShowUser}>
+    <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <DialogTitle>عرض بيانات الطالب</DialogTitle>
@@ -68,7 +64,7 @@ export default function GetSingleStudentDialog({
                 <div>
                   <p className="text-sm text-muted-foreground">الاسم الكامل</p>
                   <p className="font-medium">
-                    {selectUser?.full_name || "غير محدد"}
+                    {student?.full_name || "غير محدد"}
                   </p>
                 </div>
               </motion.div>
@@ -84,7 +80,7 @@ export default function GetSingleStudentDialog({
                   <p className="text-sm text-muted-foreground">
                     البريد الإلكتروني
                   </p>
-                  <p className="font-medium">{selectUser?.email}</p>
+                  <p className="font-medium">{student?.email}</p>
                 </div>
               </motion.div>
 
@@ -98,7 +94,7 @@ export default function GetSingleStudentDialog({
                 <div>
                   <p className="text-sm text-muted-foreground">الجامعة</p>
                   <p className="font-medium">
-                    {selectUser?.university || "لم يتم التحديد"}
+                    {student?.university || "لم يتم التحديد"}
                   </p>
                 </div>
               </motion.div>
@@ -112,7 +108,7 @@ export default function GetSingleStudentDialog({
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">الرصيد</p>
-                  <p className="font-medium">{selectUser?.balance}</p>
+                  <p className="font-medium">{student?.balance}</p>
                 </div>
               </motion.div>
             </CardContent>

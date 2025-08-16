@@ -39,7 +39,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useWithdrawalsStore } from "@/stores/useWithdrawalsStore";
 import Head from "next/head";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -53,9 +53,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import WithdrawalStatsCard from "../Withdrawals/WithdrawalStatsCard";
 import MobileWithdrawalCard from "../Withdrawals/MobileWithdrawalCard";
 import { statusLabelMap, statusVariantMap } from "@/constants/index";
+import FiltrationOperation from "@/app/dashboard/withdrawals/FiltrationOperation";
 
 export default function WithdrawalHistoryTable() {
   const {
@@ -65,18 +65,15 @@ export default function WithdrawalHistoryTable() {
     setPage,
     totalPages,
     getWithdrawals,
-    totalCount,
-    totalCountPaid,
-    totalCountPending,
-    totalCountFailed,
     acceptedWithdrawalOrder,
     rejectedWithdrawalOrder,
     deleteWithdrawalOrder,
     updateWithdrawalNotes,
-    completeWithdrawalOrder,
     addRoutingDetails,
   } = useWithdrawalsStore();
-
+  useEffect(() => {
+    getWithdrawals();
+  }, [getWithdrawals]);
   const [selectedWithdrawal, setSelectedWithdrawal] = useState(null);
   const [adminNotes, setAdminNotes] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -251,19 +248,7 @@ export default function WithdrawalHistoryTable() {
       </Head>
 
       <div className="space-y-6 animate-fade-in">
-        <div className="flex gap-4 flex-wrap">
-          <WithdrawalStatsCard title="مجموع الطلبات" value={totalCount} />
-          <WithdrawalStatsCard title="إجمالي المدفوع" value={totalCountPaid} />
-          <WithdrawalStatsCard
-            title="إجمالي المرفوض"
-            value={totalCountFailed}
-          />
-          <WithdrawalStatsCard
-            title="طلبات قيد الانتظار"
-            value={totalCountPending}
-          />
-        </div>
-
+        <FiltrationOperation />
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
@@ -358,7 +343,6 @@ export default function WithdrawalHistoryTable() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-
         <Card className="shadow-sm border-border/50">
           <CardHeader>
             <CardTitle className="text-xl">سجل طلبات السحب</CardTitle>

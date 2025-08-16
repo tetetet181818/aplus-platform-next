@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useToast } from "@/components/ui/use-toast";
 import { motion } from "framer-motion";
-import { User, Edit, LogOut, Trash, AlertTriangle } from "lucide-react";
+import { User } from "lucide-react";
 import Head from "next/head";
 
 import UserProfileSummaryCard from "@/components/profile/UserProfileSummaryCard";
@@ -115,25 +115,27 @@ const ProfilePage = () => {
     return <LoadingSpinner />;
   }
 
-  if (!isAuthenticated || !user) {
-    return (
-      <div className=" py-12 px-4 md:px-6 flex justify-center items-center min-h-[calc(100vh-200px)]">
-        <Card className="w-full max-w-md shadow-xl">
-          <CardHeader className="text-center">
-            <User className="h-16 w-16 mx-auto text-primary mb-4" />
-            <CardTitle className="text-2xl">مطلوب تسجيل الدخول</CardTitle>
-            <CardDescription>
-              يجب عليك تسجيل الدخول لعرض صفحة الملف الشخصي.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4 text-center">
-            <Button onClick={() => router.push("/")} className="w-full">
-              العودة إلى الرئيسية
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
+  if (!authLoading) {
+    if (!isAuthenticated || !user) {
+      return (
+        <div className=" py-12 px-4 md:px-6 flex justify-center items-center min-h-[calc(100vh-200px)]">
+          <Card className="w-full max-w-md shadow-xl">
+            <CardHeader className="text-center">
+              <User className="h-16 w-16 mx-auto text-primary mb-4" />
+              <CardTitle className="text-2xl">مطلوب تسجيل الدخول</CardTitle>
+              <CardDescription>
+                يجب عليك تسجيل الدخول لعرض صفحة الملف الشخصي.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4 text-center">
+              <Button onClick={() => router.push("/")} className="w-full">
+                العودة إلى الرئيسية
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      );
+    }
   }
 
   return (

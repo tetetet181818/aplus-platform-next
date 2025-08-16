@@ -113,11 +113,7 @@ const NotesLikedTab = () => {
                   </div>
                 </div>
                 <div className="flex flex-col sm:flex-row justify-between items-center pt-3 border-t border-gray-200 dark:border-gray-700">
-                  <div className="text-sm text-gray-500 dark:text-gray-400 mb-2 sm:mb-0">
-                    التحميلات: {note.downloads || 0} | التقييم:{" "}
-                    {note.rating ? note.rating.toFixed(1) : "N/A"}
-                  </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 justify-start">
                     <Button
                       variant="outline"
                       size="sm"

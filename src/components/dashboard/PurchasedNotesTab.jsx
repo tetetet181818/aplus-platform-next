@@ -65,8 +65,7 @@ const PurchasedNotesTab = ({
                 </div>
                 <div className="flex flex-col sm:flex-row justify-between items-center mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
                   <div className="text-sm text-gray-500 dark:text-gray-400 mb-2 sm:mb-0">
-                    السعر: {note.price} ريال | التقييم العام:{" "}
-                    {note?.rating?.toFixed(1)}
+                    السعر: {note.price}
                   </div>
                   <div className="flex gap-2 flex-wrap">
                     <Button

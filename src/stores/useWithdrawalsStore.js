@@ -245,46 +245,99 @@ export const useWithdrawalsStore = create((set, get) => ({
     }
   },
 
-  getWithdrawals: async () => {
+  getWithdrawals: async (filters = {}) => {
     const { page, pageSize } = get();
     set({ loading: true, error: null });
+
     try {
       const from = (page - 1) * pageSize;
       const to = from + pageSize - 1;
-      const { data, error, count } = await supabase
+
+      // Base query without await (we add filters first, then execute)
+      let query = supabase
         .from("withdrawals")
         .select("*", { count: "exact" })
-        .order("created_at", { ascending: false })
-        .range(from, to);
+        .order("created_at", { ascending: false });
+
+      // Apply search filter
+      if (filters.search) {
+        query = query.or(
+          `account_name.ilike.%${filters.search}%,bank_name.ilike.%${filters.search}%,iban.ilike.%${filters.search}%`
+        );
+      }
+
+      // Apply status filter
+      if (filters.status) {
+        query = query.eq("status", filters.status);
+      }
+
+      // Apply date range filters
+      if (filters.date_from) {
+        query = query.gte("created_at", filters.date_from);
+      }
+      if (filters.date_to) {
+        const endDate = new Date(filters.date_to);
+        endDate.setDate(endDate.getDate() + 1);
+        query = query.lt("created_at", endDate.toISOString().split("T")[0]);
+      }
+
+      // Execute the main query with pagination
+      const { data, error, count } = await query.range(from, to);
       if (error) throw error;
-      const { error: countError, count: totalPaid } = await supabase
-        .from("withdrawals")
-        .select("*", { count: "exact" })
-        .eq("status", "accepted");
-      const { error: pendingError, count: totalPending } = await supabase
-        .from("withdrawals")
-        .select("*", { count: "exact" })
-        .eq("status", "pending");
-      const { error: rejectedError, count: totalRejected } = await supabase
-        .from("withdrawals")
-        .select("*", { count: "exact" })
-        .eq("status", "rejected");
+
+      // Get status counts in parallel (same filters but different statuses)
+      const getStatusCount = async (status) => {
+        let statusQuery = supabase
+          .from("withdrawals")
+          .select("*", { count: "exact", head: true }) // head:true => counts only
+          .eq("status", status);
+
+        if (filters.search) {
+          statusQuery = statusQuery.or(
+            `account_name.ilike.%${filters.search}%,bank_name.ilike.%${filters.search}%,iban.ilike.%${filters.search}%`
+          );
+        }
+        if (filters.date_from) {
+          statusQuery = statusQuery.gte("created_at", filters.date_from);
+        }
+        if (filters.date_to) {
+          const endDate = new Date(filters.date_to);
+          endDate.setDate(endDate.getDate() + 1);
+          statusQuery = statusQuery.lt(
+            "created_at",
+            endDate.toISOString().split("T")[0]
+          );
+        }
+
+        const { count, error } = await statusQuery;
+        if (error) throw error;
+        return count || 0;
+      };
+
+      // Run all counts in parallel
+      const [acceptedCount, pendingCount, rejectedCount] = await Promise.all([
+        getStatusCount("accepted"),
+        getStatusCount("pending"),
+        getStatusCount("rejected"),
+      ]);
+
       set({
         loading: false,
         withdrawals: data,
-        totalCount: count,
-        totalCountPaid: totalPaid,
-        totalCountPending: totalPending,
-        totalCountFailed: totalRejected,
-        totalPages: Math.ceil(count / pageSize),
+        totalPages: Math.ceil((count || 0) / pageSize),
+        totalCountPaid: acceptedCount,
+        totalCountPending: pendingCount,
+        totalCountFailed: rejectedCount,
       });
 
       return data;
     } catch (error) {
+      console.error("Error in getWithdrawals:", error.message);
       set({ loading: false, error: error.message });
       return null;
     }
   },
+
   updateWithdrawalNotes: async (payload) => {
     try {
       set({ loading: true });
@@ -344,5 +397,53 @@ export const useWithdrawalsStore = create((set, get) => ({
     if (error) throw error;
     await get().getWithdrawals();
     return data;
+  },
+  getWithdrawalStats: async () => {
+    set({ loading: true, statsError: null });
+    try {
+      // Queries
+      const { count: totalCount, error: countError } = await supabase
+        .from("withdrawals")
+        .select("*", { count: "exact", head: true });
+      if (countError) throw countError;
+
+      const { count: totalPaid, error: totalPaidError } = await supabase
+        .from("withdrawals")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "accepted");
+      if (totalPaidError) throw totalPaidError;
+
+      const { count: totalPending, error: totalPendingError } = await supabase
+        .from("withdrawals")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "pending");
+      if (totalPendingError) throw totalPendingError;
+
+      const { count: totalRejected, error: totalRejectedError } = await supabase
+        .from("withdrawals")
+        .select("*", { count: "exact", head: true })
+        .eq("status", "rejected");
+      if (totalRejectedError) throw totalRejectedError;
+
+      set({
+        totalCount: totalCount || 0,
+        totalCountPaid: totalPaid || 0,
+        totalCountPending: totalPending || 0,
+        totalCountFailed: totalRejected || 0,
+        loading: false,
+      });
+
+      return {
+        totalCount: totalCount || 0,
+        totalCountPaid: totalPaid || 0,
+        totalCountPending: totalPending || 0,
+        totalCountFailed: totalRejected || 0,
+      };
+      console.log(totalCount, totalPaid, totalPending, totalRejected);
+    } catch (error) {
+      console.error("Error fetching stats:", error.message);
+      set({ loading: false, statsError: error.message });
+      return null;
+    }
   },
 }));
