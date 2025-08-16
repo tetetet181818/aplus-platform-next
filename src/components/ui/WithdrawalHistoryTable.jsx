@@ -7,6 +7,7 @@ import {
   Loader2,
   CheckCircle,
   Eye,
+  Copy,
 } from "lucide-react";
 import {
   Card,
@@ -68,6 +69,7 @@ export default function WithdrawalHistoryTable() {
   const [actionType, setActionType] = useState(null);
   const [transferNumber, setTransferNumber] = useState("");
   const [transferDate, setTransferDate] = useState(null);
+  const [copiedIban, setCopiedIban] = useState(null);
   const {
     withdrawals,
     loading,
@@ -80,10 +82,17 @@ export default function WithdrawalHistoryTable() {
     deleteWithdrawalOrder,
     updateWithdrawalNotes,
     addRoutingDetails,
-  } = useWithdrawalsStore();
+  } = useWithdrawalsStore((state) => state);
+
   useEffect(() => {
     getWithdrawals();
   }, [getWithdrawals]);
+
+  const handleCopyIban = (iban) => {
+    navigator.clipboard.writeText(iban);
+    setCopiedIban(iban);
+    setTimeout(() => setCopiedIban(null), 500);
+  };
 
   const handleActionWithNote = async () => {
     if (!selectedWithdrawal || !actionType) return;
@@ -137,7 +146,25 @@ export default function WithdrawalHistoryTable() {
       header: "IBAN",
       accessor: "iban",
       label: "IBAN",
-      customRender: (iban) => iban || "غير متوفر",
+      customRender: (iban) => (
+        <div className="flex items-center gap-2">
+          {iban || "غير متوفر"}
+          {iban && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6"
+              onClick={() => handleCopyIban(iban)}
+            >
+              {copiedIban === iban ? (
+                <Check className="size-4 text-green-500" />
+              ) : (
+                <Copy className="size-4" />
+              )}
+            </Button>
+          )}
+        </div>
+      ),
     },
     {
       header: "المبلغ",
@@ -180,7 +207,6 @@ export default function WithdrawalHistoryTable() {
       label: "تاريخ التحويل",
       customRender: (routing_date) => routing_date || "لا توجد تاريخ تحويل",
     },
-    ,
     {
       header: "الإجراءات",
       customRender: (_, withdrawal) => (
@@ -392,9 +418,12 @@ export default function WithdrawalHistoryTable() {
             <div className="hidden md:block">
               <Table>
                 <TableHeader>
-                  <TableRow>
+                  <TableRow className="bg-muted/50 hover:bg-muted/50">
                     {columns.map((column) => (
-                      <TableHead key={column.header} className="text-right">
+                      <TableHead
+                        key={column.header}
+                        className="text-right border-b border-border/50"
+                      >
                         {column.header}
                       </TableHead>
                     ))}

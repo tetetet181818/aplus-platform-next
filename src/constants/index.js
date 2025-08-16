@@ -197,11 +197,11 @@ export const faqData = [
     ],
   },
 ];
-
 export const statusLabelMap = {
-  pending: "بانتظار التنفيذ",
-  accepted: "تمت الموافقة",
+  pending: "قيد الانتظار",
+  accepted: "مقبول",
   rejected: "مرفوض",
+  processing: "قيد المعالجة",
   completed: "مكتمل",
 };
 

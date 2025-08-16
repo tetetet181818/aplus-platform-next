@@ -14,6 +14,7 @@ export const useWithdrawalsStore = create((set, get) => ({
   totalCountPaid: 0,
   totalCountPending: 0,
   totalCountFailed: 0,
+  singleWithdrawal: null,
   setPage: (page) => set({ page }),
   clearError: () => set({ error: null }),
 
@@ -443,6 +444,41 @@ export const useWithdrawalsStore = create((set, get) => ({
     } catch (error) {
       console.error("Error fetching stats:", error.message);
       set({ loading: false, statsError: error.message });
+      return null;
+    }
+  },
+  getSingleWithdrawal: async ({ id }) => {
+    set({ loading: true, error: null });
+    try {
+      // Get withdrawal by ID
+      const { data: withdrawal, error: withdrawalError } = await supabase
+        .from("withdrawals")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (withdrawalError) throw withdrawalError;
+
+      // Get related user
+      const { data: user, error: userError } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", withdrawal.user_id)
+        .single();
+
+      if (userError) throw userError;
+
+      const result = {
+        ...withdrawal,
+        user,
+      };
+
+      set({ loading: false, singleWithdrawal: result });
+
+      return result;
+    } catch (error) {
+      console.error("Error in getSingleWithdrawal:", error.message);
+      set({ loading: false, error: error.message });
       return null;
     }
   },

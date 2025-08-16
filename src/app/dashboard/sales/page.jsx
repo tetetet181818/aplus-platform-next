@@ -46,6 +46,7 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import SalesDetailsDialog from "@/components/SalesDetailsDialog";
+import LoadingSpinner from "@/components/shared/LoadingSpinner";
 
 const statusOptions = [
   { value: "all", label: "جميع الحالات" },
@@ -362,18 +363,18 @@ export default function SalesDashboard() {
     if (loading)
       return (
         <TableRow>
-          <TableCell colSpan={columns.length} className="h-24 text-center">
-            <div className="flex flex-col items-center gap-2">
-              <Loader2 className="h-8 w-8 animate-spin" />
-              <p>جاري تحميل البيانات...</p>
-            </div>
+          <TableCell colSpan={columns?.length} className="h-24 text-center">
+            <LoadingSpinner message="جاري تحميل البيانات..." />
           </TableCell>
         </TableRow>
       );
 
     if (sales?.length > 0)
       return sales.map((sale) => (
-        <TableRow key={sale.id} className="hover:bg-muted/50 transition-colors">
+        <TableRow
+          key={sale?.id}
+          className="hover:bg-muted/50 transition-colors"
+        >
           {columns.map((column) => {
             const value = column.accessor.includes(".")
               ? column.accessor
