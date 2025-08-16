@@ -23,14 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Upload,
-  FileText,
-  AlertCircle,
-  ImageUp,
-  // Checkbox,
-  Loader,
-} from "lucide-react";
+import { Upload, FileText, AlertCircle, ImageUp, Loader } from "lucide-react";
 import { motion } from "framer-motion";
 import {
   ALLOWED_FILE_TYPES_STRING,
@@ -41,6 +34,7 @@ import {
 import { useFileStore } from "@/stores/useFileStore";
 import { addNoteSchema } from "@/utils/validation/fileValidation";
 import { Checkbox } from "@/components/ui/checkbox";
+
 const AddNoteForm = ({ universities, userNotesCount, edit }) => {
   const router = useRouter();
   const { createNote, updateNote, getSingleNote, loading } = useFileStore();
@@ -49,6 +43,7 @@ const AddNoteForm = ({ universities, userNotesCount, edit }) => {
   const [isUploading, setIsUploading] = useState({ file: false, image: false });
   const [availableColleges, setAvailableColleges] = useState([]);
   const [note, setNote] = useState(null);
+  const [initialValuesSet, setInitialValuesSet] = useState(false);
 
   useEffect(() => {
     if (isEditMode) {
@@ -60,6 +55,7 @@ const AddNoteForm = ({ universities, userNotesCount, edit }) => {
             setAvailableColleges(
               universityColleges[fetchedNote.university] || []
             );
+            setInitialValuesSet(true);
           } else {
             toast({
               title: "خطأ",
@@ -76,26 +72,29 @@ const AddNoteForm = ({ universities, userNotesCount, edit }) => {
         }
       };
       fetchNote();
+    } else {
+      setInitialValuesSet(true);
     }
-  }, [edit, getSingleNote]);
+  }, [edit, getSingleNote, isEditMode]);
 
   const formik = useFormik({
     initialValues: {
-      title: note?.title || "",
-      description: note?.description || "",
-      price: note?.price || 0,
-      university: note?.university || "",
-      college: note?.college || "",
-      subject: note?.subject || "",
-      pagesNumber: note?.pages_number || 0,
-      year: note?.year || new Date().getFullYear(),
-      contactMethod: note?.contact_method || "",
+      title: "",
+      description: "",
+      price: 0,
+      university: "",
+      college: "",
+      subject: "",
+      pagesNumber: 0,
+      year: new Date().getFullYear(),
+      contactMethod: "",
       file: null,
       imageFile: null,
-      fileName: note?.file_path || "",
-      previewImage: note?.cover_url || "",
+      fileName: "",
+      previewImage: "",
       removeFile: false,
       removePreviewImage: false,
+      terms: false,
     },
     validationSchema: addNoteSchema,
     enableReinitialize: true,
@@ -104,7 +103,11 @@ const AddNoteForm = ({ universities, userNotesCount, edit }) => {
         const formData = new FormData();
         Object.entries(values).forEach(([key, value]) => {
           if (value !== null && value !== undefined) {
-            formData.append(key, value);
+            if (key === "file" || key === "imageFile") {
+              if (value) formData.append(key, value);
+            } else {
+              formData.append(key, value);
+            }
           }
         });
 
@@ -122,7 +125,7 @@ const AddNoteForm = ({ universities, userNotesCount, edit }) => {
             title: "تم إنشاء الملخص بنجاح",
             variant: "success",
           });
-          formik.resetForm();
+          router.push("/notes");
         }
       } catch (err) {
         toast({
@@ -136,19 +139,44 @@ const AddNoteForm = ({ universities, userNotesCount, edit }) => {
     },
   });
 
+  // Update form values when note data is loaded
+  useEffect(() => {
+    if (note && initialValuesSet) {
+      formik.setValues({
+        title: note.title || "",
+        description: note.description || "",
+        price: note.price || 0,
+        university: note.university || "",
+        college: note.college || "",
+        subject: note.subject || "",
+        pagesNumber: note.pages_number || 0,
+        year: note.year || new Date().getFullYear(),
+        contactMethod: note.contact_method || "",
+        file: null,
+        imageFile: null,
+        fileName: note.file_path || "",
+        previewImage: note.cover_url || "",
+        removeFile: false,
+        removePreviewImage: false,
+        terms: false,
+      });
+    }
+  }, [note, initialValuesSet]);
+
   const handleFileChange = (e) => {
     const { name, files } = e.target;
     if (!files[0]) return;
 
     setIsUploading((prev) => ({ ...prev, [name.replace("File", "")]: true }));
     formik.setFieldValue(name, files[0]);
-    if (isEditMode)
+    if (isEditMode) {
       formik.setFieldValue(
         `remove${
           name.charAt(0).toUpperCase() + name.slice(1).replace("File", "")
         }`,
         false
       );
+    }
     setIsUploading((prev) => ({ ...prev, [name.replace("File", "")]: false }));
   };
 
@@ -159,6 +187,14 @@ const AddNoteForm = ({ universities, userNotesCount, edit }) => {
       setAvailableColleges(universityColleges[value] || []);
     }
   };
+
+  if (!initialValuesSet) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Ring size={50} speed={1.5} bgOpacity={0.25} />
+      </div>
+    );
+  }
 
   return (
     <motion.div
@@ -526,12 +562,30 @@ const AddNoteForm = ({ universities, userNotesCount, edit }) => {
                   )}
               </div>
             </div>
-
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="terms"
+                checked={formik.values.terms}
+                onCheckedChange={(checked) =>
+                  formik.setFieldValue("terms", checked)
+                }
+              />
+              <Label htmlFor="terms" className="text-xs cursor-pointer ml-2">
+                أقر بأن الملف من إعدادي. أتحمل مسؤوليته
+              </Label>
+            </div>
+            {formik.touched.terms && formik.errors.terms && (
+              <p className="text-sm text-red-500">{formik.errors.terms}</p>
+            )}
             <div className="flex justify-end">
               <Button
                 type="submit"
                 className="gap-2"
-                disabled={loading || (!isEditMode && !canAddMoreNotes)}
+                disabled={
+                  loading ||
+                  (!isEditMode && !canAddMoreNotes) ||
+                  (!isEditMode && !formik.values.terms)
+                }
               >
                 {loading ? (
                   <>
@@ -550,11 +604,9 @@ const AddNoteForm = ({ universities, userNotesCount, edit }) => {
         </CardContent>
       </Card>
       {loading && (
-        <>
-          <div className="fixed top-0 left-0 bg-black/50 z-50 w-screen h-screen">
-            <Ring size={50} speed={1.5} bgOpacity={0.25} />
-          </div>
-        </>
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+          <Ring size={50} speed={1.5} bgOpacity={0.25} />
+        </div>
       )}
     </motion.div>
   );

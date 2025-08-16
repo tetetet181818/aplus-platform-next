@@ -22,7 +22,26 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useNotificationsStore } from "@/stores/useNotificationsStore";
 import { useAuthStore } from "../../stores/useAuthStore";
 import formatArabicDate from "@/config/formateTime";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+
+const getTypeIcon = (notification) => {
+  switch (notification.type) {
+    case "review":
+      return "⭐";
+    case "withdrawal":
+      return "💸";
+    case "purchase":
+      return "💸";
+    case "student":
+      return "👥";
+    case "sale":
+      return "📈";
+    case "auth":
+      return "🧔🏻";
+    default:
+      return "👥";
+  }
+};
 export function NotificationBell({ className }) {
   const { isOpen, setIsOpen, loading, fetchNotifications } =
     useNotificationsStore();
@@ -101,7 +120,7 @@ export function NotificationPanel() {
   const { isOpen, setIsOpen, unreadCount, loading, error } =
     useNotificationsStore();
   const isMobile = useIsMobile("(max-width: 640px)");
-  React.useEffect(() => {
+  useEffect(() => {
     fetchNotifications();
   }, [fetchNotifications]);
   const handleRefresh = async () => {
@@ -299,6 +318,8 @@ function NotificationItem({
         return <DollarSign className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />;
       case "system":
         return <Settings className="h-4 w-4 sm:h-5 sm:w-5 text-gray-500" />;
+      // case "review":
+      //   return <Bell className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />;
       default:
         return <Bell className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />;
     }
@@ -429,8 +450,8 @@ function NotificationItem({
                 {formatArabicDate(notification?.created_at)}
               </span>
               {notification.type && (
-                <Badge variant="outline" className="text-[10px] sm:text-xs">
-                  {notification.type}
+                <Badge variant="ghost" className="text-2xl border-0">
+                  {getTypeIcon(notification)}
                 </Badge>
               )}
             </div>
@@ -469,7 +490,7 @@ export function Toast() {
 
 function ToastNotification({ notification, onMarkAsRead, style, isMobile }) {
   const { removeNotification } = useNotificationsStore();
-  const [isClosing, setIsClosing] = React.useState(false);
+  const [isClosing, setIsClosing] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {

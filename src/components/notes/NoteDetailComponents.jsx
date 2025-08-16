@@ -120,8 +120,8 @@ export const NoteImage = ({ src, alt }) => {
   };
 
   return (
-    <Card className="shadow-lg overflow-hidden border-gray-200 dark:border-gray-700">
-      <div className="bg-gray-100 flex items-center justify-center">
+    <Card className="shadow-lg overflow-hidden border-gray-200 dark:border-gray-700 py-0">
+      <div className="bg-gray-100 flex items-center justify-center py-0">
         {imageError ? (
           <div className="text-gray-500 flex flex-col items-center">
             <FileText className="h-16 w-16 mb-2" />

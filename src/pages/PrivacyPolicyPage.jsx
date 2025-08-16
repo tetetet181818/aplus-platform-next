@@ -5,7 +5,6 @@ import {
   FileText,
   User,
   Database,
-  CreditCard,
   Share2,
   CheckCircle,
   Cookie,

@@ -205,6 +205,7 @@ const RegisterDialog = ({ isOpen, onClose, onSwitchToLogin }) => {
                 )}
               </button>
             </div>
+            <p>كلمة المرور يجب أن تحتوي على 8 أحرف على الأقل</p>
             {formik.touched.password && formik.errors.password && (
               <p className="text-sm text-destructive">
                 {formik.errors.password}

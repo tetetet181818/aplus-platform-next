@@ -41,7 +41,7 @@ const NoteCard = ({ note }) => {
       initial="rest"
       whileHover="hover"
       animate="rest"
-      className="h-full rounded-xl overflow-hidden"
+      className="h-full w-full rounded-xl overflow-x-hidden"
     >
       <Link
         href={`/notes/${note.id}`}
@@ -49,9 +49,9 @@ const NoteCard = ({ note }) => {
         aria-label={`View ${note.title} note details`}
         prefetch={false}
       >
-        <Card className="h-full flex flex-col border-border rounded-xl overflow-hidden transition-all duration-300 hover:border-primary/30">
-          <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
-            <motion.div variants={imageVariants} className="w-full h-full">
+        <Card className="h-full flex flex-col py-0 border-1 rounded-xl overflow-hidden transition-all duration-300 hover:border-primary/30">
+          <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br py-0 from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
+            <motion.div variants={imageVariants} className="w-full h-full py-0">
               <Image
                 src={note.cover_url}
                 alt={`Cover image for ${note.title}`}
