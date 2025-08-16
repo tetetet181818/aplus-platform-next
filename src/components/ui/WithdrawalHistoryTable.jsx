@@ -6,6 +6,7 @@ import {
   Trash2,
   Loader2,
   CheckCircle,
+  Eye,
 } from "lucide-react";
 import {
   Card,
@@ -56,8 +57,17 @@ import {
 import MobileWithdrawalCard from "../Withdrawals/MobileWithdrawalCard";
 import { statusLabelMap, statusVariantMap } from "@/constants/index";
 import FiltrationOperation from "@/app/dashboard/withdrawals/FiltrationOperation";
+import WithdrawalDetailsDialog from "../WithdrawalDetailsDialog";
 
 export default function WithdrawalHistoryTable() {
+  const [openWithdrawalDetailsDialog, setOpenWithdrawalDetailsDialog] =
+    useState(false);
+  const [selectedWithdrawal, setSelectedWithdrawal] = useState(null);
+  const [adminNotes, setAdminNotes] = useState("");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [actionType, setActionType] = useState(null);
+  const [transferNumber, setTransferNumber] = useState("");
+  const [transferDate, setTransferDate] = useState(null);
   const {
     withdrawals,
     loading,
@@ -74,12 +84,6 @@ export default function WithdrawalHistoryTable() {
   useEffect(() => {
     getWithdrawals();
   }, [getWithdrawals]);
-  const [selectedWithdrawal, setSelectedWithdrawal] = useState(null);
-  const [adminNotes, setAdminNotes] = useState("");
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [actionType, setActionType] = useState(null);
-  const [transferNumber, setTransferNumber] = useState("");
-  const [transferDate, setTransferDate] = useState(null);
 
   const handleActionWithNote = async () => {
     if (!selectedWithdrawal || !actionType) return;
@@ -183,10 +187,20 @@ export default function WithdrawalHistoryTable() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-              <MoreHorizontal className="h-4 w-4" />
+              <MoreHorizontal className="size-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48 shadow-lg">
+            <DropdownMenuItem
+              onClick={() => {
+                setSelectedWithdrawal(withdrawal);
+                setOpenWithdrawalDetailsDialog(true);
+              }}
+              className="cursor-pointer text-blue-600 hover:bg-blue-400"
+            >
+              <Eye className="size-4 mr-2 text-blue-600" />
+              عرض التفاصيل
+            </DropdownMenuItem>
             {withdrawal?.status === "accepted" && (
               <DropdownMenuItem
                 onClick={() => {
@@ -209,7 +223,7 @@ export default function WithdrawalHistoryTable() {
                 }}
                 className="cursor-pointer"
               >
-                <Check className="h-4 w-4 mr-2 text-green-600" />
+                <Check className="size-4 mr-2 text-green-600" />
                 قبول الطلب
               </DropdownMenuItem>
             )}
@@ -222,7 +236,7 @@ export default function WithdrawalHistoryTable() {
                 }}
                 className="cursor-pointer"
               >
-                <X className="h-4 w-4 mr-2 text-red-600" />
+                <X className="size-4 mr-2 text-red-600" />
                 رفض الطلب
               </DropdownMenuItem>
             )}
@@ -231,7 +245,7 @@ export default function WithdrawalHistoryTable() {
               onClick={() => deleteWithdrawalOrder({ id: withdrawal.id })}
               className="cursor-pointer text-red-600"
             >
-              <Trash2 className="h-4 w-4 mr-2" />
+              <Trash2 className="size-4 mr-2" />
               حذف الطلب
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -294,7 +308,7 @@ export default function WithdrawalHistoryTable() {
                         !transferDate && "text-muted-foreground"
                       )}
                     >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      <CalendarIcon className="mr-2 size-4" />
                       {transferDate ? (
                         format(transferDate, "yyyy-MM-dd")
                       ) : (
@@ -338,7 +352,7 @@ export default function WithdrawalHistoryTable() {
                   : actionType === "complete"
                   ? "تأكيد الإكمال"
                   : "تأكيد الرفض"}
-                {loading && <Loader2 className="animate-spin ml-2 h-4 w-4" />}
+                {loading && <Loader2 className="animate-spin ml-2 size-4" />}
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -464,6 +478,11 @@ export default function WithdrawalHistoryTable() {
           </CardContent>
         </Card>
       </div>
+      <WithdrawalDetailsDialog
+        open={openWithdrawalDetailsDialog}
+        onClose={() => setOpenWithdrawalDetailsDialog(false)}
+        selectedWithdrawal={selectedWithdrawal}
+      />
     </>
   );
 }
