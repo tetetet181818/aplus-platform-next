@@ -50,7 +50,7 @@ export default function GetSingleStudentDialog({ open, onClose, student }) {
           <Card>
             <CardHeader className="border-b">
               <CardTitle>المعلومات الشخصية</CardTitle>
-              <CardDescription>تفاصيل الحساب في منصة A+</CardDescription>
+              <CardDescription>تفاصيل الحساب في منصة أ+</CardDescription>
             </CardHeader>
 
             <CardContent className="space-y-4 pt-4">

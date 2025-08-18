@@ -46,7 +46,7 @@ export default function Navbar({}) {
         >
           <Award className="h-7 w-7 text-primary" />
           <span className="text-xl font-bold text-gray-800 dark:text-white">
-            منصة A+
+            منصة أ+
           </span>
         </Link>
 

@@ -24,7 +24,7 @@ export default function AppSidebar({ navigationItems }) {
             <BookOpen className="h-6 w-6 text-primary" />
           </div>
           <h2 className="text-xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
-            منصة A+
+            منصة أ+
           </h2>
         </div>
       </SidebarHeader>

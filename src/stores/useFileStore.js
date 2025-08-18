@@ -413,7 +413,14 @@ export const useFileStore = create((set, get) => ({
     }
   },
 
-  purchaseNote: async ({ noteId, userId, invoice_id, status, message }) => {
+  purchaseNote: async ({
+    noteId,
+    userId,
+    invoice_id,
+    status,
+    message,
+    method,
+  }) => {
     set({ loading: true, error: null });
 
     try {
@@ -682,13 +689,14 @@ export const useFileStore = create((set, get) => ({
           back_url: `${domain}/checkout?noteId=${noteId}`,
           logo_url:
             "https://xlojbqqborsgdjyieftm.supabase.co/storage/v1/object/public/notes/images/logo.png",
+          payments: {
+            company: "",
+          },
         },
         {
           headers: {
             "Content-Type": "application/json",
-            // Authorization: "Basic " + btoa(moyasar_key),
-            Authorization:
-              "Basic " + "sk_test_drGMFNUTUoJXgLiXziiopuZXYL3CCrRprMpkqbpM",
+            Authorization: "Basic " + btoa(moyasar_key),
           },
         }
       );

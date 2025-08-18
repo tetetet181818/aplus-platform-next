@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import * as Yup from "yup";
 import {
   Card,
   CardContent,
@@ -8,16 +9,10 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { DollarSign, BarChart3, ChevronDown } from "lucide-react";
+import { DollarSign, BarChart3 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useToast } from "@/components/ui/use-toast";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+
 import {
   Tooltip,
   TooltipContent,
@@ -26,11 +21,11 @@ import {
 } from "@/components/ui/tooltip";
 import { Info } from "lucide-react";
 import { useFormik } from "formik";
-import * as Yup from "yup";
+
 import WithdrawalForm from "./WithdrawalForm";
 import { useWithdrawalsStore } from "@/stores/useWithdrawalsStore";
 
-const PLATFORM_FEE_PERCENTAGE = 0.15;
+const PLATFORM_FEE_PERCENTAGE = process.env.PLATFORM_FEE_PERCENTAGE;
 
 const EarningsTab = ({ currentUser, getSellerNotes }) => {
   const router = useRouter();

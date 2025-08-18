@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Eye, Heart } from "lucide-react";
+import { Eye, Heart, Star } from "lucide-react";
 import NoResults from "@/components/shared/NoResults";
 import { motion } from "framer-motion";
 import { useAuthStore } from "@/stores/useAuthStore";
@@ -77,58 +77,97 @@ const NotesLikedTab = () => {
           key={note.id}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          whileHover={{ scale: 1.01 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+          whileHover={{
+            scale: [480, 768].includes(window.innerWidth) ? 1 : 1.02,
+            boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
+          }}
+          whileTap={{ scale: 0.98 }}
+          className="w-full"
         >
-          <Card className="overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+          <Card className="py-0 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 w-full">
             <div className="flex flex-col sm:flex-row">
-              <div className="relative sm:w-1/3 lg:w-1/4 aspect-video sm:aspect-[4/3] bg-gray-100 dark:bg-gray-800">
+              <div className="relative w-full sm:w-1/3 lg:w-1/4 py-0 aspect-video sm:aspect-[4/3] bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-700 dark:to-gray-900">
                 <Image
                   alt={note.title}
-                  className="object-cover w-full h-full"
+                  className="object-cover w-full h-full py-0"
                   src={note.cover_url}
                   width={500}
                   height={500}
+                  placeholder="blur"
+                  blurDataURL="/placeholder-image.jpg"
+                  sizes="(max-width: 639px) 100vw, (max-width: 1023px) 33vw, 25vw"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
+
+                <div className="sm:hidden absolute top-3 right-3">
+                  <Badge
+                    variant="primary"
+                    className="text-xs font-medium bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full text-white px-2.5 py-0.5 shadow-sm"
+                  >
+                    {note.price} ريال
+                  </Badge>
+                </div>
               </div>
-              <div className="p-4 flex-1 flex flex-col justify-between">
+
+              <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
                 <div>
-                  <div className="flex justify-between items-start mb-2">
-                    <h2 className="font-bold text-lg text-gray-800 dark:text-white">
+                  <div className="flex flex-col sm:flex-row justify-between items-start mb-3 gap-2">
+                    <h2 className="font-bold text-lg sm:text-xl text-gray-900 dark:text-white line-clamp-2 sm:line-clamp-1">
                       {note.title}
                     </h2>
-                    <Badge
-                      variant="primary"
-                      className="text-sm bg-gradient-to-r from-blue-400 to-blue-500 rounded-3xl text-white"
-                    >
-                      {note.price} ريال
-                    </Badge>
+
+                    <div className="hidden sm:block">
+                      <Badge
+                        variant="primary"
+                        className="text-sm font-medium bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full text-white px-3 py-1 shadow-sm"
+                      >
+                        {note.price} ريال
+                      </Badge>
+                    </div>
                   </div>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-3 line-clamp-2">
+
+                  <p className="text-gray-600 dark:text-gray-300 text-sm sm:text-base mb-3 sm:mb-4 line-clamp-2 sm:line-clamp-3 leading-relaxed">
                     {note.description}
                   </p>
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    <Badge variant="outline">{note.university}</Badge>
-                    <Badge variant="outline">{note.subject}</Badge>
+
+                  <div className="flex flex-wrap gap-2 mb-3 sm:mb-4">
+                    <Badge
+                      variant="outline"
+                      className="text-xs sm:text-sm px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30"
+                    >
+                      {note.university}
+                    </Badge>
+                    <Badge
+                      variant="outline"
+                      className="text-xs sm:text-sm px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full border-purple-200 dark:border-purple-800 text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30"
+                    >
+                      {note.subject}
+                    </Badge>
                   </div>
                 </div>
-                <div className="flex flex-col sm:flex-row justify-between items-center pt-3 border-t border-gray-200 dark:border-gray-700">
-                  <div className="flex gap-2 justify-start">
+
+                <div className="flex flex-col xs:flex-row justify-between items-start xs:items-center gap-3 pt-3 sm:pt-4 border-t border-gray-100 dark:border-gray-700">
+                  <div className="flex flex-col xs:flex-row gap-2 w-full xs:w-auto">
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => router.push(`/notes/${note.id}`)}
+                      className="w-full xs:w-auto rounded-full px-4 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                      onClick={() => router.push(`/notes/${note?.id}`)}
                     >
-                      <Eye className="h-4 w-4 ml-1" />
-                      عرض
+                      <Eye className="h-4 w-4 ml-1 text-blue-600 dark:text-blue-400" />
+                      <span className="text-gray-700 dark:text-gray-300">
+                        عرض التفاصيل
+                      </span>
                     </Button>
+
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="text-red-600 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-900"
+                      className="w-full xs:w-auto rounded-full px-4 text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30 transition-colors"
                     >
-                      <Heart className="h-4 w-4 ml-1" />
-                      إزالة الإعجاب
+                      <Heart className="h-4 w-4 ml-1 fill-current" />
+                      <span>إزالة الإعجاب</span>
                     </Button>
                   </div>
                 </div>

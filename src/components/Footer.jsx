@@ -37,7 +37,7 @@ const Footer = () => {
           <div className="space-y-4 lg:col-span-2">
             <div className="flex items-center gap-2">
               <Award className="h-6 w-6 text-primary" aria-hidden="true" />
-              <span className="text-xl font-bold text-foreground">منصة A+</span>
+              <span className="text-xl font-bold text-foreground">منصة أ+</span>
             </div>
             <p className="text-muted-foreground text-sm">
               منصة لبيع وشراء الملخصات الجامعية بين الطلاب، وفر وقتك واستفد من
@@ -46,7 +46,7 @@ const Footer = () => {
             <div>
               <Image
                 src={sudia_busniess_center}
-                alt="سجل تجاري منصة A+"
+                alt="سجل تجاري منصة  أ+"
                 className="w-full h-auto"
               />
               <h2 className="text-2xl font-bold text-center mt-4">
@@ -81,7 +81,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t mt-12 pt-6 text-center text-muted-foreground text-sm">
-          <p>© {currentYear} منصة A+. جميع الحقوق محفوظة.</p>
+          <p>© {currentYear} منصة أ+. جميع الحقوق محفوظة.</p>
         </div>
       </div>
     </footer>
