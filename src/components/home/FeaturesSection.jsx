@@ -39,7 +39,7 @@ const FeaturesSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          ليش A+؟
+          ليش أ+؟
         </motion.h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
           <FeatureCard
@@ -87,7 +87,7 @@ const FeaturesSection = () => {
           transition={{ delay: 0.9 }}
         >
           <h3 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
-            A+ انضم اليوم وابدأ رحلتك مع
+            أ+ انضم اليوم وابدأ رحلتك مع
           </h3>
           <p className="text-xl font-semibold mb-8 text-primary dark:text-blue-300">
             شارك — تعلم — اربح

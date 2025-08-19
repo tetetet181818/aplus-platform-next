@@ -36,7 +36,7 @@ const UserNotesTab = ({
       {notes.map((note) => (
         <Card
           key={note.id}
-          className="overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
+          className="py-0 overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
         >
           <div className="flex flex-col sm:flex-row">
             <div className="sm:w-1/3 lg:w-1/4 aspect-video sm:aspect-auto bg-gray-100 dark:bg-gray-800">

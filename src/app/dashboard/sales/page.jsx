@@ -72,8 +72,8 @@ export default function SalesDashboard() {
     clearError,
     setCurrentPage,
     setItemsPerPage,
-    getDetailsOfSales,
   } = useSalesStore();
+  console.log(sales);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -167,7 +167,9 @@ export default function SalesDashboard() {
   const calculateCommission = useCallback((amount) => {
     return (amount * commissionRate).toLocaleString();
   }, []);
-
+  const calculatePaymentInterface = useCallback((amount) => {
+    return (amount * (1 - commissionRate)).toLocaleString();
+  });
   const columns = useMemo(
     () => [
       {
@@ -213,7 +215,10 @@ export default function SalesDashboard() {
           <div className="flex flex-col">
             <span>{(amount || 0).toLocaleString()} ر.س</span>
             <span className="text-xs text-muted-foreground">
-              العمولة: {calculateCommission(amount)} ر.س
+              رسوم المنصه: {calculateCommission(amount)} ر.س
+            </span>
+            <span className="text-xs text-muted-foreground">
+              رسوم الدفع: {calculatePaymentInterface(amount)} ر.س
             </span>
           </div>
         ),
@@ -450,7 +455,6 @@ export default function SalesDashboard() {
                     className="w-full pl-9 h-10"
                     value={searchQuery}
                     onChange={handleSearchInputChange}
-                    disabled={loading}
                   />
                 </div>
 
@@ -459,7 +463,6 @@ export default function SalesDashboard() {
                     <Button
                       variant="outline"
                       className="w-full h-10 justify-start text-left font-normal"
-                      disabled={loading}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {dateFilter ? (

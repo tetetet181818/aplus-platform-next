@@ -9,11 +9,13 @@ import NotesSortDropdown from "./NotesSortDropdown";
 import NotesFilterSection from "./NotesFilterSection";
 import NotesResultsSection from "./NotesResultsSection";
 import Pagination from "@/components/ui/Pagination";
+
 export const metaData = {
   title: "تصفح وابحث عن الملخصات",
   description: "تصفح وابحث عن أفضل الملخصات الدراسية الجامعية",
   keywords: ["ملخصات دراسية", "جامعة", "ملخصات جامعية", "دروس", "محاضرات"],
 };
+
 const NotesListPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -24,11 +26,14 @@ const NotesListPage = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const searchTimeoutRef = useRef(null);
   const itemsPerPage = 10;
+
   const toggleFilters = useCallback(() => {
     setShowFilters((prev) => !prev);
   }, []);
+
   const {
     files,
     loading: isLoadingNotes,
@@ -70,6 +75,7 @@ const NotesListPage = () => {
       console.error("Error:", err);
     } finally {
       setIsTyping(false);
+      setIsInitialLoad(false);
     }
   }, [searchQuery, filters, currentPage, searchNotes]);
 
@@ -167,13 +173,12 @@ const NotesListPage = () => {
     [filters, searchQuery]
   );
 
-  if (isLoadingNotes && !isTyping) {
-    return <LoadingSpinner message="جاري تحميل الملخصات..." />;
-  }
+  // Determine when to show loading state
+  const showLoadingState = (isLoadingNotes && !isTyping) || isInitialLoad;
 
   if (error && !isTyping) {
     return (
-      <div className=" py-12 px-4 md:px-6">
+      <div className="py-12 px-4 md:px-6">
         <div className="text-red-500 p-4 bg-red-50 rounded-lg">{error}</div>
       </div>
     );
@@ -181,7 +186,7 @@ const NotesListPage = () => {
 
   return (
     <>
-      <div className=" py-12 px-4 md:px-6">
+      <div className="py-12 px-4 md:px-6">
         <NotesListHeader
           onToggleFilters={toggleFilters}
           showFilters={showFilters}
@@ -215,7 +220,7 @@ const NotesListPage = () => {
           </div>
         )}
 
-        {isLoadingNotes ? (
+        {showLoadingState ? (
           <LoadingSpinner message="جاري البحث..." />
         ) : (
           <>
