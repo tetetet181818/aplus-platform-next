@@ -4,7 +4,6 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useFileStore } from "@/stores/useFileStore";
 import { useToast } from "@/components/ui/use-toast";
 import LoadingSpinner from "@/components/shared/LoadingSpinner";
-import Head from "next/head";
 
 const PaymentSuccessClient = () => {
   const searchParams = useSearchParams();
@@ -17,7 +16,7 @@ const PaymentSuccessClient = () => {
   const invoice_id = searchParams.get("invoice_id");
   const status = searchParams.get("status");
   const message = searchParams.get("message");
-
+  const method = searchParams.get("payment.source.type");
   useEffect(() => {
     const handlePurchase = async () => {
       if (noteId && userId) {
@@ -28,6 +27,7 @@ const PaymentSuccessClient = () => {
             invoice_id,
             status,
             message,
+            method,
           });
 
           if (success) {
