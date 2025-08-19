@@ -482,4 +482,18 @@ export const useWithdrawalsStore = create((set, get) => ({
       return null;
     }
   },
+  getUserWithdrawalsHistory: async ({ userId }) => {
+    try {
+      const { data, error } = await supabase
+        .from("withdrawals")
+        .select("*")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  },
 }));

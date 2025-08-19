@@ -24,6 +24,7 @@ import { useFormik } from "formik";
 
 import WithdrawalForm from "./WithdrawalForm";
 import { useWithdrawalsStore } from "@/stores/useWithdrawalsStore";
+import FinanceDashboard from "./EarningsInfo";
 
 const PLATFORM_FEE_PERCENTAGE = process.env.PLATFORM_FEE_PERCENTAGE;
 
@@ -33,14 +34,22 @@ const EarningsTab = ({ currentUser, getSellerNotes }) => {
   const [availableBalance, setAvailableBalance] = useState(0);
   const [sellerStats, setSellerStats] = useState([]);
   const [isProcessingWithdrawal, setIsProcessingWithdrawal] = useState(false);
-  const { createWithdrawalOrder, loading } = useWithdrawalsStore();
+  const { createWithdrawalOrder, loading, getUserWithdrawalsHistory } =
+    useWithdrawalsStore();
+  const [withdrawalHistory, setWithdrawalHistory] = useState();
 
   useEffect(() => {
     if (currentUser?.balance) {
       setAvailableBalance(currentUser.balance);
     }
   }, [currentUser]);
-
+  useEffect(() => {
+    const getWithdrawalsHistory = async () => {
+      let res = await getUserWithdrawalsHistory({ userId: currentUser?.id });
+      setWithdrawalHistory(res);
+    };
+    getWithdrawalsHistory();
+  }, []);
   const calculatePlatformFee = useCallback(
     (balance) => balance * PLATFORM_FEE_PERCENTAGE,
     []
@@ -50,8 +59,6 @@ const EarningsTab = ({ currentUser, getSellerNotes }) => {
     (balance) => balance - calculatePlatformFee(balance),
     [calculatePlatformFee]
   );
-
-  const calculateTotalPrice = (price, downloads) => price * downloads;
 
   const formik = useFormik({
     initialValues: {
@@ -137,110 +144,15 @@ const EarningsTab = ({ currentUser, getSellerNotes }) => {
 
   return (
     <motion.div
-      className="space-y-6"
+      className="space-y-6 lg:px-10 sm:px-0"
       initial="hidden"
       animate="visible"
       variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
     >
-      <motion.div variants={cardVariants} whileHover="hover">
-        <Card className="bg-gradient-to-br from-primary to-primary/90 text-white border-0 shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold flex items-center gap-2">
-              <DollarSign className="h-6 w-6" />
-              الرصيد المتاح للسحب
-            </CardTitle>
-            <CardDescription className="text-primary-foreground/80">
-              هذا هو المبلغ الذي يمكنك سحبه حاليًا بعد خصم رسوم المنصة
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-4xl font-bold tracking-tight">
-              {currentNetEarnings.toFixed(2)}{" "}
-              <span className="text-xl font-medium">ريال</span>
-            </p>
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      <motion.div variants={cardVariants} whileHover="hover">
-        <Card className="shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-xl font-semibold flex items-center gap-2">
-              <BarChart3 className="h-5 w-5 text-primary" />
-              ملخص المبيعات
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <p className="text-sm text-muted-foreground">
-                  إجمالي المبيعات:
-                </p>
-                <p className="text-lg font-semibold">
-                  {availableBalance.toFixed(2)} ريال
-                </p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-sm text-muted-foreground">
-                  رسوم المنصة (15%):
-                </p>
-                <p className="text-lg font-semibold text-destructive">
-                  -{calculatePlatformFee(availableBalance).toFixed(2)} ريال
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <p className="font-medium">صافي الأرباح:</p>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Info className="h-4 w-4 text-muted-foreground cursor-pointer" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>يتم خصم 15% رسوم من إجمالي الأرباح كرسوم خدمة المنصة</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-
-            {currentUser?.withdrawalsHistory?.length > 0 && (
-              <Card className="shadow-sm">
-                <CardHeader>
-                  <CardTitle className="text-xl font-semibold">
-                    سجل التحويلات البنكية
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full text-sm text-left border">
-                      <thead className="bg-muted">
-                        <tr>
-                          <th className="px-4 py-2 border">الحالة</th>
-                          <th className="px-4 py-2 border">التاريخ</th>
-                          <th className="px-4 py-2 border">رقم العملية</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {currentUser.withdrawalsHistory.map((w, index) => (
-                          <tr key={index} className="hover:bg-muted/50">
-                            <td className="px-4 py-2 border">{w.status}</td>
-                            <td className="px-4 py-2 border">{w.date}</td>
-                            <td className="px-4 py-2 border">
-                              {w.transactionId}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-          </CardContent>
-        </Card>
-      </motion.div>
-
+      <FinanceDashboard
+        availableBalance={availableBalance}
+        withdrawalHistory={withdrawalHistory}
+      />
       <motion.div variants={cardVariants}>
         {currentUser.withdrawal_times > 0 ? (
           <WithdrawalForm
