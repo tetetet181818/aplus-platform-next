@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import supabase from "@/utils/Supabase-client.js";
-
 export const useAuthStore = create((set, get) => ({
   user: null,
   seller: null,
@@ -231,7 +230,7 @@ export const useAuthStore = create((set, get) => ({
         body: "تم تغيير كلمة المرور الخاصة بحسابك بنجاح",
         type: "auth",
       });
-
+      window.location.href = "/";
       return data;
     } catch (error) {
       return get().handleError(error, "فشل في تغيير كلمة المرور");
