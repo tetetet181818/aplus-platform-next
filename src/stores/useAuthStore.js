@@ -21,7 +21,7 @@ export const useAuthStore = create((set, get) => ({
   notificationsLoading: false,
   unread: [],
   handleError: (error, customMessage = null) => {
-    console.error(error);
+    console.log(error?.message);
     const message = customMessage || error.message || "حدث خطأ غير متوقع";
     set({ loading: false, error: message });
     return null;

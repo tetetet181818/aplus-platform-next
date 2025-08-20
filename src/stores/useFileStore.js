@@ -8,11 +8,10 @@ import { Link, Star } from "lucide-react";
 const DEFAULT_IMAGE_URL = process.env.NEXT_PUBLIC_SUPABASE_DEFAULT_COVER;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_KEY;
-const moyasar_key = process.env.MOYASAR_SECRET_KEY;
-
+const moyasar_key = process.env.NEXT_PUBLIC_MOYASAR_SECRET_KEY;
 const BUCKET_NAME = "notes";
-// const domain = "https://aplusplatformsa.com";
-const domain = "http://localhost:3000";
+const domain = "https://aplusplatformsa.com";
+
 export const useFileStore = create((set, get) => ({
   loading: false,
   error: null,
@@ -328,11 +327,9 @@ export const useFileStore = create((set, get) => ({
         .select("*")
         .eq("owner_id", sellerId);
       if (error) throw error;
-
       set({ loading: false, files: data || [] });
       return data;
     } catch (error) {
-      console.error("Error in getSellerNotes:", error);
       set({ loading: false, error: error.message });
       return [];
     }
@@ -570,8 +567,21 @@ export const useFileStore = create((set, get) => ({
 
       if (error) throw error;
 
-      set({ loading: false, files: data || [] });
-      return data;
+      const { data: salesData, error: salesError } = await supabase
+        .from("sales")
+        .select("*")
+        .eq("user_id", userId);
+
+      if (salesError) throw salesError;
+
+      const dataWithSales = data.map((note) => {
+        const salesForNote = salesData.filter(
+          (sale) => sale.note_id === note.id
+        );
+        return { ...note, saleId: salesForNote[0]?.id };
+      });
+      set({ loading: false, files: dataWithSales });
+      return dataWithSales;
     } catch (error) {
       console.error("Error fetching purchased notes:", error);
       set({ loading: false, error: error.message });
@@ -676,53 +686,28 @@ export const useFileStore = create((set, get) => ({
 
   createPaymentLink: async ({ noteId, userId, amount }) => {
     try {
-      set({ loading: true, error: null });
-      console.log(moyasar_key);
       const response = await axios.post(
         "https://api.moyasar.com/v1/invoices",
         {
-          amount: parseInt(amount) * 100,
+          amount: Math.round(parseFloat(amount) * 100),
           currency: "SAR",
           description: `شراء ملخص رقم ${noteId}`,
-          callback_url: `${domain}/payment-success?noteId=${noteId}&userId=${userId}`,
-          success_url: `${domain}/payment-success?invoiceId={invoice_id}&noteId=${noteId}&userId=${userId}`,
+          callback_url: `${domain}/api/payment/callback`,
+          success_url: `${domain}/payment-success?noteId=${noteId}&userId=${userId}`,
           back_url: `${domain}/checkout?noteId=${noteId}`,
-          logo_url:
-            "https://xlojbqqborsgdjyieftm.supabase.co/storage/v1/object/public/notes/images/logo.png",
-          payments: {
-            company: "",
-          },
         },
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: "Basic " + btoa(moyasar_key),
+            Authorization: "Basic " + btoa(`${moyasar_key}`),
           },
         }
       );
-
-      const data = response.data;
-
-      if (!data.url || !data.id) {
-        throw new Error("فشل في إنشاء رابط الدفع");
-      }
-
-      const finalUrl =
-        data.url + `?invoiceId=${data.id}&noteId=${noteId}&userId=${userId}`;
-
-      await supabase.from("notifications").insert({
-        user_id: userId,
-        title: "تم إنشاء رابط دفع",
-        body: "تم إنشاء رابط دفع لشراء الملخص",
-        type: "payment",
-      });
-
-      set({ loading: false });
-      return { success: true, url: finalUrl };
+      console.log(response.data);
+      return response.data;
     } catch (error) {
-      console.error("Error creating payment link:", error);
-      set({ loading: false, error: error.message });
-      return { success: false, error: error.message };
+      console.error("Moyasar error:", error.response?.data || error.message);
+      throw error;
     }
   },
 
@@ -732,7 +717,15 @@ export const useFileStore = create((set, get) => ({
         .from("files")
         .select("college")
         .eq("university", university)
+        /**
+         * The content type of the request
+         * @type {string}
+         */
         .neq("college", null);
+      /**
+       * The authorization header for the request
+       * @type {string}
+       */
 
       if (error) throw error;
 

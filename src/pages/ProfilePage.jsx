@@ -45,11 +45,6 @@ const ProfilePage = () => {
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
       router.push("/");
-      toast({
-        title: "الرجاء تسجيل الدخول",
-        description: "يجب عليك تسجيل الدخول لعرض هذه الصفحة.",
-        variant: "destructive",
-      });
     }
   }, [isAuthenticated, authLoading, router, toast]);
 

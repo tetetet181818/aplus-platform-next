@@ -1,32 +1,33 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Star as StarIcon, Eye, Download, Loader } from "lucide-react";
+import { Eye, Download, Loader } from "lucide-react";
 import NoResults from "@/components/shared/NoResults";
 import { ShoppingBag } from "lucide-react";
 import Image from "next/image";
 
 const PurchasedNotesTab = ({
   notes,
-  onReviewRequest,
-  hasUserReviewed,
-  userId,
   onNavigate,
   onDownload,
   loading,
   downloadLoading,
 }) => {
-  if (notes.length === 0) {
-    return (
-      <NoResults
-        icon={<ShoppingBag className="h-12 w-12 text-gray-400 mx-auto mb-4" />}
-        title="لا توجد مشتريات"
-        message="لم تقم بشراء أي ملخصات بعد."
-        actionButton={
-          <Button onClick={() => onNavigate("/notes")}>تصفح الملخصات</Button>
-        }
-      />
-    );
+  if (!loading) {
+    if (notes?.length === 0) {
+      return (
+        <NoResults
+          icon={
+            <ShoppingBag className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+          }
+          title="لا توجد مشتريات"
+          message="لم تقم بشراء أي ملخصات بعد."
+          actionButton={
+            <Button onClick={() => onNavigate("/notes")}>تصفح الملخصات</Button>
+          }
+        />
+      );
+    }
   }
 
   return (
@@ -62,6 +63,9 @@ const PurchasedNotesTab = ({
                     <Badge variant="outline">{note.university}</Badge>
                     <Badge variant="outline">{note.subject}</Badge>
                   </div>
+                  <Badge variant="outline">
+                    رقم المبيعه : <span className="mx-2">{note?.saleId}</span>
+                  </Badge>
                 </div>
                 <div className="flex flex-col sm:flex-row justify-between items-center mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
                   <div className="text-sm text-gray-500 dark:text-gray-400 mb-2 sm:mb-0">

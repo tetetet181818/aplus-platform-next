@@ -195,6 +195,10 @@ const FinanceDashboard = ({ availableBalance, withdrawalHistory }) => {
                     <div className="h-2 w-2 rounded-full bg-primary mt-2"></div>
                     <span>يتم احتساب الرسوم تلقائياً عند كل عملية بيع</span>
                   </li>
+                  <li className="flex items-start gap-2">
+                    <div className="h-2 w-2 rounded-full bg-primary mt-2"></div>
+                    <span> ثلاثة ريال تحت رسوم اضافية</span>
+                  </li>
                 </ul>
               </div>
 
@@ -217,10 +221,7 @@ const FinanceDashboard = ({ availableBalance, withdrawalHistory }) => {
                   </li>
                   <li className="flex items-start gap-2">
                     <div className="h-2 w-2 rounded-full bg-primary mt-2"></div>
-                    <span>
-                      المعاملات التي تزيد عن 5000 ريال قد تستغرق حتى 48 سورة
-                      للمعالجة
-                    </span>
+                    <span>المعاملات قد تستغرق حتى 48 سورة للمعالجة</span>
                   </li>
                 </ul>
               </div>
