@@ -162,14 +162,17 @@ export const useAuthStore = create((set, get) => ({
         type: "auth",
       });
 
-      set({
-        user: profileData,
-        loading: false,
-        isAuthenticated: true,
-        error: null,
-      });
-
-      return profileData;
+      if (!authData.user?.email_confirmed_at) {
+        set({
+          user: null,
+          loading: false,
+          isAuthenticated: false,
+        });
+        return {
+          needsVerification: true,
+          userId: authData.user.id,
+        };
+      }
     } catch (error) {
       return get().handleError(error);
     }
