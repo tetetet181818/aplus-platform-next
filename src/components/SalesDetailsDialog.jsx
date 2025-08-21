@@ -79,7 +79,7 @@ export default function SalesDetailsDialog({ open, onClose, salesId }) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-md md:max-w-lg rounded-xl">
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader className="mb-6">
           <DialogTitle className="text-right text-2xl font-bold text-gray-800">
             تفاصيل المعاملة

@@ -3,10 +3,11 @@ import {
   ChevronLeft,
   ChevronRight,
   Copy,
-  Loader2,
   Search,
   ExternalLink,
   CalendarIcon,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react";
 import {
   Card,
@@ -49,14 +50,8 @@ import { format } from "date-fns";
 import SalesDetailsDialog from "@/components/SalesDetailsDialog";
 import LoadingSpinner from "@/components/shared/LoadingSpinner";
 
-const statusOptions = [
-  { value: "all", label: "جميع الحالات" },
-  { value: "completed", label: "مكتمل" },
-  { value: "pending", label: "قيد الانتظار" },
-  { value: "failed", label: "فشل" },
-];
-
 const commissionRate = 0.15;
+const paymentMethodRate = 0.025;
 
 export default function SalesDashboard() {
   const { toast } = useToast();
@@ -73,33 +68,47 @@ export default function SalesDashboard() {
     setCurrentPage,
     setItemsPerPage,
   } = useSalesStore();
-  console.log(sales);
 
-  const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [dateFilter, setDateFilter] = useState(null);
-  const [searchTimeout, setSearchTimeout] = useState(null);
   const [showDetailsDialog, setShowDetailsDialog] = useState(false);
   const [selectedSalesId, setSelectedSalesId] = useState(null);
+  const [sortConfig, setSortConfig] = useState({
+    key: "created_at",
+    direction: "desc",
+  });
+  const [searchId, setSearchId] = useState("");
+  const [searchUser, setSearchUser] = useState("");
+  const [searchNote, setSearchNote] = useState("");
+  const [searchInvoiceId, setSearchInvoiceId] = useState("");
+  const filters = useMemo(
+    () => ({
+      ...(searchId && { id: searchId }),
+      ...(searchInvoiceId && { invoice_id: searchInvoiceId }),
+      ...(searchUser && { user_name: searchUser }),
+      ...(searchNote && { note_title: searchNote }),
+      ...(statusFilter !== "all" && { status: statusFilter }), // This was missing
+      ...(dateFilter && { date: format(dateFilter, "yyyy-MM-dd") }),
+    }),
+    [
+      searchId,
+      searchInvoiceId,
+      searchUser,
+      searchNote,
+      statusFilter,
+      dateFilter,
+    ]
+  );
+
   const totalPages = useMemo(
     () => Math.ceil(totalSales / itemsPerPage),
     [totalSales, itemsPerPage]
   );
-  const filters = useMemo(
-    () => ({
-      search: searchQuery,
-      ...(statusFilter !== "all" && { status: statusFilter }),
-      ...(dateFilter && { date: format(dateFilter, "yyyy-MM-dd") }),
-    }),
-    [searchQuery, statusFilter, dateFilter]
-  );
 
   const fetchData = useCallback(async () => {
     try {
-      await Promise.all([
-        getSalesStatistics(),
-        getSales(currentPage, itemsPerPage, filters),
-      ]);
+      getSalesStatistics();
+      getSales(currentPage, itemsPerPage, filters, sortConfig);
     } catch (err) {
       toast({
         title: "خطأ",
@@ -107,7 +116,15 @@ export default function SalesDashboard() {
         variant: "destructive",
       });
     }
-  }, [currentPage, itemsPerPage, filters, getSales, getSalesStatistics, toast]);
+  }, [
+    currentPage,
+    itemsPerPage,
+    filters,
+    sortConfig,
+    getSales,
+    getSalesStatistics,
+    toast,
+  ]);
 
   useEffect(() => {
     fetchData();
@@ -126,22 +143,15 @@ export default function SalesDashboard() {
     [totalPages, loading, setCurrentPage]
   );
 
-  const handleSearchInputChange = useCallback(
-    (e) => {
-      const query = e.target.value;
-      setSearchQuery(query);
-      if (searchTimeout) clearTimeout(searchTimeout);
-      setSearchTimeout(setTimeout(() => setCurrentPage(1), 300));
+  const handleSort = useCallback(
+    (key) => {
+      let direction = "desc";
+      if (sortConfig.key === key && sortConfig.direction === "desc") {
+        direction = "asc";
+      }
+      setSortConfig({ key, direction });
     },
-    [searchTimeout, setCurrentPage]
-  );
-
-  const handleStatusFilterChange = useCallback(
-    (value) => {
-      setStatusFilter(value);
-      setCurrentPage(1);
-    },
-    [setCurrentPage]
+    [sortConfig]
   );
 
   const handleItemsPerPageChange = useCallback(
@@ -163,33 +173,36 @@ export default function SalesDashboard() {
     },
     [toast]
   );
+  const calculateCommission = (amount) => {
+    return (amount * commissionRate).toFixed(2);
+  };
 
-  const calculateCommission = useCallback((amount) => {
-    return (amount * commissionRate).toLocaleString();
-  }, []);
-  const calculatePaymentInterface = useCallback((amount) => {
-    return (amount * (1 - commissionRate)).toLocaleString();
-  });
+  const calculatePaymentFee = (amount) => {
+    return (amount * paymentMethodRate).toFixed(2);
+  };
+  const handelMount = (amount) => {
+    const netAmount =
+      amount - amount * commissionRate - amount * paymentMethodRate;
+
+    return (
+      <div className="flex flex-col">
+        <span className="font-medium">{netAmount.toLocaleString()} ر.س</span>
+        <div className="text-xs text-muted-foreground mt-1">
+          <div>الإجمالي: {amount.toLocaleString()} ر.س</div>
+          <div>رسوم المنصة: {calculateCommission(amount)} ر.س</div>
+          <div>رسوم الدفع: {calculatePaymentFee(amount)} ر.س</div>
+        </div>
+      </div>
+    );
+  };
   const columns = useMemo(
     () => [
       {
-        header: "الدورة",
-        accessor: "files.title",
-        label: "الدورة",
-        customRender: (value) => value || "غير محدد",
-        className: "min-w-[120px]",
-      },
-      {
-        header: "الطالب",
-        accessor: "users.full_name",
-        label: "الطالب",
-        customRender: (value) => value || "غير محدد",
-        className: "min-w-[150px]",
-      },
-      {
-        header: "رقم العملية",
-        accessor: "invoice_id",
-        label: "رقم العملية",
+        header: "id",
+        accessor: "id",
+        label: "id",
+        sortable: true,
+        sortKey: "id",
         customRender: (value) => (
           <div className="flex items-center gap-2">
             {value || "غير متوفر"}
@@ -197,7 +210,48 @@ export default function SalesDashboard() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-6 w-6"
+                className="h-6 w-6 hover:bg-accent/20"
+                onClick={() => handleCopyToClipboard(value)}
+              >
+                <Copy className="h-3 w-3" />
+              </Button>
+            )}
+          </div>
+        ),
+        className: "min-w-[120px]",
+      },
+      {
+        header: "الدورة",
+        accessor: "note_title",
+        label: "الدورة",
+        sortable: true,
+        sortKey: "note_title",
+        customRender: (value) => value || "غير محدد",
+        className: "min-w-[120px]",
+      },
+      {
+        header: "الطالب",
+        accessor: "user_name",
+        label: "الطالب",
+        sortable: true,
+        sortKey: "user_name",
+        customRender: (value) => value || "غير محدد",
+        className: "min-w-[150px]",
+      },
+      {
+        header: "رقم العملية",
+        accessor: "invoice_id",
+        label: "رقم العملية",
+        sortable: true,
+        sortKey: "invoice_id",
+        customRender: (value) => (
+          <div className="flex items-center gap-2">
+            {value || "غير متوفر"}
+            {value && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6 hover:bg-accent/20"
                 onClick={() => handleCopyToClipboard(value)}
               >
                 <Copy className="h-3 w-3" />
@@ -211,23 +265,17 @@ export default function SalesDashboard() {
         header: "المبلغ",
         accessor: "amount",
         label: "المبلغ",
-        customRender: (amount) => (
-          <div className="flex flex-col">
-            <span>{(amount || 0).toLocaleString()} ر.س</span>
-            <span className="text-xs text-muted-foreground">
-              رسوم المنصه: {calculateCommission(amount)} ر.س
-            </span>
-            <span className="text-xs text-muted-foreground">
-              رسوم الدفع: {calculatePaymentInterface(amount)} ر.س
-            </span>
-          </div>
-        ),
+        sortable: true,
+        sortKey: "amount",
+        customRender: (amount) => handelMount(amount),
         className: "min-w-[120px]",
       },
       {
         header: "التاريخ",
         accessor: "created_at",
         label: "التاريخ",
+        sortable: true,
+        sortKey: "created_at",
         customRender: (date) =>
           date ? formatArabicDate(date, { hijri: true }) : "غير محدد",
         className: "min-w-[150px]",
@@ -236,6 +284,8 @@ export default function SalesDashboard() {
         header: "الحالة",
         accessor: "status",
         label: "الحالة",
+        sortable: true,
+        sortKey: "status",
         customRender: (status) => {
           const variantMap = {
             completed: "default",
@@ -248,7 +298,10 @@ export default function SalesDashboard() {
             failed: "فشل",
           };
           return (
-            <Badge variant={variantMap[status] || "secondary"}>
+            <Badge
+              variant={variantMap[status] || "secondary"}
+              className="rounded-full px-3 py-1"
+            >
               {labelMap[status] || status}
             </Badge>
           );
@@ -261,8 +314,9 @@ export default function SalesDashboard() {
         label: "الاجراءات",
         customRender: (id) => (
           <Button
-            variant="ghost"
+            variant="outline"
             size="sm"
+            className="rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
             onClick={() => {
               setShowDetailsDialog(true);
               setSelectedSalesId(id);
@@ -275,30 +329,54 @@ export default function SalesDashboard() {
         className: "min-w-[120px]",
       },
     ],
-    [handleCopyToClipboard, calculateCommission]
+    [handleCopyToClipboard]
   );
-
   const renderMobileCard = (sale) => {
     return (
-      <Card key={sale?.id} className="mb-4">
+      <Card
+        key={sale?.id}
+        className="mb-4 shadow-sm hover:shadow-md transition-shadow"
+      >
         <CardContent className="p-4 space-y-3">
-          <div className="flex justify-between">
-            <span className="font-medium">الدورة:</span>
-            <span>{sale?.files?.title || "غير محدد"}</span>
+          <div className="flex justify-between items-center">
+            <span className="font-medium text-muted-foreground">
+              رقم المبيعه:
+            </span>
+            <div className="flex items-center gap-2">
+              {sale?.id || "غير متوفر"}
+              {sale?.id && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6 hover:bg-accent/20"
+                  onClick={() => handleCopyToClipboard(sale.id)}
+                >
+                  <Copy className="h-3 w-3" />
+                </Button>
+              )}
+            </div>
           </div>
           <div className="flex justify-between">
-            <span className="font-medium">الطالب:</span>
-            <span>{sale?.users?.full_name || "غير محدد"}</span>
+            <span className="font-medium text-muted-foreground">الدورة:</span>
+            <span className="font-medium">
+              {sale?.note_title || "غير محدد"}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span className="font-medium text-muted-foreground">الطالب:</span>
+            <span className="font-medium">{sale?.user_name || "غير محدد"}</span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="font-medium">رقم العملية:</span>
+            <span className="font-medium text-muted-foreground">
+              رقم العملية:
+            </span>
             <div className="flex items-center gap-2">
               {sale?.invoice_id || "غير متوفر"}
               {sale?.invoice_id && (
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-6 w-6"
+                  className="h-6 w-6 hover:bg-accent/20"
                   onClick={() => handleCopyToClipboard(sale.invoice_id)}
                 >
                   <Copy className="h-3 w-3" />
@@ -307,16 +385,18 @@ export default function SalesDashboard() {
             </div>
           </div>
           <div className="flex justify-between">
-            <span className="font-medium">المبلغ:</span>
+            <span className="font-medium text-muted-foreground">المبلغ:</span>
             <div className="flex flex-col items-end">
-              <span>{(sale.amount || 0).toLocaleString()} ر.س</span>
+              <span className="font-medium">
+                {(sale.amount || 0).toLocaleString()} ر.س
+              </span>
               <span className="text-xs text-muted-foreground">
                 العمولة: {calculateCommission(sale.amount)} ر.س
               </span>
             </div>
           </div>
           <div className="flex justify-between">
-            <span className="font-medium">التاريخ:</span>
+            <span className="font-medium text-muted-foreground">التاريخ:</span>
             <span>
               {sale?.created_at
                 ? formatArabicDate(sale?.created_at, { hijri: true })
@@ -324,7 +404,7 @@ export default function SalesDashboard() {
             </span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="font-medium">الحالة:</span>
+            <span className="font-medium text-muted-foreground">الحالة:</span>
             <Badge
               variant={
                 {
@@ -333,6 +413,7 @@ export default function SalesDashboard() {
                   failed: "destructive",
                 }[sale?.status] || "secondary"
               }
+              className="rounded-full px-3 py-1"
             >
               {{
                 completed: "مكتمل",
@@ -342,9 +423,9 @@ export default function SalesDashboard() {
             </Badge>
           </div>
           <Button
-            variant="ghost"
+            variant="outline"
             size="sm"
-            className="w-full mt-2"
+            className="w-full mt-2 rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
             onClick={() => {
               setShowDetailsDialog(true);
               setSelectedSalesId(sale?.id);
@@ -356,6 +437,18 @@ export default function SalesDashboard() {
         </CardContent>
       </Card>
     );
+  };
+  const renderSortIcon = (column) => {
+    if (!column.sortable) return null;
+
+    if (sortConfig.key === column.sortKey) {
+      return sortConfig.direction === "asc" ? (
+        <ChevronUp className="h-4 w-4 ml-1" />
+      ) : (
+        <ChevronDown className="h-4 w-4 ml-1" />
+      );
+    }
+    return <ChevronUp className="h-4 w-4 ml-1 opacity-30" />;
   };
 
   const tableBodyContent = useMemo(() => {
@@ -372,7 +465,7 @@ export default function SalesDashboard() {
       return sales.map((sale) => (
         <TableRow
           key={sale?.id}
-          className="hover:bg-muted/50 transition-colors"
+          className="hover:bg-muted/30 transition-colors even:bg-muted/10"
         >
           {columns.map((column) => {
             const value = column.accessor.includes(".")
@@ -383,9 +476,16 @@ export default function SalesDashboard() {
             return (
               <TableCell
                 key={`${sale.id}-${column.accessor}`}
-                className={column.className}
+                className={`py-3 ${column.className}`}
               >
-                {column.customRender(value)}
+                {column.customRender(
+                  column.accessor.includes(".")
+                    ? column.accessor
+                        .split(".")
+                        .reduce((obj, key) => obj?.[key], sale)
+                    : sale[column.accessor],
+                  sale
+                )}
               </TableCell>
             );
           })}
@@ -396,16 +496,23 @@ export default function SalesDashboard() {
       <TableRow>
         <TableCell colSpan={columns.length} className="h-24 text-center">
           <div className="flex flex-col items-center gap-2">
-            <p>لا توجد بيانات متاحة</p>
-            {(searchQuery || statusFilter !== "all" || dateFilter) && (
+            <p className="text-muted-foreground">لا توجد بيانات متاحة</p>
+            {(searchId ||
+              searchUser ||
+              searchNote ||
+              statusFilter !== "all" ||
+              dateFilter) && (
               <Button
-                variant="ghost"
+                variant="outline"
                 onClick={() => {
-                  setSearchQuery("");
+                  setSearchId("");
+                  setSearchUser("");
+                  setSearchNote("");
                   setStatusFilter("all");
                   setDateFilter(null);
                   setCurrentPage(1);
                 }}
+                className="rounded-full"
               >
                 إعادة تعيين الفلتر
               </Button>
@@ -418,7 +525,9 @@ export default function SalesDashboard() {
     loading,
     sales,
     columns,
-    searchQuery,
+    searchId,
+    searchUser,
+    searchNote,
     statusFilter,
     dateFilter,
     setCurrentPage,
@@ -435,26 +544,73 @@ export default function SalesDashboard() {
       </Head>
 
       <div className="space-y-6 animate-fade-in">
-        <Card className="border-border/50 shadow-sm">
-          <CardHeader className="pb-4">
+        <Card className="border-border/40 shadow-md rounded-xl overflow-hidden">
+          <CardHeader className="pb-4 bg-muted/10">
             <div className="flex flex-col gap-4">
               <div>
-                <CardTitle className="text-xl font-semibold">
+                <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
                   المبيعات الحديثة
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-muted-foreground">
                   أحدث مشتريات الدورات والمعاملات
                 </CardDescription>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3">
-                <div className="relative col-span-1 sm:col-span-2 lg:col-span-1">
+              <div className="grid grid-cols-1 gap-3">
+                <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     type="text"
-                    placeholder="ابحث عن مبيعات..."
-                    className="w-full pl-9 h-10"
-                    value={searchQuery}
-                    onChange={handleSearchInputChange}
+                    placeholder="ابحث برقم عملية البيع (ID)"
+                    value={searchInvoiceId}
+                    onChange={(e) => {
+                      setSearchId("");
+                      setSearchInvoiceId(e.target.value);
+                      setSearchUser("");
+                      setSearchNote("");
+                    }}
+                    className="pl-10 rounded-full"
+                  />
+                </div>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    type="text"
+                    placeholder="ابحث برقم العملية (ID)"
+                    value={searchId}
+                    onChange={(e) => {
+                      setSearchId(e.target.value);
+                      setSearchUser("");
+                      setSearchNote("");
+                    }}
+                    className="pl-10 rounded-full"
+                  />
+                </div>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    type="text"
+                    placeholder="ابحث باسم المستخدم"
+                    value={searchUser}
+                    onChange={(e) => {
+                      setSearchUser(e.target.value);
+                      setSearchId("");
+                      setSearchNote("");
+                    }}
+                    className="pl-10 rounded-full"
+                  />
+                </div>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    type="text"
+                    placeholder="ابحث بعنوان الملخص"
+                    value={searchNote}
+                    onChange={(e) => {
+                      setSearchNote(e.target.value);
+                      setSearchId("");
+                      setSearchUser("");
+                    }}
+                    className="pl-10 rounded-full"
                   />
                 </div>
 
@@ -462,7 +618,7 @@ export default function SalesDashboard() {
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
-                      className="w-full h-10 justify-start text-left font-normal"
+                      className="w-full justify-start text-left font-normal rounded-full"
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {dateFilter ? (
@@ -482,29 +638,15 @@ export default function SalesDashboard() {
                   </PopoverContent>
                 </Popover>
 
-                <Select
-                  value={statusFilter}
-                  onValueChange={handleStatusFilterChange}
-                  disabled={loading}
-                >
-                  <SelectTrigger className="w-full h-10">
-                    <SelectValue placeholder="حالة البيع" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {statusOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
                 <Button
-                  variant="outline"
-                  className="h-10"
+                  variant="destructive"
+                  className="h-10 rounded-full"
                   onClick={() => {
-                    setSearchQuery("");
+                    setSearchId("");
+                    setSearchUser("");
+                    setSearchNote("");
                     setDateFilter(null);
+                    setSearchInvoiceId("");
                     setStatusFilter("all");
                   }}
                   disabled={loading}
@@ -514,12 +656,12 @@ export default function SalesDashboard() {
               </div>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-4">
             <div className="block md:hidden">
               {loading ? (
                 <div className="space-y-4">
                   {[1, 2, 3, 4, 5].map((i) => (
-                    <Card key={i}>
+                    <Card key={i} className="overflow-hidden">
                       <CardContent className="p-4 space-y-3">
                         <Skeleton className="h-4 w-full" />
                         <Skeleton className="h-4 w-full" />
@@ -536,16 +678,24 @@ export default function SalesDashboard() {
                 <div>{sales.map(renderMobileCard)}</div>
               ) : (
                 <div className="flex flex-col items-center gap-4 p-4">
-                  <p>لا توجد بيانات متاحة</p>
-                  {(searchQuery || statusFilter !== "all" || dateFilter) && (
+                  <p className="text-muted-foreground">لا توجد بيانات متاحة</p>
+                  {(searchId ||
+                    searchUser ||
+                    searchNote ||
+                    statusFilter !== "all" ||
+                    dateFilter) && (
                     <Button
-                      variant="ghost"
+                      variant="destructive"
                       onClick={() => {
-                        setSearchQuery("");
+                        setSearchId("");
+                        setSearchUser("");
+                        setSearchNote("");
                         setStatusFilter("all");
                         setDateFilter(null);
                         setCurrentPage(1);
+                        setSearchInvoiceId("");
                       }}
+                      className="rounded-full"
                     >
                       إعادة تعيين الفلتر
                     </Button>
@@ -554,30 +704,38 @@ export default function SalesDashboard() {
               )}
             </div>
 
-            <div className="hidden md:block">
-              <div className="rounded-md border overflow-x-auto">
-                <div className="min-w-[800px] md:min-w-full">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        {columns.map((column) => (
-                          <TableHead
-                            className={`text-start ${column.className}`}
-                            key={column.accessor}
-                          >
+            <div className="hidden md:block rounded-lg border overflow-hidden shadow-sm">
+              <div className="min-w-full">
+                <Table>
+                  <TableHeader className="bg-muted/30">
+                    <TableRow>
+                      {columns.map((column) => (
+                        <TableHead
+                          className={`text-start py-3 ${
+                            column.sortable
+                              ? "cursor-pointer hover:bg-muted/50"
+                              : ""
+                          } ${column.className}`}
+                          key={column.accessor + `${Math.random() * 1000}`}
+                          onClick={() =>
+                            column.sortable && handleSort(column.sortKey)
+                          }
+                        >
+                          <div className="flex items-center">
                             {column.header}
-                          </TableHead>
-                        ))}
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>{tableBodyContent}</TableBody>
-                  </Table>
-                </div>
+                            {renderSortIcon(column)}
+                          </div>
+                        </TableHead>
+                      ))}
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>{tableBodyContent}</TableBody>
+                </Table>
               </div>
             </div>
 
             {totalPages > 1 && (
-              <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mt-4">
+              <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mt-6">
                 <div className="flex items-center gap-4">
                   <div className="text-sm text-muted-foreground">
                     {loading ? (
@@ -594,7 +752,7 @@ export default function SalesDashboard() {
                     onValueChange={handleItemsPerPageChange}
                     disabled={loading}
                   >
-                    <SelectTrigger className="w-20">
+                    <SelectTrigger className="w-20 rounded-full">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -610,6 +768,7 @@ export default function SalesDashboard() {
                   <Button
                     variant="outline"
                     size="sm"
+                    className="rounded-full"
                     disabled={currentPage === 1 || loading}
                     onClick={() => handlePageChange(1)}
                   >
@@ -618,6 +777,7 @@ export default function SalesDashboard() {
                   <Button
                     variant="outline"
                     size="sm"
+                    className="rounded-full"
                     disabled={currentPage === 1 || loading}
                     onClick={() => handlePageChange(currentPage - 1)}
                   >
@@ -635,6 +795,7 @@ export default function SalesDashboard() {
                   <Button
                     variant="outline"
                     size="sm"
+                    className="rounded-full"
                     disabled={currentPage >= totalPages || loading}
                     onClick={() => handlePageChange(currentPage + 1)}
                   >
@@ -643,6 +804,7 @@ export default function SalesDashboard() {
                   <Button
                     variant="outline"
                     size="sm"
+                    className="rounded-full"
                     disabled={currentPage >= totalPages || loading}
                     onClick={() => handlePageChange(totalPages)}
                   >

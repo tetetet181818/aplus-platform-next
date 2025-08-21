@@ -32,41 +32,55 @@ export const useSalesStore = create((set, get) => ({
     return null;
   },
 
-  getSales: async (page = 1, itemsPerPage = 10, filters = {}) => {
+  getSales: async (
+    page = 1,
+    itemsPerPage = 10,
+    filters = {},
+    sortConfig = { key: "created_at", direction: "desc" }
+  ) => {
+    set({ loading: true, error: null });
     try {
-      set({ loading: true, error: null });
-
       const from = (page - 1) * itemsPerPage;
       const to = from + itemsPerPage - 1;
 
-      let query = supabase
-        .from("sales")
-        .select(`*, users:user_id(full_name), files:note_id(title)`, {
-          count: "exact",
-        })
-        .order("created_at", { ascending: false });
+      let query = supabase.from("sales").select("*", { count: "exact" });
 
-      if (filters.search) {
-        query = query.or(`full_name.ilike.%${filters.search}%`, {
-          foreignTable: "users",
-        });
+      query = query.order(sortConfig.key, {
+        ascending: sortConfig.direction === "asc",
+      });
+
+      if (filters.id) {
+        query = query.eq("id", filters.id);
       }
 
-      if (filters.dateFrom && filters.dateTo) {
-        query = query
-          .gte("created_at", filters.dateFrom)
-          .lte("created_at", filters.dateTo);
+      if (filters.invoice_id) {
+        query = query.eq("invoice_id", filters.invoice_id);
       }
 
-      if (filters.status) {
+      if (filters.user_name) {
+        query = query.ilike("user_name", `%${filters.user_name}%`);
+      }
+
+      if (filters.note_title) {
+        query = query.ilike("note_title", `%${filters.note_title}%`);
+      }
+
+      if (filters.status && filters.status !== "all") {
         query = query.eq("status", filters.status);
       }
 
-      const { data, count, error } = await query.range(from, to);
-      if (error) {
-        set({ loading: false, error: error.message || "خطأ غير معروف" });
-        throw new Error(error.message || "خطأ غير معروف");
+      if (filters.date) {
+        const startOfDay = new Date(filters.date);
+        const endOfDay = new Date(filters.date);
+        endOfDay.setHours(23, 59, 59, 999);
+
+        query = query
+          .gte("created_at", startOfDay.toISOString())
+          .lte("created_at", endOfDay.toISOString());
       }
+
+      const { data, count, error } = await query.range(from, to);
+      if (error) throw error;
 
       set({
         sales: data || [],
@@ -74,19 +88,37 @@ export const useSalesStore = create((set, get) => ({
         currentPage: page,
         itemsPerPage,
         loading: false,
+        error: null,
       });
 
-      set({ loading: false });
       return {
         data,
         totalItems: count,
         totalPages: Math.ceil(count / itemsPerPage),
       };
     } catch (error) {
-      return get().handleError(error, "فشل في جلب بيانات المبيعات");
+      const errorMessage = error.message || "خطأ غير معروف";
+      set({
+        loading: false,
+        error: errorMessage,
+        sales: [],
+        totalSales: 0,
+      });
+
+      // Also show toast notification
+      toast({
+        title: "خطأ",
+        description: errorMessage,
+        variant: "destructive",
+      });
+
+      return {
+        data: [],
+        totalItems: 0,
+        totalPages: 0,
+      };
     }
   },
-
   getTotalSalesAmount: async () => {
     try {
       set({ loading: true, error: null });
@@ -271,7 +303,6 @@ export const useSalesStore = create((set, get) => ({
         .eq("id", salesId)
         .single();
       if (error) throw new Error(error.message);
-      console.log(data);
       set({ singleSale: data });
       return data;
     } catch (err) {
