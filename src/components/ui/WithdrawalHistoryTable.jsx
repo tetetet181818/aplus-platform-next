@@ -59,7 +59,6 @@ import MobileWithdrawalCard from "../Withdrawals/MobileWithdrawalCard";
 import { statusLabelMap, statusVariantMap } from "@/constants/index";
 import FiltrationOperation from "@/app/dashboard/withdrawals/FiltrationOperation";
 import WithdrawalDetailsDialog from "../WithdrawalDetailsDialog";
-import PageSizeSelector from "@/app/dashboard/withdrawals/PageSizeSelector";
 import WithdrawalsPagination from "@/app/dashboard/withdrawals/WithdrawalsPagination";
 
 export default function WithdrawalHistoryTable() {
@@ -478,7 +477,6 @@ export default function WithdrawalHistoryTable() {
             </div>
 
             <div className="flex items-center gap-10">
-              <PageSizeSelector />
               <WithdrawalsPagination />
             </div>
           </CardContent>
