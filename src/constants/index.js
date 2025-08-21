@@ -201,7 +201,6 @@ export const statusLabelMap = {
   pending: "قيد الانتظار",
   accepted: "مقبول",
   rejected: "مرفوض",
-  processing: "قيد المعالجة",
   completed: "مكتمل",
 };
 

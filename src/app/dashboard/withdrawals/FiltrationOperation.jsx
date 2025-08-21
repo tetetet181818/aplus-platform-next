@@ -59,7 +59,6 @@ export default function FiltrationOperation() {
 
   return (
     <div className="flex flex-col gap-4 mb-6 p-4 bg-card rounded-lg border shadow-sm">
-      {/* Search Input - Full width on mobile, stays full width on desktop */}
       <div className="relative w-full">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
@@ -71,9 +70,7 @@ export default function FiltrationOperation() {
         />
       </div>
 
-      {/* Filter controls - column on mobile, row on desktop */}
       <div className="flex flex-col sm:flex-row gap-3 w-full">
-        {/* Status filter - full width on mobile, fixed width on larger screens */}
         <div className="w-full sm:w-[180px]">
           <Select
             value={statusFilter ?? "all"}

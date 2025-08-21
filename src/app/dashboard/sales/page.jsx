@@ -560,7 +560,7 @@ export default function SalesDashboard() {
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     type="text"
-                    placeholder="ابحث برقم عملية البيع (ID)"
+                    placeholder="ابحث برقم العملية (ID)"
                     value={searchInvoiceId}
                     onChange={(e) => {
                       setSearchId("");
@@ -575,7 +575,7 @@ export default function SalesDashboard() {
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     type="text"
-                    placeholder="ابحث برقم العملية (ID)"
+                    placeholder="ابحث برقم عملية البيع (ID)"
                     value={searchId}
                     onChange={(e) => {
                       setSearchId(e.target.value);

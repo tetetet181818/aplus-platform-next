@@ -59,6 +59,8 @@ import MobileWithdrawalCard from "../Withdrawals/MobileWithdrawalCard";
 import { statusLabelMap, statusVariantMap } from "@/constants/index";
 import FiltrationOperation from "@/app/dashboard/withdrawals/FiltrationOperation";
 import WithdrawalDetailsDialog from "../WithdrawalDetailsDialog";
+import PageSizeSelector from "@/app/dashboard/withdrawals/PageSizeSelector";
+import WithdrawalsPagination from "@/app/dashboard/withdrawals/WithdrawalsPagination";
 
 export default function WithdrawalHistoryTable() {
   const [openWithdrawalDetailsDialog, setOpenWithdrawalDetailsDialog] =
@@ -475,35 +477,10 @@ export default function WithdrawalHistoryTable() {
               </Table>
             </div>
 
-            {totalPages > 1 && (
-              <div className="flex justify-center mt-6 gap-2">
-                <Button
-                  variant="outline"
-                  disabled={page === 1 || loading}
-                  onClick={() => {
-                    setPage(page - 1);
-                    getWithdrawals();
-                  }}
-                >
-                  السابق
-                </Button>
-                <div className="flex items-center px-4">
-                  <span className="text-sm">
-                    صفحة {page} من {totalPages}
-                  </span>
-                </div>
-                <Button
-                  variant="outline"
-                  disabled={page === totalPages || loading}
-                  onClick={() => {
-                    setPage(page + 1);
-                    getWithdrawals();
-                  }}
-                >
-                  التالي
-                </Button>
-              </div>
-            )}
+            <div className="flex items-center gap-10">
+              <PageSizeSelector />
+              <WithdrawalsPagination />
+            </div>
           </CardContent>
         </Card>
       </div>
