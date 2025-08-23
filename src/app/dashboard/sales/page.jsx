@@ -8,6 +8,11 @@ import {
   CalendarIcon,
   ChevronUp,
   ChevronDown,
+  Filter,
+  X,
+  Download,
+  BarChart3,
+  Eye,
 } from "lucide-react";
 import {
   Card,
@@ -36,7 +41,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useSalesStore } from "@/stores/useSalesStore";
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import formatArabicDate from "@/config/formateTime";
 import { useToast } from "@/components/ui/use-toast";
 import Head from "next/head";
@@ -45,13 +50,18 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import SalesDetailsDialog from "@/components/SalesDetailsDialog";
 import LoadingSpinner from "@/components/shared/LoadingSpinner";
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
 
 const commissionRate = 0.15;
 const paymentMethodRate = 0.025;
+
+const generateRowKey = (sale, index) => {
+  return `${sale?.id || "no-id"}-${sale?.invoice_id || "no-invoice"}-${index}`;
+};
 
 export default function SalesDashboard() {
   const { toast } = useToast();
@@ -81,13 +91,30 @@ export default function SalesDashboard() {
   const [searchUser, setSearchUser] = useState("");
   const [searchNote, setSearchNote] = useState("");
   const [searchInvoiceId, setSearchInvoiceId] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
+  const searchTimeoutRef = useRef(null);
+
+  const handleSearchChange = useCallback(
+    (setter, value) => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+
+      searchTimeoutRef.current = setTimeout(() => {
+        setter(value);
+        setCurrentPage(1);
+      }, 300);
+    },
+    [setCurrentPage]
+  );
+
   const filters = useMemo(
     () => ({
       ...(searchId && { id: searchId }),
       ...(searchInvoiceId && { invoice_id: searchInvoiceId }),
       ...(searchUser && { user_name: searchUser }),
       ...(searchNote && { note_title: searchNote }),
-      ...(statusFilter !== "all" && { status: statusFilter }), // This was missing
+      ...(statusFilter !== "all" && { status: statusFilter }),
       ...(dateFilter && { date: format(dateFilter, "yyyy-MM-dd") }),
     }),
     [
@@ -107,8 +134,8 @@ export default function SalesDashboard() {
 
   const fetchData = useCallback(async () => {
     try {
-      getSalesStatistics();
-      getSales(currentPage, itemsPerPage, filters, sortConfig);
+      await getSalesStatistics();
+      await getSales(currentPage, itemsPerPage, filters, sortConfig);
     } catch (err) {
       toast({
         title: "خطأ",
@@ -173,6 +200,7 @@ export default function SalesDashboard() {
     },
     [toast]
   );
+
   const calculateCommission = (amount) => {
     return (amount * commissionRate).toFixed(2);
   };
@@ -180,6 +208,7 @@ export default function SalesDashboard() {
   const calculatePaymentFee = (amount) => {
     return (amount * paymentMethodRate).toFixed(2);
   };
+
   const handelMount = (amount) => {
     const netAmount =
       amount - amount * commissionRate - amount * paymentMethodRate;
@@ -195,12 +224,13 @@ export default function SalesDashboard() {
       </div>
     );
   };
+
   const columns = useMemo(
     () => [
       {
-        header: "id",
+        header: "ID",
         accessor: "id",
-        label: "id",
+        label: "ID",
         sortable: true,
         sortKey: "id",
         customRender: (value) => (
@@ -312,30 +342,41 @@ export default function SalesDashboard() {
         header: "الاجراءات",
         accessor: "id",
         label: "الاجراءات",
-        customRender: (id) => (
-          <Button
-            variant="outline"
-            size="sm"
-            className="rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
-            onClick={() => {
-              setShowDetailsDialog(true);
-              setSelectedSalesId(id);
-            }}
-          >
-            <ExternalLink className="h-4 w-4 mr-2" />
-            التفاصيل
-          </Button>
+        customRender: (id, sale) => (
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
+              onClick={() => {
+                setShowDetailsDialog(true);
+                setSelectedSalesId(id);
+              }}
+              title="عرض التفاصيل"
+            >
+              <Eye className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-full"
+              title="تحميل الفاتورة"
+            >
+              <Download className="h-4 w-4" />
+            </Button>
+          </div>
         ),
         className: "min-w-[120px]",
       },
     ],
     [handleCopyToClipboard]
   );
-  const renderMobileCard = (sale) => {
+
+  const renderMobileCard = (sale, index) => {
     return (
       <Card
-        key={sale?.id}
-        className="mb-4 shadow-sm hover:shadow-md transition-shadow"
+        key={generateRowKey(sale, index)}
+        className="mb-4 shadow-sm hover:shadow-md transition-shadow border-border/60"
       >
         <CardContent className="p-4 space-y-3">
           <div className="flex justify-between items-center">
@@ -422,22 +463,33 @@ export default function SalesDashboard() {
               }[sale?.status] || sale?.status}
             </Badge>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            className="w-full mt-2 rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
-            onClick={() => {
-              setShowDetailsDialog(true);
-              setSelectedSalesId(sale?.id);
-            }}
-          >
-            <ExternalLink className="h-4 w-4 mr-2" />
-            التفاصيل
-          </Button>
+          <div className="flex gap-2 pt-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex-1 rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
+              onClick={() => {
+                setShowDetailsDialog(true);
+                setSelectedSalesId(sale?.id);
+              }}
+            >
+              <Eye className="h-4 w-4 ml-1" />
+              التفاصيل
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-full"
+              title="تحميل الفاتورة"
+            >
+              <Download className="h-4 w-4" />
+            </Button>
+          </div>
         </CardContent>
       </Card>
     );
   };
+
   const renderSortIcon = (column) => {
     if (!column.sortable) return null;
 
@@ -462,9 +514,9 @@ export default function SalesDashboard() {
       );
 
     if (sales?.length > 0)
-      return sales.map((sale) => (
+      return sales.map((sale, index) => (
         <TableRow
-          key={sale?.id}
+          key={generateRowKey(sale, index)}
           className="hover:bg-muted/30 transition-colors even:bg-muted/10"
         >
           {columns.map((column) => {
@@ -475,7 +527,7 @@ export default function SalesDashboard() {
               : sale[column.accessor];
             return (
               <TableCell
-                key={`${sale.id}-${column.accessor}`}
+                key={`${generateRowKey(sale, index)}-${column.accessor}`}
                 className={`py-3 ${column.className}`}
               >
                 {column.customRender(
@@ -495,7 +547,8 @@ export default function SalesDashboard() {
     return (
       <TableRow>
         <TableCell colSpan={columns.length} className="h-24 text-center">
-          <div className="flex flex-col items-center gap-2">
+          <div className="flex flex-col items-center gap-4 py-6">
+            <BarChart3 className="h-12 w-12 text-muted-foreground/50" />
             <p className="text-muted-foreground">لا توجد بيانات متاحة</p>
             {(searchId ||
               searchUser ||
@@ -533,6 +586,10 @@ export default function SalesDashboard() {
     setCurrentPage,
   ]);
 
+  const activeFiltersCount = useMemo(() => {
+    return Object.values(filters).filter(Boolean).length;
+  }, [filters]);
+
   return (
     <>
       <Head>
@@ -545,114 +602,158 @@ export default function SalesDashboard() {
 
       <div className="space-y-6 animate-fade-in">
         <Card className="border-border/40 shadow-md rounded-xl overflow-hidden">
-          <CardHeader className="pb-4 bg-muted/10">
+          <CardHeader className="pb-4 bg-gradient-to-r from-muted/5 to-muted/10">
             <div className="flex flex-col gap-4">
-              <div>
-                <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-                  المبيعات الحديثة
-                </CardTitle>
-                <CardDescription className="text-muted-foreground">
-                  أحدث مشتريات الدورات والمعاملات
-                </CardDescription>
-              </div>
-              <div className="grid grid-cols-1 gap-3">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    type="text"
-                    placeholder="ابحث برقم العملية (ID)"
-                    value={searchInvoiceId}
-                    onChange={(e) => {
-                      setSearchId("");
-                      setSearchInvoiceId(e.target.value);
-                      setSearchUser("");
-                      setSearchNote("");
-                    }}
-                    className="pl-10 rounded-full"
-                  />
-                </div>
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    type="text"
-                    placeholder="ابحث برقم عملية البيع (ID)"
-                    value={searchId}
-                    onChange={(e) => {
-                      setSearchId(e.target.value);
-                      setSearchUser("");
-                      setSearchNote("");
-                    }}
-                    className="pl-10 rounded-full"
-                  />
-                </div>
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    type="text"
-                    placeholder="ابحث باسم المستخدم"
-                    value={searchUser}
-                    onChange={(e) => {
-                      setSearchUser(e.target.value);
-                      setSearchId("");
-                      setSearchNote("");
-                    }}
-                    className="pl-10 rounded-full"
-                  />
-                </div>
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    type="text"
-                    placeholder="ابحث بعنوان الملخص"
-                    value={searchNote}
-                    onChange={(e) => {
-                      setSearchNote(e.target.value);
-                      setSearchId("");
-                      setSearchUser("");
-                    }}
-                    className="pl-10 rounded-full"
-                  />
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+                    المبيعات الحديثة
+                  </CardTitle>
+                  <CardDescription className="text-muted-foreground">
+                    أحدث مشتريات الدورات والمعاملات
+                  </CardDescription>
                 </div>
 
-                <Popover>
-                  <PopoverTrigger asChild>
+                <div className="flex items-center gap-2 mt-4 sm:mt-0">
+                  <Button
+                    variant={showFilters ? "default" : "outline"}
+                    size="sm"
+                    className="rounded-full flex items-center gap-2"
+                    onClick={() => setShowFilters(!showFilters)}
+                  >
+                    <Filter className="h-4 w-4" />
+                    الفلاتر
+                    {activeFiltersCount > 0 && (
+                      <span className="flex items-center justify-center h-5 w-5 bg-primary-foreground text-primary text-xs rounded-full">
+                        {activeFiltersCount}
+                      </span>
+                    )}
+                  </Button>
+
+                  {activeFiltersCount > 0 && (
                     <Button
-                      variant="outline"
-                      className="w-full justify-start text-left font-normal rounded-full"
+                      variant="ghost"
+                      size="sm"
+                      className="rounded-full text-destructive hover:text-destructive hover:bg-destructive/10"
+                      onClick={() => {
+                        setSearchId("");
+                        setSearchUser("");
+                        setSearchNote("");
+                        setDateFilter(null);
+                        setSearchInvoiceId("");
+                        setStatusFilter("all");
+                      }}
                     >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {dateFilter ? (
-                        format(dateFilter, "yyyy-MM-dd")
-                      ) : (
-                        <span>فلترة بالتاريخ</span>
-                      )}
+                      <X className="h-4 w-4 ml-1" />
+                      مسح الكل
                     </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={dateFilter}
-                      onSelect={setDateFilter}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+                  )}
+                </div>
+              </div>
 
-                <Button
-                  variant="destructive"
-                  className="h-10 rounded-full"
-                  onClick={() => {
-                    setSearchId("");
-                    setSearchUser("");
-                    setSearchNote("");
-                    setDateFilter(null);
-                    setSearchInvoiceId("");
-                    setStatusFilter("all");
-                  }}
-                  disabled={loading}
-                >
-                  مسح الفلاتر
-                </Button>
+              <div
+                className={cn(
+                  "grid gap-3 transition-all duration-300 overflow-hidden",
+                  showFilters
+                    ? "grid-rows-[1fr] opacity-100"
+                    : "grid-rows-[0fr] opacity-0"
+                )}
+              >
+                <div className="overflow-hidden">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        type="text"
+                        placeholder="ابحث برقم العملية (ID)"
+                        value={searchInvoiceId}
+                        onChange={(e) =>
+                          handleSearchChange(setSearchInvoiceId, e.target.value)
+                        }
+                        className="pl-10 rounded-full"
+                      />
+                    </div>
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        type="text"
+                        placeholder="ابحث برقم عملية البيع (ID)"
+                        value={searchId}
+                        onChange={(e) =>
+                          handleSearchChange(setSearchId, e.target.value)
+                        }
+                        className="pl-10 rounded-full"
+                      />
+                    </div>
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        type="text"
+                        placeholder="ابحث باسم المستخدم"
+                        value={searchUser}
+                        onChange={(e) =>
+                          handleSearchChange(setSearchUser, e.target.value)
+                        }
+                        className="pl-10 rounded-full"
+                      />
+                    </div>
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        type="text"
+                        placeholder="ابحث بعنوان الملخص"
+                        value={searchNote}
+                        onChange={(e) =>
+                          handleSearchChange(setSearchNote, e.target.value)
+                        }
+                        className="pl-10 rounded-full"
+                      />
+                    </div>
+
+                    <div className="md:col-span-2">
+                      <Select
+                        value={statusFilter}
+                        onValueChange={setStatusFilter}
+                      >
+                        <SelectTrigger className="rounded-full">
+                          <SelectValue placeholder="فلترة بحالة المعاملة" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">جميع الحالات</SelectItem>
+                          <SelectItem value="completed">مكتمل</SelectItem>
+                          <SelectItem value="pending">قيد الانتظار</SelectItem>
+                          <SelectItem value="failed">فشل</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="md:col-span-2">
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className="w-full justify-start text-left font-normal rounded-full"
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {dateFilter ? (
+                              format(dateFilter, "yyyy-MM-dd")
+                            ) : (
+                              <span>فلترة بالتاريخ</span>
+                            )}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={dateFilter}
+                            onSelect={setDateFilter}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </CardHeader>
@@ -675,9 +776,12 @@ export default function SalesDashboard() {
                   ))}
                 </div>
               ) : sales?.length > 0 ? (
-                <div>{sales.map(renderMobileCard)}</div>
+                <div>
+                  {sales.map((sale, index) => renderMobileCard(sale, index))}
+                </div>
               ) : (
                 <div className="flex flex-col items-center gap-4 p-4">
+                  <BarChart3 className="h-12 w-12 text-muted-foreground/50" />
                   <p className="text-muted-foreground">لا توجد بيانات متاحة</p>
                   {(searchId ||
                     searchUser ||
@@ -685,7 +789,7 @@ export default function SalesDashboard() {
                     statusFilter !== "all" ||
                     dateFilter) && (
                     <Button
-                      variant="destructive"
+                      variant="outline"
                       onClick={() => {
                         setSearchId("");
                         setSearchUser("");
@@ -711,12 +815,13 @@ export default function SalesDashboard() {
                     <TableRow>
                       {columns.map((column) => (
                         <TableHead
-                          className={`text-start py-3 ${
-                            column.sortable
-                              ? "cursor-pointer hover:bg-muted/50"
-                              : ""
-                          } ${column.className}`}
-                          key={column.accessor + `${Math.random() * 1000}`}
+                          className={cn(
+                            "text-start py-3",
+                            column.sortable &&
+                              "cursor-pointer hover:bg-muted/50",
+                            column.className
+                          )}
+                          key={column.accessor}
                           onClick={() =>
                             column.sortable && handleSort(column.sortKey)
                           }
