@@ -122,7 +122,7 @@ const useNoteDetail = ({ id }) => {
 
   const handleDownloadFile = useCallback(async () => {
     try {
-      await downloadNote(note?.file_path);
+      await downloadNote({ filePath: note?.file_path });
     } catch (err) {
       toast({
         title: "فشل في التحميل",

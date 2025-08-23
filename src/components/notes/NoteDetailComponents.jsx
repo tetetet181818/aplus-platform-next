@@ -498,6 +498,7 @@ export const NoteDeleteConfirmationDialog = ({
   onOpenChange,
   onConfirm,
   noteTitle,
+  loading,
 }) => {
   const handleConfirm = () => {
     try {
@@ -528,7 +529,15 @@ export const NoteDeleteConfirmationDialog = ({
             onClick={handleConfirm}
             className="bg-red-600 hover:bg-red-700"
           >
-            تأكيد الحذف
+            {loading ? (
+              <>
+                {" "}
+                <Loader className="size-4 mx-2" />
+                جاري الحذف
+              </>
+            ) : (
+              "تأكيد الحذف"
+            )}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
