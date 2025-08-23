@@ -2,9 +2,8 @@ import { Suspense } from "react";
 import SellerProfilePage from "./SellerClient";
 import LoadingSpinner from "@/components/shared/LoadingSpinner";
 
-export default function page({ params }) {
-  const { userId } = params;
-  console.log(userId);
+export default async function page({ params }) {
+  const { userId } = await params;
   return (
     <Suspense fallback={<LoadingSpinner message="جاري البحث..." />}>
       <SellerProfilePage userId={userId} />

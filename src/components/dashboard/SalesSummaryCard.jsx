@@ -81,6 +81,7 @@ const SalesDetailsAccordion = ({ soldNotesDetails }) => (
 const NoteSaleItem = ({ note }) => (
   <div className="flex items-center gap-4 p-3 rounded-lg border border-gray-100 dark:border-gray-700/50 bg-gray-50/50 dark:bg-gray-800/30 hover:shadow-sm transition-shadow">
     <Image
+      loading="lazy"
       alt={note.title}
       src={note.previewImage || "/default-note-image.jpg"}
       className="h-16 w-16 rounded-md object-cover"

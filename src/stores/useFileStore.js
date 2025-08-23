@@ -436,16 +436,17 @@ export const useFileStore = create((set, get) => ({
         throw new Error("لقد قمت بشراء هذا الملخص مسبقاً");
       }
 
-      const platformFeeRate = 0.15; // 15% platform fee
+      const platformFeeRate = 0.15;
+      const editionTax = 2;
       const platformFee = currentFile.price * platformFeeRate;
-      const ownerEarnings = currentFile.price - platformFee;
+      const ownerEarnings = (currentFile.price - platformFee) - editionTax;
 
       const { data: transactionResult, error: transactionError } =
         await supabase.rpc("handle_note_purchase", {
           note_id: noteId,
           buyer_id: userId,
           owner_id: currentFile.owner_id,
-          note_price: currentFile.price,
+          note_price: currentFile.price - editionTax,
           platform_fee_rate: platformFeeRate,
         });
 
@@ -457,8 +458,7 @@ export const useFileStore = create((set, get) => ({
             note_id: noteId,
             amount: currentFile.price,
             platform_fee: platformFee,
-            // owner_earnings: ownerEarnings,
-            payment_method: "bank",
+            payment_method: method,
             user_name: transactionResult.owner_name || "",
             note_title: currentFile.title,
             invoice_id: invoice_id,
@@ -474,19 +474,17 @@ export const useFileStore = create((set, get) => ({
         {
           user_id: userId,
           title: "تم شراء الملخص  بنجاح",
-          body: `تم شراء الملخص  بنجاح"${
-            currentFile.title
-          }" بنجاح , رقم الطلب: ${invoice_id}, ${(<CircleDollarSign />)}, ${(
-            <Link href="">عرض الملخص</Link>
-          )} `,
+          body: `تم شراء الملخص  بنجاح"${currentFile.title
+            }" بنجاح , رقم الطلب: ${invoice_id}, ${(<CircleDollarSign />)}, ${(
+              <Link href="">عرض الملخص</Link>
+            )} `,
           type: "purchase",
         },
         {
           user_id: currentFile.owner_id,
           title: "تم بيع ملخص",
-          body: `تم بيع ملخصك "${
-            currentFile.title
-          }" وتم إضافة ${ownerEarnings.toFixed(2)} إلى رصيدك`,
+          body: `تم بيع ملخصك "${currentFile.title
+            }" وتم إضافة ${ownerEarnings.toFixed(2)} إلى رصيدك`,
           type: "sale",
         },
       ]);
@@ -790,7 +788,7 @@ export const useFileStore = create((set, get) => ({
       if (fetchError || !existingNote) {
         throw new Error(
           "الملخص غير موجود أو حدث خطأ في الجلب: " +
-            (fetchError?.message || "خطأ غير معروف")
+          (fetchError?.message || "خطأ غير معروف")
         );
       }
 

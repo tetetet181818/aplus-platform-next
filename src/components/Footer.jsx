@@ -45,6 +45,7 @@ const Footer = () => {
             </p>
             <div>
               <Image
+                loading="lazy"
                 src={sudia_busniess_center}
                 alt="سجل تجاري منصة  أ+"
                 className="w-full h-auto"

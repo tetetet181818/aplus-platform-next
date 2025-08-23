@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import LoadingSpinner from "@/components/shared/LoadingSpinner";
-import { BookOpen, School, Star, UserCircle, RefreshCw } from "lucide-react";
+import { BookOpen, School, UserCircle, RefreshCw } from "lucide-react";
 import NoteCard from "@/components/shared/NoteCard";
 import { useFileStore } from "@/stores/useFileStore";
 import { useToast } from "@/components/ui/use-toast";
@@ -165,10 +165,6 @@ const SellerProfilePage = ({ userId }) => {
                   </p>
                 )}
                 <div className="flex items-center justify-center md:justify-start mt-4 space-x-4">
-                  <Badge variant="secondary" className="px-3 py-1">
-                    <Star className="h-4 w-4 mr-1 text-yellow-500 fill-yellow-500" />
-                    {seller.rating || "غير متوفر"}
-                  </Badge>
                   <Badge variant="secondary" className="px-3 py-1">
                     {sellerNotes.length} ملخص
                   </Badge>

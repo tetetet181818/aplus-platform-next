@@ -50,7 +50,7 @@ const mockData = {
     },
   ],
   platformFeePercent: 15,
-  paymentProcessingPercent: 2.5,
+  paymentProcessingPercent: 2.75,
 };
 
 const FinanceDashboard = ({ availableBalance, withdrawalHistory }) => {
@@ -147,10 +147,14 @@ const FinanceDashboard = ({ availableBalance, withdrawalHistory }) => {
               </div>
               <div className="flex items-center gap-2 mt-4 text-sm bg-white/20 p-2 rounded-lg">
                 <Info className="h-4 w-4" />
-                <span>
-                  يشمل هذا المبلغ خصم رسوم منصه الدفع (
-                  {mockData.paymentProcessingPercent}%)
-                </span>
+
+                <ul className="space-y-1 text-sm  list-disc pl-5">
+                  <li>
+                    رسوم منصة الدفع ({mockData.paymentProcessingPercent}%)
+                  </li>
+                  <li>1 ريال خاص بالـ refund</li>
+                  <li>1 ريال رسوم الاحتيال</li>
+                </ul>
               </div>
             </CardContent>
           </Card>
@@ -205,25 +209,41 @@ const FinanceDashboard = ({ availableBalance, withdrawalHistory }) => {
               <div className="space-y-4">
                 <h3 className="font-semibold text-lg flex items-center gap-2">
                   <Coins className="h-5 w-5 text-emerald-500" />
-                  خصومات الدفع
+                  خصومات ورسوم الدفع
                 </h3>
-                <ul className="space-y-2 text-muted-foreground">
-                  <li className="flex items-start gap-2">
-                    <div className="h-2 w-2 rounded-full bg-primary mt-2"></div>
-                    <span>
-                      تطبق رسوم معالجة مدفوعات بنسبة
-                      {mockData.paymentProcessingPercent}% على عمليات السحب
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <div className="h-2 w-2 rounded-full bg-primary mt-2"></div>
-                    <span>الحد الأدنى للسحب هو 50 ريال سعودي</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <div className="h-2 w-2 rounded-full bg-primary mt-2"></div>
-                    <span>المعاملات قد تستغرق حتى 48 سورة للمعالجة</span>
-                  </li>
-                </ul>
+
+                <div className="rounded-xl p-4 space-y-3">
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    <li className="flex items-start gap-2">
+                      <div className="h-2 w-2 rounded-full bg-primary mt-2"></div>
+                      <span>
+                        تطبق رسوم معالجة مدفوعات بنسبة{" "}
+                        <strong className="text-gray-900 dark:text-gray-100">
+                          {mockData.paymentProcessingPercent}%
+                        </strong>{" "}
+                        على جميع عمليات السحب بشكل تلقائي.
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <div className="h-2 w-2 rounded-full bg-primary mt-2"></div>
+                      <span>
+                        الحد الأدنى للسحب هو{" "}
+                        <strong className="text-gray-900 dark:text-gray-100">
+                          50 ريال سعودي
+                        </strong>
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Extra Note */}
+                <div className="flex items-start gap-2 text-xs text-gray-600 dark:text-gray-400 bg-amber-50 dark:bg-amber-900/30 p-3 rounded-lg border border-amber-200 dark:border-amber-800">
+                  <Info className="h-4 w-4 text-amber-500 mt-0.5" />
+                  <span>
+                    يتم خصم رسوم المعالجة تلقائيًا من كل عملية شراء أو سحب، ولا
+                    تحتاج إلى أي إجراء يدوي من طرفك.
+                  </span>
+                </div>
               </div>
             </div>
           </CardContent>

@@ -7,6 +7,7 @@ import {
   Loader,
   School,
   DollarSign,
+  LinkIcon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useFileStore } from "@/stores/useFileStore";
@@ -39,6 +40,7 @@ import SectionHeader from "@/components/ui/SectionHeader";
 import { useDebounce } from "@/hooks/useDebounce";
 import Head from "next/head";
 import { universityData } from "@/data/universityData";
+import Link from "next/link";
 
 const truncateText = (text, maxLength = 20) => {
   if (!text) return "N/A";
@@ -140,6 +142,18 @@ export default function FilesDashboard() {
     { header: "الكلية", accessor: "college", customRender: truncateText },
     { header: "المادة", accessor: "subject", customRender: truncateText },
     { header: "السنة", accessor: "year" },
+    {
+      header: "صاحب الملخص",
+      accessor: "owner_id",
+      customRender: (ownerId) => (
+        <Link
+          className="hover:underline hover:text-blue-500"
+          href={`/seller/${ownerId}`}
+        >
+          {ownerId.slice(0, 10) + "...."} <LinkIcon className="size-4 inline" />
+        </Link>
+      ),
+    },
     {
       header: "السعر",
       accessor: "price",

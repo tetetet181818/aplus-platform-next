@@ -41,6 +41,7 @@ const UserNotesTab = ({
           <div className="flex flex-col sm:flex-row">
             <div className="sm:w-1/3 lg:w-1/4 aspect-video sm:aspect-auto bg-gray-100 dark:bg-gray-800">
               <Image
+                loading="lazy"
                 alt={note.title}
                 className="w-full h-full object-cover"
                 src={note.cover_url}

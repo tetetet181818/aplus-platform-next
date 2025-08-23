@@ -53,6 +53,7 @@ const NoteCard = ({ note }) => {
           <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br py-0 from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
             <motion.div variants={imageVariants} className="w-full h-full py-0">
               <Image
+                loading="lazy"
                 src={note.cover_url}
                 alt={`Cover image for ${note.title}`}
                 width={800}

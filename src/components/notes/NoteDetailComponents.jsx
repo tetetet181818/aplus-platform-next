@@ -129,6 +129,7 @@ export const NoteImage = ({ src, alt }) => {
           </div>
         ) : (
           <Image
+            loading="lazy"
             alt={alt || "صورة الملخص"}
             className="mx-auto object-cover"
             src={src}

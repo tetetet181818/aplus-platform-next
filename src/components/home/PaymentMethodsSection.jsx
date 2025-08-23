@@ -8,16 +8,31 @@ const PaymentMethodsSection = () => {
   const paymentMethods = [
     {
       name: "Visa",
-      icon: <Image alt="Visa logo" className="h-6 w-auto" src={visaImage} />,
+      icon: (
+        <Image
+          loading="lazy"
+          alt="Visa logo"
+          className="h-6 w-auto"
+          src={visaImage}
+        />
+      ),
     },
     {
       name: "Mada",
-      icon: <Image alt="Mada logo" className="h-6 w-auto" src={mada_image} />,
+      icon: (
+        <Image
+          loading="lazy"
+          alt="Mada logo"
+          className="h-6 w-auto"
+          src={mada_image}
+        />
+      ),
     },
     {
       name: "Master card",
       icon: (
         <Image
+          loading="lazy"
           alt="master card logo"
           className="h-6 w-auto"
           src={mastercard_image}

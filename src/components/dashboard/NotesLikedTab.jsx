@@ -89,6 +89,7 @@ const NotesLikedTab = () => {
             <div className="flex flex-col sm:flex-row">
               <div className="relative w-full sm:w-1/3 lg:w-1/4 py-0 aspect-video sm:aspect-[4/3] bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-700 dark:to-gray-900">
                 <Image
+                  loading="lazy"
                   alt={note.title}
                   className="object-cover w-full h-full py-0"
                   src={note.cover_url}

@@ -9,6 +9,7 @@ import {
   Calendar,
   Search,
   School,
+  LinkIcon,
 } from "lucide-react";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { Button } from "@/components/ui/button";
@@ -48,6 +49,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { universities } from "@/constants/index";
+import Link from "next/link";
+import formatArabicDate from "@/config/formateTime";
 
 export default function StudentsDashboard() {
   const router = useRouter();
@@ -92,8 +95,21 @@ export default function StudentsDashboard() {
       header: "تاريخ الانضمام",
       accessor: "created_at",
       label: "تاريخ الانضمام",
-      customRender: (date) =>
-        format(new Date(date), "yyyy/MM/dd", { locale: ar }),
+      customRender: (date) => formatArabicDate(date),
+    },
+    {
+      header: "عرض الملف الشخصي",
+      accessor: "user",
+      label: "عرض الملف الشخصي",
+      customRender: (user) => (
+        <div className="flex gap-2 justify-end">
+          <Button variant="ghost" size="sm" title="عرض الملف الشخصي">
+            <Link href={`/seller/${user?.id}`}>
+              {user?.full_name} <LinkIcon className="size-4 inline" />
+            </Link>
+          </Button>
+        </div>
+      ),
     },
     {
       header: "الإجراءات",
@@ -375,10 +391,10 @@ export default function StudentsDashboard() {
                               key={colIndex}
                               className="flex justify-between"
                             >
-                              <span className="font-medium text-right">
+                              <span className="font-medium text-center">
                                 {column.label}:
                               </span>
-                              <span className="text-muted-foreground text-right">
+                              <span className="text-muted-foreground text-center">
                                 {column.customRender
                                   ? column.customRender(user[column.accessor])
                                   : user[column.accessor] || "N/A"}
