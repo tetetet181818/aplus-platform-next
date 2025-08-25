@@ -112,7 +112,7 @@ const NoteDetailPage = ({ id }) => {
 
             <NoteImage src={note?.cover_url} alt={note?.title} />
             <NoteDescription description={note?.description} />
-            <NoteReviews reviews={note?.reviews || []} noteId={note?.id} />
+            <NoteReviews noteId={note?.id} />
           </motion.div>
 
           <motion.div
@@ -129,6 +129,11 @@ const NoteDetailPage = ({ id }) => {
               year={note.year}
               createdAt={note.created_at}
               downloads={note.downloads}
+              rating={
+                note.reviews
+                  ?.map((review) => review.rating)
+                  .reduce((a, b) => a + b, 0) / note.reviews?.length || 0
+              }
             />
             <NoteAuthorInfo
               authorId={note.owner_id}

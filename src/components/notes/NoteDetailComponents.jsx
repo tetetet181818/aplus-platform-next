@@ -183,6 +183,7 @@ export const NoteMeta = ({
   year,
   createdAt,
   downloads,
+  rating,
 }) => {
   const formatDate = (date) => {
     try {
@@ -217,6 +218,12 @@ export const NoteMeta = ({
           icon={<Download />}
           label="عدد التحميلات"
           value={downloads}
+          defaultValue={0}
+        />
+        <MetaItem
+          icon={<Star />}
+          label="التقييم"
+          value={rating}
           defaultValue={0}
         />
       </CardContent>

@@ -5,6 +5,7 @@ import { toast } from "@/components/ui/use-toast";
 import axios from "axios";
 import { Link, Star } from "lucide-react";
 
+
 const DEFAULT_IMAGE_URL = process.env.NEXT_PUBLIC_SUPABASE_DEFAULT_COVER;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_KEY;
@@ -601,6 +602,38 @@ export const useFileStore = create((set, get) => ({
     } catch (error) {
       console.error("Error checking review:", error);
       return false;
+    }
+  },
+  getAllReviews: async ({ noteId, sortOption = "latest" }) => {
+    try {
+      const { data, error } = await supabase
+        .from("files")
+        .select("reviews")
+        .eq("id", noteId)
+        .single();
+
+      if (error) throw error;
+
+      const reviews = data?.reviews || [];
+      console.log(reviews)
+      return reviews
+      // return reviews.sort((a, b) => {
+      //   switch (sortOption) {
+      //     case "latest":
+      //       return new Date(b.created_at) - new Date(a.created_at);
+      //     case "oldest":
+      //       return new Date(a.created_at) - new Date(b.created_at);
+      //     case "highest":
+      //       return b.rate - a.rate;
+      //     case "lowest":
+      //       return a.rate - b.rate;
+      //     default:
+      //       return new Date(b.created_at) - new Date(a.created_at);
+      //   }
+      // });
+    } catch (error) {
+      console.log(error);
+      return [];
     }
   },
 

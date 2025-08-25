@@ -62,12 +62,6 @@ const NoteCard = ({ note }) => {
               />
             </motion.div>
 
-            <div className="absolute top-3 right-3">
-              <Badge className="bg-gradient-to-r from-primary to-blue-600 text-white px-3 py-1 text-xs font-medium rounded-full shadow-md">
-                {note.price > 0 ? `${note.price} ريال` : "مجاني"}
-              </Badge>
-            </div>
-
             {note.rating > 0 && (
               <div className="absolute bottom-3 left-3 bg-background/80 backdrop-blur-sm text-foreground px-2.5 py-1 rounded-full text-xs flex items-center gap-1 shadow-sm border">
                 <Star className="h-3.5 w-3.5 text-yellow-400 fill-yellow-400" />
@@ -94,7 +88,21 @@ const NoteCard = ({ note }) => {
                 className="rounded-full px-3 py-1 text-xs"
               >
                 <BookOpen className="h-3.5 w-3.5 mr-1" />
-                {note.subject}
+                {note.college}
+              </Badge>
+              <Badge
+                variant="outline"
+                className="rounded-full px-3 py-1 text-xs"
+              >
+                <Star className="h-3.5 w-3.5 mr-1" />
+                {note.reviews
+                  ?.map((review) => review.rating)
+                  .reduce((a, b) => a + b, 0) / note.reviews?.length || 0}{" "}
+                تقييم
+              </Badge>
+
+              <Badge className="bg-gradient-to-r from-primary to-blue-600 text-white px-3 py-1 text-xs font-medium rounded-full shadow-md">
+                {note.price > 0 ? `${note.price} ريال` : "مجاني"}
               </Badge>
             </div>
 
