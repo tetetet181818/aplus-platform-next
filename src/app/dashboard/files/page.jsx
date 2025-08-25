@@ -8,6 +8,7 @@ import {
   School,
   DollarSign,
   LinkIcon,
+  Eye,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useFileStore } from "@/stores/useFileStore";
@@ -41,6 +42,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import Head from "next/head";
 import { universityData } from "@/data/universityData";
 import Link from "next/link";
+import FileDetailsDialog from "@/components/dashboard/FileDetailsDialog";
 
 const truncateText = (text, maxLength = 20) => {
   if (!text) return "N/A";
@@ -49,6 +51,8 @@ const truncateText = (text, maxLength = 20) => {
 
 export default function FilesDashboard() {
   const itemsPerPage = 10;
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
@@ -168,6 +172,16 @@ export default function FilesDashboard() {
       header: "الإجراءات",
       customRender: (item) => (
         <div className="flex gap-2 justify-end">
+          <Button
+            variant={"ghost"}
+            onClick={() => {
+              setIsDialogOpen(true);
+              setSelectedFile(item);
+              console.log(item);
+            }}
+          >
+            <Eye className="size-4 " />
+          </Button>
           <Button
             variant="ghost"
             size="sm"
@@ -499,6 +513,11 @@ export default function FilesDashboard() {
           </CardContent>
         </Card>
       </div>
+      <FileDetailsDialog
+        open={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        item={selectedFile}
+      />
     </>
   );
 }

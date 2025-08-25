@@ -2,11 +2,21 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Upload, BookOpen } from "lucide-react";
 import Link from "next/link";
+import HeroImage from "../../../public/hero-image.jpeg";
+import Image from "next/image";
 
 const HeroSection = () => {
   return (
     <header className="relative py-20 md:py-32 text-center overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-blue-600/80 opacity-90 transform -skew-y-3 z-0"></div>
+      <div className="absolute inset-0  opacity-90 transform -skew-y-3 z-0">
+        <Image
+          src={HeroImage}
+          alt="Hero Image"
+          layout="fill"
+          objectFit="cover"
+        />
+        <div className="absolute inset-0 bg-black/50"></div>
+      </div>
       <div className=" relative z-10 px-4 md:px-6">
         <motion.h1
           className="text-4xl md:text-6xl font-extrabold text-white mb-6 tracking-tight"
