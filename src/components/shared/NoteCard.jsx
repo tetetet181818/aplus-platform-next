@@ -106,10 +106,6 @@ const NoteCard = ({ note }) => {
               </Badge>
             </div>
 
-            <p className="text-muted-foreground text-sm line-clamp-3">
-              {note.description}
-            </p>
-
             <div className="mt-auto pt-3 border-t border-border">
               <div className="flex justify-between items-center text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">

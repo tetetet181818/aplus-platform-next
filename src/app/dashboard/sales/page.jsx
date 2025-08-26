@@ -219,7 +219,7 @@ export default function SalesDashboard() {
         <div className="text-xs text-muted-foreground mt-1">
           <div>الإجمالي: {amount.toLocaleString()} ر.س</div>
           <div>رسوم المنصة: {calculateCommission(amount)} ر.س</div>
-          <div>رسوم الدفع: {calculatePaymentFee(amount)} ر.س</div>
+          <div>رسوم اضافيه: 2 ر.س</div>
         </div>
       </div>
     );
