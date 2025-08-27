@@ -16,6 +16,7 @@ export default function CheckoutClient() {
   const noteId = searchParams.get("noteId");
   const userId = searchParams.get("userId");
   const amount = searchParams.get("amount");
+  const buyerId = searchParams.get("buyerId");
 
   const handlePay = async () => {
     if (!noteId || !userId || !amount) {
@@ -29,7 +30,7 @@ export default function CheckoutClient() {
 
     setLoading(true);
     try {
-      const res = await createPaymentLink({ noteId, userId, amount });
+      const res = await createPaymentLink({ noteId, userId, amount, buyerId });
 
       if (res?.url) {
         toast({

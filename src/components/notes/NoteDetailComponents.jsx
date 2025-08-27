@@ -35,6 +35,7 @@ import { ar } from "date-fns/locale";
 
 import { cloneElement, useState } from "react";
 import Image from "next/image";
+import formatArabicDate from "@/config/formateTime";
 
 export const NoteHeader = ({
   title,
@@ -185,17 +186,6 @@ export const NoteMeta = ({
   downloads,
   rating,
 }) => {
-  const formatDate = (date) => {
-    try {
-      return formatDistanceToNow(new Date(date), {
-        addSuffix: true,
-        locale: ar,
-      });
-    } catch (error) {
-      console.error("Error formatting date:", error);
-      return "تاريخ غير معروف";
-    }
-  };
   return (
     <Card className="shadow-lg border-gray-200 dark:border-gray-700">
       <CardHeader>
@@ -212,7 +202,7 @@ export const NoteMeta = ({
         <MetaItem
           icon={<CalendarDays />}
           label="تاريخ الإضافة"
-          value={createdAt ? formatDate(createdAt) : undefined}
+          value={createdAt && formatArabicDate(createdAt)}
         />
         <MetaItem
           icon={<Download />}

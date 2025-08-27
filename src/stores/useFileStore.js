@@ -11,7 +11,8 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_KEY;
 const moyasar_key = process.env.NEXT_PUBLIC_MOYASAR_SECRET_KEY;
 const BUCKET_NAME = "notes";
-const domain = "https://aplusplatformsa.com";
+// const domain = "https://aplusplatformsa.com";
+const domain = "http://localhost:3000";
 
 export const useFileStore = create((set, get) => ({
   loading: false,
@@ -417,7 +418,7 @@ export const useFileStore = create((set, get) => ({
     invoice_id,
     status,
     message,
-    method,
+    buyerId
   }) => {
     set({ loading: true, error: null });
 
@@ -459,12 +460,12 @@ export const useFileStore = create((set, get) => ({
             note_id: noteId,
             amount: currentFile.price,
             platform_fee: platformFee,
-            payment_method: method,
-            user_name: transactionResult.owner_name || "",
+            payment_method: 'bank',
             note_title: currentFile.title,
             invoice_id: invoice_id,
             status: status,
             message: message,
+            buyerId: buyerId
           },
         ]);
 
@@ -476,8 +477,8 @@ export const useFileStore = create((set, get) => ({
           user_id: userId,
           title: "تم شراء الملخص  بنجاح",
           body: `تم شراء الملخص  بنجاح"${currentFile.title
-            }" بنجاح , رقم الطلب: ${invoice_id}, ${(<CircleDollarSign />)}, ${(
-              <Link href="">عرض الملخص</Link>
+            }" بنجاح , رقم الطلب: ${invoice_id}, ${'💸'}, ${(
+              <a href={`notes/${noteId}`}>عرض الملخص</a>
             )} `,
           type: "purchase",
         },
@@ -730,7 +731,8 @@ export const useFileStore = create((set, get) => ({
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: "Basic " + btoa(`${moyasar_key}`),
+            // Authorization: "Basic " + btoa(`${moyasar_key}`),
+            Authorization: "Basic " + btoa(`sk_test_dQkT7b7dakPJ3i7N9Xq7hGNHSccAkQwWRyX3XzHD`),
           },
         }
       );

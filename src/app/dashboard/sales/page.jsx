@@ -78,7 +78,7 @@ export default function SalesDashboard() {
     setCurrentPage,
     setItemsPerPage,
   } = useSalesStore();
-
+  console.log("sales data:", sales);
   const [statusFilter, setStatusFilter] = useState("all");
   const [dateFilter, setDateFilter] = useState(null);
   const [showDetailsDialog, setShowDetailsDialog] = useState(false);
@@ -211,7 +211,7 @@ export default function SalesDashboard() {
 
   const handelMount = (amount) => {
     const netAmount =
-      amount - amount * commissionRate - amount * paymentMethodRate;
+      amount - amount * commissionRate - amount * paymentMethodRate - 2;
 
     return (
       <div className="flex flex-col">
@@ -219,6 +219,7 @@ export default function SalesDashboard() {
         <div className="text-xs text-muted-foreground mt-1">
           <div>الإجمالي: {amount.toLocaleString()} ر.س</div>
           <div>رسوم المنصة: {calculateCommission(amount)} ر.س</div>
+          <div>رسوم بوابة الدفع: {calculatePaymentFee(amount)} ر.س</div>
           <div>رسوم اضافيه: 2 ر.س</div>
         </div>
       </div>
@@ -259,15 +260,7 @@ export default function SalesDashboard() {
         customRender: (value) => value || "غير محدد",
         className: "min-w-[120px]",
       },
-      {
-        header: "الطالب",
-        accessor: "user_name",
-        label: "الطالب",
-        sortable: true,
-        sortKey: "user_name",
-        customRender: (value) => value || "غير محدد",
-        className: "min-w-[150px]",
-      },
+
       {
         header: "رقم العملية",
         accessor: "invoice_id",
@@ -403,10 +396,7 @@ export default function SalesDashboard() {
               {sale?.note_title || "غير محدد"}
             </span>
           </div>
-          <div className="flex justify-between">
-            <span className="font-medium text-muted-foreground">الطالب:</span>
-            <span className="font-medium">{sale?.user_name || "غير محدد"}</span>
-          </div>
+
           <div className="flex justify-between items-center">
             <span className="font-medium text-muted-foreground">
               رقم العملية:

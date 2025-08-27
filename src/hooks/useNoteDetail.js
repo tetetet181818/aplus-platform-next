@@ -77,7 +77,7 @@ const useNoteDetail = ({ id }) => {
   }, [isAuthenticated, id, router, toast]);
   const confirmPurchase = () => {
     router.push(
-      `/checkout?userId=${currentUser?.id}&noteId=${note?.id}&amount=${note?.price}`
+      `/checkout?userId=${currentUser?.id}&noteId=${note?.id}&amount=${note?.price}&buyerId=${note?.owner_id}`
     );
   };
 

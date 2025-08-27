@@ -16,7 +16,8 @@ const PaymentSuccessClient = () => {
   const invoice_id = searchParams.get("invoice_id");
   const status = searchParams.get("status");
   const message = searchParams.get("message");
-  const method = searchParams.get("payment.source.type");
+  const buyerId = searchParams.get("buyerId");
+
   useEffect(() => {
     const handlePurchase = async () => {
       if (noteId && userId) {
@@ -27,8 +28,9 @@ const PaymentSuccessClient = () => {
             invoice_id,
             status,
             message,
-            method,
+            buyerId,
           });
+          console.log("purchaseNote returned:", success);
 
           if (success) {
             toast({

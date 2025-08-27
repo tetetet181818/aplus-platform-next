@@ -105,7 +105,6 @@ export const useSalesStore = create((set, get) => ({
         totalSales: 0,
       });
 
-      // Also show toast notification
       toast({
         title: "خطأ",
         description: errorMessage,
@@ -231,37 +230,37 @@ export const useSalesStore = create((set, get) => ({
     }
   },
 
-  createSale: async (saleData) => {
-    try {
-      set({ loading: true, error: null });
+  // createSale: async (saleData) => {
+  //   try {
+  //     set({ loading: true, error: null });
 
-      const { data, error } = await supabase
-        .from("sales")
-        .insert([saleData])
-        .select();
+  //     const { data, error } = await supabase
+  //       .from("sales")
+  //       .insert([saleData])
+  //       .select();
 
-      if (error) throw error;
+  //     if (error) throw error;
 
-      await get().getSalesStatistics();
+  //     await get().getSalesStatistics();
 
-      await supabase.from("notifications").insert({
-        user_id: saleData.user_id,
-        title: "تم تسجيل عملية بيع جديدة",
-        body: `تم تسجيل عملية بيع جديدة للملخص "${saleData.note_title}"`,
-        type: "sale",
-      });
+  //     await supabase.from("notifications").insert({
+  //       user_id: saleData.user_id,
+  //       title: "تم تسجيل عملية بيع جديدة",
+  //       body: `تم تسجيل عملية بيع جديدة للملخص "${saleData.note_title}"`,
+  //       type: "sale",
+  //     });
 
-      toast({
-        title: "تم تسجيل البيع بنجاح",
-        variant: "success",
-      });
+  //     toast({
+  //       title: "تم تسجيل البيع بنجاح",
+  //       variant: "success",
+  //     });
 
-      set({ loading: false });
-      return data?.[0];
-    } catch (error) {
-      return get().handleError(error, "فشل في إنشاء سجل بيع جديد");
-    }
-  },
+  //     set({ loading: false });
+  //     return data?.[0];
+  //   } catch (error) {
+  //     return get().handleError(error, "فشل في إنشاء سجل بيع جديد");
+  //   }
+  // },
 
   updateSaleStatus: async (saleId, status) => {
     try {

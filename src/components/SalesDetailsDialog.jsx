@@ -181,7 +181,7 @@ export default function SalesDetailsDialog({ open, onClose, salesId }) {
       </Dialog>
     );
   }
-
+  console.log("Rendered with saleDetails:", saleDetails);
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto sm:max-w-2xl p-0">
@@ -293,7 +293,7 @@ export default function SalesDetailsDialog({ open, onClose, salesId }) {
                     isLink={true}
                     href={`/notes/${saleDetails?.note_id}`}
                     copyable={true}
-                    validateLink={false} // Note IDs might have different validation
+                    validateLink={false}
                   />
 
                   <DetailItem
@@ -314,11 +314,20 @@ export default function SalesDetailsDialog({ open, onClose, salesId }) {
 
                 <div className="space-y-3">
                   <DetailItem
+                    label="معرف المشتري"
                     icon={User}
-                    label="معرف المستخدم"
                     value={saleDetails?.user_id}
                     isLink={true}
                     href={`/seller/${saleDetails?.user_id}`}
+                    copyable={true}
+                    validateLink={true}
+                  />
+                  <DetailItem
+                    label="معرف البائع"
+                    icon={User}
+                    value={saleDetails?.buyerId}
+                    isLink={true}
+                    href={`/seller/${saleDetails?.buyerId}`}
                     copyable={true}
                     validateLink={true}
                   />
