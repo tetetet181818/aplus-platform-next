@@ -22,7 +22,7 @@ const UserNotesTab = ({
         actionButton={
           <Button
             onClick={() => onNavigate("/add-note")}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 w-full"
           >
             <PlusCircle className="h-4 w-4" />
             إضافة ملخص جديد
