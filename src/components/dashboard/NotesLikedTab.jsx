@@ -87,7 +87,7 @@ const NotesLikedTab = () => {
         >
           <Card className="py-0 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 w-full">
             <div className="flex flex-col sm:flex-row">
-              <div className="relative w-full sm:w-1/3 lg:w-1/4 py-0 aspect-video sm:aspect-[4/3] bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-700 dark:to-gray-900">
+              <div className="relative w-full sm:w-1/3 lg:w-1/4 py-0 aspect-video sm:aspect-[4/3] bg-gradient-to-br from-blue-50 to-blue-50 dark:from-gray-700 dark:to-gray-900">
                 <Image
                   loading="lazy"
                   alt={note.title}
@@ -104,7 +104,7 @@ const NotesLikedTab = () => {
                 <div className="sm:hidden absolute top-3 right-3">
                   <Badge
                     variant="primary"
-                    className="text-xs font-medium bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full text-white px-2.5 py-0.5 shadow-sm"
+                    className="text-xs font-medium  bg-blue-500  rounded-full text-white px-2.5 py-0.5 shadow-sm"
                   >
                     {note.price} ريال
                   </Badge>
@@ -141,9 +141,9 @@ const NotesLikedTab = () => {
                     </Badge>
                     <Badge
                       variant="outline"
-                      className="text-xs sm:text-sm px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full border-purple-200 dark:border-purple-800 text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30"
+                      className="text-xs sm:text-sm px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30"
                     >
-                      {note.subject}
+                      {note.college}
                     </Badge>
                   </div>
                 </div>

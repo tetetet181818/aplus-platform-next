@@ -37,7 +37,7 @@ const getTypeIcon = (notification) => {
     case "sale":
       return "📈";
     case "auth":
-      return "🧔🏻";
+      return "👤";
     default:
       return "👥";
   }

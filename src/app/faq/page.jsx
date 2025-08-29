@@ -136,7 +136,7 @@ export default function FAQPage() {
     >
       <div className="text-center mb-12">
         <motion.h1
-          className="text-4xl md:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent dark:from-primary-light dark:to-accent-light mb-4"
+          className="text-4xl md:text-5xl text-primary font-bold  mb-4"
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}

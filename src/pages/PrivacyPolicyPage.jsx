@@ -72,7 +72,7 @@ const PrivacyPolicyPage = () => {
             </motion.div>
             <motion.h1
               variants={sectionVariants}
-              className="text-3xl sm:text-4xl md:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent dark:from-primary-light dark:to-accent-light mb-3"
+              className="text-4xl md:text-5xl text-primary font-bold  mb-4"
             >
               سياسة الخصوصية – منصة أ+
             </motion.h1>
@@ -129,10 +129,10 @@ const PrivacyPolicyPage = () => {
               <p className="mt-2">
                 للتواصل:{" "}
                 <a
-                  href="mailto:aplusplatform@outlook.com"
+                  href="mailto:aplusplatformsa@gmail.com"
                   className="text-primary dark:text-primary-light hover:underline"
                 >
-                  aplusplatform@outlook.com
+                  aplusplatformsa@gmail.com
                 </a>
               </p>
             </ListItem>

@@ -2,24 +2,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import * as Yup from "yup";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import { DollarSign, BarChart3 } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { useToast } from "@/components/ui/use-toast";
-
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { Info } from "lucide-react";
 import { useFormik } from "formik";
 
 import WithdrawalForm from "./WithdrawalForm";

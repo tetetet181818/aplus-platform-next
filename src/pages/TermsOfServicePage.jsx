@@ -25,7 +25,7 @@ const TermsOfServicePage = () => {
       <div className="flex items-start">
         <div className="flex-shrink-0 mr-4 mt-1">
           {React.cloneElement(icon, {
-            className: "h-7 w-7 text-primary dark:text-primary-light",
+            className: "size-7 p-1 text-primary dark:text-primary-light",
           })}
         </div>
         <div>
@@ -56,14 +56,14 @@ const TermsOfServicePage = () => {
         </motion.div>
         <motion.h1
           variants={sectionVariants}
-          className="text-4xl md:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent dark:from-primary-light dark:to-accent-light mb-3"
+          className="text-4xl md:text-5xl text-primary font-bold  mb-4"
         >
-          📝 شروط الاستخدام – منصة "أ+"
+          شروط الاستخدام – منصة أ+
         </motion.h1>
       </header>
 
       <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 p-6 sm:p-8 md:p-10 rounded-xl shadow-2xl">
-        <ListItem icon={<Users />} title="١. التعريفات">
+        <ListItem icon={<Users className="size-4" />} title="١. التعريفات">
           <ul className="list-disc list-inside space-y-1 pl-4">
             <li>
               <strong>المنصة:</strong> تشير إلى منصة "أ+" بجميع خدماتها
@@ -84,7 +84,10 @@ const TermsOfServicePage = () => {
           </ul>
         </ListItem>
 
-        <ListItem icon={<CheckSquare />} title="٢. شروط التسجيل والاستخدام">
+        <ListItem
+          icon={<CheckSquare className="size-4" />}
+          title="٢. شروط التسجيل والاستخدام"
+        >
           <ul className="list-disc list-inside space-y-1 pl-4">
             <li>
               يجب أن يكون المستخدم طالبًا جامعيًا أو ذا علاقة بالتعليم الجامعي.
@@ -108,7 +111,10 @@ const TermsOfServicePage = () => {
           </ul>
         </ListItem>
 
-        <ListItem icon={<UploadCloud />} title="٣. رفع وبيع المحتوى">
+        <ListItem
+          icon={<UploadCloud className="size-4" />}
+          title="٣. رفع وبيع المحتوى"
+        >
           <ul className="list-disc list-inside space-y-1 pl-4">
             <li>يتحمل البائع المسؤولية الكاملة عن المحتوى الذي يقوم برفعه.</li>
             <li>
@@ -130,7 +136,10 @@ const TermsOfServicePage = () => {
           </ul>
         </ListItem>
 
-        <ListItem icon={<ShieldCheck />} title="٤. حقوق المنصة">
+        <ListItem
+          icon={<ShieldCheck className="size-4" />}
+          title="٤. حقوق المنصة"
+        >
           <ul className="list-disc list-inside space-y-1 pl-4">
             <li>
               تحتفظ المنصة بحق حذف أو تعطيل أي حساب أو محتوى مخالف دون إشعار
@@ -152,7 +161,7 @@ const TermsOfServicePage = () => {
         </ListItem>
 
         <ListItem
-          icon={<CreditCard />}
+          icon={<CreditCard className="size-4" />}
           title="٥. عمليات الشراء والدفع وسحب الأرباح"
         >
           <ul className="list-disc list-inside space-y-1 pl-4">
@@ -201,7 +210,10 @@ const TermsOfServicePage = () => {
           </ul>
         </ListItem>
 
-        <ListItem icon={<Book />} title="٦. المحتوى والملكية الفكرية">
+        <ListItem
+          icon={<Book className="size-4" />}
+          title="٦. المحتوى والملكية الفكرية"
+        >
           <ul className="list-disc list-inside space-y-1 pl-4">
             <li>تظل جميع الحقوق محفوظة لأصحاب المحتوى.</li>
             <li>
@@ -211,7 +223,7 @@ const TermsOfServicePage = () => {
           </ul>
         </ListItem>
 
-        <ListItem icon={<UserX />} title="٧. الإيقاف والحذف">
+        <ListItem icon={<UserX className="size-4" />} title="٧. الإيقاف والحذف">
           <ul className="list-disc list-inside space-y-1 pl-4">
             <li>
               يحق للمنصة إيقاف الحسابات التي تخالف الشروط أو تسيء استخدام
@@ -224,20 +236,26 @@ const TermsOfServicePage = () => {
           </ul>
         </ListItem>
 
-        <ListItem icon={<MessageSquare />} title="٨. التواصل والدعم">
+        <ListItem
+          icon={<MessageSquare className="size-4" />}
+          title="٨. التواصل والدعم"
+        >
           <p>
             لأي استفسار أو ملاحظة، يمكنكم التواصل معنا عبر البريد الإلكتروني:
             <br />
             <a
-              href="mailto:aplusplatform@outlook.com"
+              href="mailto:aplusplatformsa@gmail.com"
               className="text-primary dark:text-primary-light hover:underline inline-flex items-center mt-1"
             >
-              📧 aplusplatform@outlook.com
+              📧 aplusplatformsa@gmail.com
             </a>
           </p>
         </ListItem>
 
-        <ListItem icon={<AlertTriangle />} title="٩. إخلاء المسؤولية">
+        <ListItem
+          icon={<AlertTriangle className="size-4" />}
+          title="٩. إخلاء المسؤولية"
+        >
           <ul className="list-disc list-inside space-y-1 pl-4">
             <li>
               لا تضمن المنصة استمرارية الوصول إلى الخدمات في جميع الأوقات، ولا
@@ -255,14 +273,20 @@ const TermsOfServicePage = () => {
           </ul>
         </ListItem>
 
-        <ListItem icon={<CheckSquare />} title="١٠. القبول والالتزام">
+        <ListItem
+          icon={<CheckSquare className="size-4" />}
+          title="١٠. القبول والالتزام"
+        >
           <p>
             باستخدامك منصة "أ+"، فإنك تقر بأنك قرأت هذه الشروط، وفهمتها، وتوافق
             على الالتزام الكامل بها.
           </p>
         </ListItem>
 
-        <ListItem icon={<Book />} title="١١. الملكية الفكرية">
+        <ListItem
+          icon={<Book className="size-4" />}
+          title="١١. الملكية الفكرية"
+        >
           <ul className="list-disc list-inside space-y-1 pl-4">
             <li>
               كل المحتوى المرفوع من قبل المستخدمين يظل ملكًا لهم، إلا إذا تم

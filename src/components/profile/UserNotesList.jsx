@@ -3,31 +3,32 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trash, Edit, Eye, BookOpen } from "lucide-react";
 import { motion } from "framer-motion";
-
 import Image from "next/image";
 
 const UserNotesList = ({ userNotes, onNavigate, onDeleteRequest }) => {
-  if (!userNotes || userNotes.length === 0) {
+  if (!userNotes || userNotes?.length === 0) {
     return (
-      <Card className="p-8 text-center border-dashed border-gray-300 dark:border-gray-600">
-        <div className="flex justify-center mb-4">
-          <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-full">
-            <BookOpen className="h-10 w-10 text-gray-400 dark:text-gray-500" />
+      <div className="p-8 text-center border-dashed border-gray-300 flex items-center justify-center ">
+        <div className="flex flex-col items-center justify-center">
+          <div className="flex justify-center mb-4">
+            <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-full">
+              <BookOpen className="h-10 w-10 text-gray-400 dark:text-gray-500" />
+            </div>
           </div>
+          <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-gray-200">
+            لا توجد ملخصات
+          </h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
+            لم تقم بإضافة أي ملخصات بعد. ابدأ الآن وشارك معرفتك!
+          </p>
+          <Button
+            onClick={() => onNavigate("/add-note")}
+            className="bg-primary hover:bg-primary/90 text-white w-full"
+          >
+            إضافة ملخص جديد
+          </Button>
         </div>
-        <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-gray-200">
-          لا توجد ملخصات
-        </h3>
-        <p className="text-gray-600 dark:text-gray-400 mb-6">
-          لم تقم بإضافة أي ملخصات بعد. ابدأ الآن وشارك معرفتك!
-        </p>
-        <Button
-          onClick={() => onNavigate("/add-note")}
-          className="bg-primary hover:bg-primary/90 text-white"
-        >
-          إضافة ملخص جديد
-        </Button>
-      </Card>
+      </div>
     );
   }
 
@@ -58,7 +59,7 @@ const UserNotesList = ({ userNotes, onNavigate, onDeleteRequest }) => {
         </Button>
       </div>
 
-      {userNotes.map((note, index) => (
+      {userNotes?.map((note, index) => (
         <motion.div
           key={note.id}
           custom={index}

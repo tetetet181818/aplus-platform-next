@@ -62,10 +62,10 @@ const ContactUsPage = () => {
                     البريد الإلكتروني
                   </h2>
                   <a
-                    href="mailto:aplusplatform@outlook.com"
-                    className="text-accent dark:text-accent-light hover:underline break-all"
+                    href="mailto:aplusplatformsa@gmail.com"
+                    className="hover:underline break-all"
                   >
-                    aplusplatform@outlook.com
+                    aplusplatformsa@gmail.com
                   </a>
                 </div>
               </div>
@@ -73,7 +73,7 @@ const ContactUsPage = () => {
                 يرجى إرسال رسالتك مع توضيح نوع المشكلة أو الاستفسار
               </p>
               <a
-                href="mailto:aplusplatform@outlook.com"
+                href="mailto:aplusplatformsa@gmail.com"
                 className="inline-flex items-center justify-center w-full px-4 py-2 bg-primary hover:bg-primary-dark dark:bg-primary-light dark:hover:bg-primary text-white dark:text-gray-900 rounded-md transition-colors"
               >
                 <Send className="h-5 w-5 ml-2" />

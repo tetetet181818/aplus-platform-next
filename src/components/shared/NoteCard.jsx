@@ -51,7 +51,7 @@ const NoteCard = ({ note }) => {
       >
         <Card className="h-full flex flex-col py-0 border-1 rounded-xl overflow-hidden transition-all duration-300 hover:border-primary/30">
           <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br py-0 from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
-            <motion.div variants={imageVariants} className="w-full h-full py-0">
+            <motion.div variants={imageVariants} className="w-full h-full">
               <Image
                 loading="lazy"
                 src={note.cover_url}
@@ -62,15 +62,17 @@ const NoteCard = ({ note }) => {
               />
             </motion.div>
 
-            {note.rating > 0 && (
+            {note?.reviews?.length > 0 && (
               <div className="absolute bottom-3 left-3 bg-background/80 backdrop-blur-sm text-foreground px-2.5 py-1 rounded-full text-xs flex items-center gap-1 shadow-sm border">
                 <Star className="h-3.5 w-3.5 text-yellow-400 fill-yellow-400" />
-                <span className="font-medium">{note.rating.toFixed(1)}</span>
+                <span className="font-medium">
+                  {note.reviews?.length.toFixed(1)}
+                </span>
               </div>
             )}
           </div>
 
-          <CardContent className="p-4 flex flex-col flex-grow space-y-3">
+          <CardContent className="p-4 pt-0 flex flex-col flex-grow space-y-3 h-fit">
             <h3 className="font-semibold text-lg leading-tight line-clamp-2 text-foreground group-hover:text-primary transition-colors">
               {note.title}
             </h3>

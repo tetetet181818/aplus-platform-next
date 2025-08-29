@@ -137,25 +137,6 @@ const FinanceDashboard = ({ availableBalance, withdrawalHistory }) => {
                   <span className="text-xl font-medium">ريال</span>
                 </p>
               )}
-
-              <div className="flex items-center gap-2 mt-4 text-sm bg-white/20 p-2 rounded-lg">
-                <Info className="h-4 w-4" />
-                <span>
-                  يشمل هذا المبلغ خصم رسوم المنصة ({mockData.platformFeePercent}
-                  %)
-                </span>
-              </div>
-              <div className="flex items-center gap-2 mt-4 text-sm bg-white/20 p-2 rounded-lg">
-                <Info className="h-4 w-4" />
-
-                <ul className="space-y-1 text-sm  list-disc pl-5">
-                  <li>
-                    رسوم منصة الدفع ({mockData.paymentProcessingPercent}%)
-                  </li>
-                  <li>1 ريال خاص بالـ refund</li>
-                  <li>1 ريال رسوم الاحتيال</li>
-                </ul>
-              </div>
             </CardContent>
           </Card>
         </motion.div>
@@ -178,16 +159,9 @@ const FinanceDashboard = ({ availableBalance, withdrawalHistory }) => {
               <div className="space-y-4">
                 <h3 className="font-semibold text-lg flex items-center gap-2">
                   <Zap className="h-5 w-5 text-amber-500" />
-                  رسوم المنصة
+                  شروط ومعلومات السحب
                 </h3>
                 <ul className="space-y-2 text-muted-foreground">
-                  <li className="flex items-start gap-2">
-                    <div className="h-2 w-2 rounded-full bg-primary mt-2"></div>
-                    <span>
-                      تطبق رسوم منصة بنسبة {mockData.platformFeePercent}% على
-                      جميع المعاملات
-                    </span>
-                  </li>
                   <li className="flex items-start gap-2">
                     <div className="h-2 w-2 rounded-full bg-primary mt-2"></div>
                     <span>
@@ -201,7 +175,12 @@ const FinanceDashboard = ({ availableBalance, withdrawalHistory }) => {
                   </li>
                   <li className="flex items-start gap-2">
                     <div className="h-2 w-2 rounded-full bg-primary mt-2"></div>
-                    <span> ثلاثة ريال تحت رسوم اضافية</span>
+                    <span>
+                      الحد الأدنى للسحب هو{" "}
+                      <strong className="text-gray-900 dark:text-gray-100">
+                        50 ريال سعودي
+                      </strong>
+                    </span>
                   </li>
                 </ul>
               </div>
@@ -217,6 +196,13 @@ const FinanceDashboard = ({ availableBalance, withdrawalHistory }) => {
                     <li className="flex items-start gap-2">
                       <div className="h-2 w-2 rounded-full bg-primary mt-2"></div>
                       <span>
+                        تطبق رسوم منصة بنسبة {mockData.platformFeePercent}% على
+                        جميع المعاملات
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <div className="h-2 w-2 rounded-full bg-primary mt-2"></div>
+                      <span>
                         تطبق رسوم معالجة مدفوعات بنسبة{" "}
                         <strong className="text-gray-900 dark:text-gray-100">
                           {mockData.paymentProcessingPercent}%
@@ -224,14 +210,14 @@ const FinanceDashboard = ({ availableBalance, withdrawalHistory }) => {
                         على جميع عمليات السحب بشكل تلقائي.
                       </span>
                     </li>
+
                     <li className="flex items-start gap-2">
                       <div className="h-2 w-2 rounded-full bg-primary mt-2"></div>
-                      <span>
-                        الحد الأدنى للسحب هو{" "}
-                        <strong className="text-gray-900 dark:text-gray-100">
-                          50 ريال سعودي
-                        </strong>
-                      </span>
+                      <span>1 ريال خاص بالـ refund</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <div className="h-2 w-2 rounded-full bg-primary mt-2"></div>
+                      <span>1 ريال رسوم الاحتيال</span>
                     </li>
                   </ul>
                 </div>

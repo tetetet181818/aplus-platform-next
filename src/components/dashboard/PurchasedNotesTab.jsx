@@ -62,10 +62,10 @@ const PurchasedNotesTab = ({
                   </p>
                   <div className="flex flex-wrap gap-2 text-xs mb-3">
                     <Badge variant="outline">{note.university}</Badge>
-                    <Badge variant="outline">{note.subject}</Badge>
+                    <Badge variant="outline">{note.college}</Badge>
                   </div>
                   <Badge variant="outline">
-                    رقم المبيعه : <span className="mx-2">{note?.saleId}</span>
+                    رقم الطلب : <span className="mx-2">{note?.saleId}</span>
                   </Badge>
                 </div>
                 <div className="flex flex-col sm:flex-row justify-between items-center mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">

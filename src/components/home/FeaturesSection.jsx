@@ -87,7 +87,7 @@ const FeaturesSection = () => {
           transition={{ delay: 0.9 }}
         >
           <h3 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">
-            أ+ انضم اليوم وابدأ رحلتك مع
+            انضم اليوم وابدأ رحلتك مع أ+
           </h3>
           <p className="text-xl font-semibold mb-8 text-primary dark:text-blue-300">
             شارك — تعلم — اربح
