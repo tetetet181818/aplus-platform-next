@@ -5,14 +5,12 @@ import { toast } from "@/components/ui/use-toast";
 import axios from "axios";
 import { Link, Star } from "lucide-react";
 
-
 const DEFAULT_IMAGE_URL = process.env.NEXT_PUBLIC_SUPABASE_DEFAULT_COVER;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_KEY;
 const moyasar_key = process.env.NEXT_PUBLIC_MOYASAR_SECRET_KEY;
 const BUCKET_NAME = "notes";
-// const domain = "https://aplusplatformsa.com";
-const domain = "http://localhost:3000";
+const domain = "https://aplusplatformsa.com";
 
 export const useFileStore = create((set, get) => ({
   loading: false,
@@ -418,7 +416,7 @@ export const useFileStore = create((set, get) => ({
     invoice_id,
     status,
     message,
-    buyerId
+    buyerId,
   }) => {
     set({ loading: true, error: null });
 
@@ -441,7 +439,7 @@ export const useFileStore = create((set, get) => ({
       const platformFeeRate = 0.15;
       const editionTax = 2;
       const platformFee = currentFile.price * platformFeeRate;
-      const ownerEarnings = (currentFile.price - platformFee) - editionTax;
+      const ownerEarnings = currentFile.price - platformFee - editionTax;
 
       const { data: transactionResult, error: transactionError } =
         await supabase.rpc("handle_note_purchase", {
@@ -460,12 +458,12 @@ export const useFileStore = create((set, get) => ({
             note_id: noteId,
             amount: currentFile.price,
             platform_fee: platformFee,
-            payment_method: 'bank',
+            payment_method: "bank",
             note_title: currentFile.title,
             invoice_id: invoice_id,
             status: status,
             message: message,
-            buyerId: buyerId
+            buyerId: buyerId,
           },
         ]);
 
@@ -476,17 +474,19 @@ export const useFileStore = create((set, get) => ({
         {
           user_id: userId,
           title: "تم شراء الملخص  بنجاح",
-          body: `تم شراء الملخص  بنجاح"${currentFile.title
-            }" بنجاح , رقم الطلب: ${invoice_id}, ${'💸'}, ${(
-              <a href={`notes/${noteId}`}>عرض الملخص</a>
-            )} `,
+          body: `تم شراء الملخص  بنجاح"${
+            currentFile.title
+          }" بنجاح , رقم الطلب: ${invoice_id}, ${"💸"}, ${(
+            <a href={`notes/${noteId}`}>عرض الملخص</a>
+          )} `,
           type: "purchase",
         },
         {
           user_id: currentFile.owner_id,
           title: "تم بيع ملخص",
-          body: `تم بيع ملخصك "${currentFile.title
-            }" وتم إضافة ${ownerEarnings.toFixed(2)} إلى رصيدك`,
+          body: `تم بيع ملخصك "${
+            currentFile.title
+          }" وتم إضافة ${ownerEarnings.toFixed(2)} إلى رصيدك`,
           type: "sale",
         },
       ]);
@@ -616,8 +616,8 @@ export const useFileStore = create((set, get) => ({
       if (error) throw error;
 
       const reviews = data?.reviews || [];
-      console.log(reviews)
-      return reviews
+      console.log(reviews);
+      return reviews;
       // return reviews.sort((a, b) => {
       //   switch (sortOption) {
       //     case "latest":
@@ -731,8 +731,7 @@ export const useFileStore = create((set, get) => ({
         {
           headers: {
             "Content-Type": "application/json",
-            // Authorization: "Basic " + btoa(`${moyasar_key}`),
-            Authorization: "Basic " + btoa(`sk_test_dQkT7b7dakPJ3i7N9Xq7hGNHSccAkQwWRyX3XzHD`),
+            Authorization: "Basic " + btoa(`${moyasar_key}`),
           },
         }
       );
@@ -750,15 +749,7 @@ export const useFileStore = create((set, get) => ({
         .from("files")
         .select("college")
         .eq("university", university)
-        /**
-         * The content type of the request
-         * @type {string}
-         */
         .neq("college", null);
-      /**
-       * The authorization header for the request
-       * @type {string}
-       */
 
       if (error) throw error;
 
@@ -823,7 +814,7 @@ export const useFileStore = create((set, get) => ({
       if (fetchError || !existingNote) {
         throw new Error(
           "الملخص غير موجود أو حدث خطأ في الجلب: " +
-          (fetchError?.message || "خطأ غير معروف")
+            (fetchError?.message || "خطأ غير معروف")
         );
       }
 
