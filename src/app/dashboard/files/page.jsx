@@ -9,6 +9,8 @@ import {
   DollarSign,
   LinkIcon,
   Eye,
+  Trash2,
+  BookOpenCheck,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useFileStore } from "@/stores/useFileStore";
@@ -43,6 +45,8 @@ import Head from "next/head";
 import { universityData } from "@/data/universityData";
 import Link from "next/link";
 import FileDetailsDialog from "@/components/dashboard/FileDetailsDialog";
+import ConfirmDialog from "@/components/dashboard/ConfirmDialog";
+import UnpublishDialog from "@/components/dashboard/UnpublishDialog";
 
 const truncateText = (text, maxLength = 20) => {
   if (!text) return "N/A";
@@ -56,6 +60,7 @@ export default function FilesDashboard() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
+  const [unpublishedNote, setUnpublishedNote] = useState(false);
   const [filters, setFilters] = useState({
     university: "",
     college: "",
@@ -76,6 +81,8 @@ export default function FilesDashboard() {
     notes,
     downloadNote,
     downloadLoading,
+    deleteNote,
+    makeUnPublished,
   } = useFileStore();
 
   const universities = universityData.map((uni) => uni.name);
@@ -193,6 +200,22 @@ export default function FilesDashboard() {
             ) : (
               <Download className="h-4 w-4" />
             )}
+          </Button>
+        </div>
+      ),
+    },
+    {
+      header: "الغاء النشر",
+      customRender: (item) => (
+        <div className="flex gap-2 justify-end">
+          <Button
+            variant={item.isPublish ? "destructive" : "default"}
+            onClick={() => {
+              setSelectedFile(item);
+              setUnpublishedNote(true);
+            }}
+          >
+            {item.isPublish ? "الغاء النشر" : "نشر"}
           </Button>
         </div>
       ),
@@ -517,6 +540,12 @@ export default function FilesDashboard() {
         open={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
         item={selectedFile}
+      />
+      <UnpublishDialog
+        open={unpublishedNote}
+        onClose={() => setUnpublishedNote(false)}
+        onConfirm={() => makeUnPublished({ noteId: selectedFile.id })}
+        loading={loading}
       />
     </>
   );

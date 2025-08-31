@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import {
   Eye,
   Trash2,
@@ -37,7 +36,7 @@ import {
 } from "@/components/ui/popover";
 import { Calendar as CalendarComp } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import { ar } from "date-fns/locale";
+import { ar, id } from "date-fns/locale";
 import SectionHeader from "@/components/ui/SectionHeader";
 import GetSingleStudentDialog from "@/components/GetSingleStudentDialog";
 import Head from "next/head";
@@ -51,9 +50,9 @@ import {
 import { universities } from "@/constants/index";
 import Link from "next/link";
 import formatArabicDate from "@/config/formateTime";
+import ConfirmDialog from "@/components/dashboard/ConfirmDialog";
 
 export default function StudentsDashboard() {
-  const router = useRouter();
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
@@ -65,7 +64,7 @@ export default function StudentsDashboard() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [searchMode, setSearchMode] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
-
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const {
     getAllUsers,
     loading,
@@ -130,7 +129,10 @@ export default function StudentsDashboard() {
             variant="ghost"
             size="sm"
             className="text-red-500 hover:text-red-700 hover:bg-red-50"
-            onClick={() => handleDeleteUser(user.id)}
+            onClick={() => {
+              setConfirmDelete(true);
+              setSelectedUser(user);
+            }}
             title="حذف"
           >
             <Trash2 className="h-4 w-4" />
@@ -203,8 +205,8 @@ export default function StudentsDashboard() {
     };
   }, [handleSearch])();
 
-  const handleDeleteUser = async (id) => {
-    if (!confirm("هل أنت متأكد من حذف هذا الطالب؟")) return;
+  const handleDeleteUser = async ({ id }) => {
+    console.log(id);
     try {
       await deleteUserById({ id });
       fetchUsers(currentPage);
@@ -529,6 +531,13 @@ export default function StudentsDashboard() {
         open={showUser}
         onClose={() => setShowUser(false)}
         student={selectedUser}
+      />
+      <ConfirmDialog
+        open={confirmDelete}
+        onClose={() => setConfirmDelete(false)}
+        onConfirm={() => handleDeleteUser({ id: selectedUser?.id })}
+        title="حذف الطالب"
+        description="هل أنت متأكد من حذف هذا الطالب؟"
       />
     </>
   );

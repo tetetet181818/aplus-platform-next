@@ -430,7 +430,7 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
-  deleteUserById: async (id) => {
+  deleteUserById: async ({ id }) => {
     try {
       set({ loading: true });
 

@@ -66,7 +66,11 @@ const NoteCard = ({ note }) => {
               <div className="absolute bottom-3 left-3 bg-background/80 backdrop-blur-sm text-foreground px-2.5 py-1 rounded-full text-xs flex items-center gap-1 shadow-sm border">
                 <Star className="h-3.5 w-3.5 text-yellow-400 fill-yellow-400" />
                 <span className="font-medium">
-                  {note.reviews?.length.toFixed(1)}
+                  {/* make average of reviews */}
+                  {note.reviews
+                    ?.map((review) => review.rating)
+                    .reduce((a, b) => a + b, 0) /
+                    note.reviews?.length.toFixed(1)}
                 </span>
               </div>
             )}

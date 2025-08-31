@@ -184,6 +184,7 @@ export const useFileStore = create((set, get) => ({
       } = await supabase
         .from("files")
         .select("*", { count: "exact" })
+        .eq("isPublish", true)
         .order("created_at", { ascending: false })
         .range(from, to);
       if (error) {
@@ -194,7 +195,7 @@ export const useFileStore = create((set, get) => ({
         error: null,
         files: files || [],
       });
-
+      console.log(files);
       return {
         data: files,
         totalItems: count,
@@ -218,6 +219,7 @@ export const useFileStore = create((set, get) => ({
       let supabaseQuery = supabase
         .from("files")
         .select("*", { count: "exact" })
+        .eq("isPublish", true)
         .range(from, to);
 
       if (query) {
@@ -616,22 +618,7 @@ export const useFileStore = create((set, get) => ({
       if (error) throw error;
 
       const reviews = data?.reviews || [];
-      console.log(reviews);
       return reviews;
-      // return reviews.sort((a, b) => {
-      //   switch (sortOption) {
-      //     case "latest":
-      //       return new Date(b.created_at) - new Date(a.created_at);
-      //     case "oldest":
-      //       return new Date(a.created_at) - new Date(b.created_at);
-      //     case "highest":
-      //       return b.rate - a.rate;
-      //     case "lowest":
-      //       return a.rate - b.rate;
-      //     default:
-      //       return new Date(b.created_at) - new Date(a.created_at);
-      //   }
-      // });
     } catch (error) {
       console.log(error);
       return [];
@@ -735,7 +722,6 @@ export const useFileStore = create((set, get) => ({
           },
         }
       );
-      console.log(response.data);
       return response.data;
     } catch (error) {
       console.error("Moyasar error:", error.response?.data || error.message);
@@ -964,6 +950,30 @@ export const useFileStore = create((set, get) => ({
       });
       set({ loading: false, error: err.message });
       return null;
+    }
+  },
+  makeUnPublished: async ({ noteId }) => {
+    try {
+      set({ loading: true, error: null });
+      const { error } = await supabase
+        .from("files")
+        .update({ isPublish: false })
+        .eq("id", noteId);
+      if (error) {
+        throw error;
+      }
+      set({ loading: false, error: null });
+      return true;
+    } catch (error) {
+      console.error("Error in makeUnPuplished:", error);
+      toast({
+        title: "حدث خطأ",
+        description: error.message || "حدث خطأ غير متوقع أثناء إلغاء النشر",
+        variant: "destructive",
+      });
+      set({ loading: false, error: error.message });
+      await getAllNotes();
+      return false;
     }
   },
   clearError: () => set({ error: null }),
