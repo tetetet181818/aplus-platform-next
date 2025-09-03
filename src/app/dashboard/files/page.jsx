@@ -47,6 +47,7 @@ import Link from "next/link";
 import FileDetailsDialog from "@/components/dashboard/FileDetailsDialog";
 import ConfirmDialog from "@/components/dashboard/ConfirmDialog";
 import UnpublishDialog from "@/components/dashboard/UnpublishDialog";
+import PublishDialog from "@/components/dashboard/PublishDialog";
 
 const truncateText = (text, maxLength = 20) => {
   if (!text) return "N/A";
@@ -61,6 +62,7 @@ export default function FilesDashboard() {
   const [totalItems, setTotalItems] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [unpublishedNote, setUnpublishedNote] = useState(false);
+  const [publishedNote, setPublishedNote] = useState(false);
   const [filters, setFilters] = useState({
     university: "",
     college: "",
@@ -83,6 +85,7 @@ export default function FilesDashboard() {
     downloadLoading,
     deleteNote,
     makeUnPublished,
+    makePublished,
   } = useFileStore();
 
   const universities = universityData.map((uni) => uni.name);
@@ -208,15 +211,27 @@ export default function FilesDashboard() {
       header: "الغاء النشر",
       customRender: (item) => (
         <div className="flex gap-2 justify-end">
-          <Button
-            variant={item.isPublish ? "destructive" : "default"}
-            onClick={() => {
-              setSelectedFile(item);
-              setUnpublishedNote(true);
-            }}
-          >
-            {item.isPublish ? "الغاء النشر" : "نشر"}
-          </Button>
+          {item.isPublish ? (
+            <Button
+              variant={"destructive"}
+              onClick={() => {
+                setSelectedFile(item);
+                setUnpublishedNote(true);
+              }}
+            >
+              الغاء النشر
+            </Button>
+          ) : (
+            <Button
+              variant={"default"}
+              onClick={() => {
+                setSelectedFile(item);
+                setPublishedNote(true);
+              }}
+            >
+              نشر
+            </Button>
+          )}
         </div>
       ),
     },
@@ -545,6 +560,12 @@ export default function FilesDashboard() {
         open={unpublishedNote}
         onClose={() => setUnpublishedNote(false)}
         onConfirm={() => makeUnPublished({ noteId: selectedFile.id })}
+        loading={loading}
+      />
+      <PublishDialog
+        open={publishedNote}
+        onClose={() => setPublishedNote(false)}
+        onConfirm={() => makePublished({ noteId: selectedFile.id })}
         loading={loading}
       />
     </>

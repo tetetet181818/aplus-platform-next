@@ -977,6 +977,30 @@ export const useFileStore = create((set, get) => ({
       return false;
     }
   },
+  makePublished: async ({ noteId }) => {
+    try {
+      set({ loading: true, error: null });
+      const { error } = await supabase
+        .from("files")
+        .update({ isPublish: true })
+        .eq("id", noteId);
+      if (error) {
+        throw error;
+      }
+      set({ loading: false, error: null });
+      return true;
+    } catch (error) {
+      console.error("Error in makePublished:", error);
+      toast({
+        title: "حدث خطأ",
+        description: error.message || "حدث خطأ غير متوقع أثناء النشر",
+        variant: "destructive",
+      });
+      set({ loading: false, error: error.message });
+      await getAllNotes();
+      return false;
+    }
+  },
   searchUsers: async (searchQuery) => {
     try {
       set({ loading: true, error: null });

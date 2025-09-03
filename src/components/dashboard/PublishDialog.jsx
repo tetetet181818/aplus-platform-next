@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,14 +11,14 @@ import {
 import { Button } from "../ui/button";
 import { Loader } from "lucide-react";
 
-export default function UnpublishDialog({ open, onClose, onConfirm, loading }) {
+export default function PublishDialog({ open, onClose, onConfirm, loading }) {
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>الغاء نشر الملاحظة</DialogTitle>
+          <DialogTitle>نشر الملاحظة</DialogTitle>
           <DialogDescription>
-            هل أنت متأكد من الغاء نشر هذه الملاحظة؟
+            هل أنت متأكد من نشر هذه الملاحظة؟
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
@@ -34,10 +35,10 @@ export default function UnpublishDialog({ open, onClose, onConfirm, loading }) {
             {loading ? (
               <>
                 <Loader className="size-5" />
-                <span>جاري الغاء نشر...</span>
+                <span>جاري النشر...</span>
               </>
             ) : (
-              "الغاء نشر"
+              "نشر"
             )}
           </Button>
         </DialogFooter>
