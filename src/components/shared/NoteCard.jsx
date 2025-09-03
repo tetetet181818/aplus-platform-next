@@ -57,8 +57,8 @@ const NoteCard = ({ note }) => {
                 src={note.cover_url}
                 alt={`Cover image for ${note.title}`}
                 width={800}
-                height={500}
-                className="rounded-lg object-cover"
+                height={800}
+                className="rounded-lg"
               />
             </motion.div>
 

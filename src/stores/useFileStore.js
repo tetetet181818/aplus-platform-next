@@ -21,6 +21,7 @@ export const useFileStore = create((set, get) => ({
   growthRate: 0,
   totalNotes: 0,
   downloadLoading: false,
+  users: [],
   getTotalNotes: async () => {
     try {
       set({ loading: true });
@@ -643,6 +644,7 @@ export const useFileStore = create((set, get) => ({
           `title.ilike.%${filters.search}%,description.ilike.%${filters.search}%,subject.ilike.%${filters.search}%`
         );
       }
+
       if (filters.university) {
         query = query.eq("university", filters.university);
       }
@@ -765,7 +767,6 @@ export const useFileStore = create((set, get) => ({
     try {
       set({ loading: true, error: null });
 
-      // Get authenticated user
       const {
         data: { user },
         error: userError,
@@ -974,6 +975,26 @@ export const useFileStore = create((set, get) => ({
       set({ loading: false, error: error.message });
       await getAllNotes();
       return false;
+    }
+  },
+  searchUsers: async (searchQuery) => {
+    try {
+      set({ loading: true, error: null });
+      const { data, error } = await supabase
+        .from("users")
+        .select("*")
+        .ilike("full_name", `%${searchQuery}%`)
+        .order("created_at", { ascending: false });
+      if (error) {
+        throw error;
+      }
+      set({ loading: false, error: null, users: data || [] });
+      console.log("data", data);
+      return data;
+    } catch (error) {
+      console.error("Error in searchUsers:", error);
+      set({ loading: false, error: error.message });
+      return null;
     }
   },
   clearError: () => set({ error: null }),

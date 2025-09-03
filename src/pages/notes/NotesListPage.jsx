@@ -9,6 +9,8 @@ import NotesSortDropdown from "./NotesSortDropdown";
 import NotesFilterSection from "./NotesFilterSection";
 import NotesResultsSection from "./NotesResultsSection";
 import Pagination from "@/components/ui/Pagination";
+import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export const metaData = {
   title: "تصفح وابحث عن الملخصات",
@@ -23,6 +25,9 @@ const NotesListPage = () => {
   const [searchQuery, setSearchQuery] = useState(
     searchParams.get("search") || ""
   );
+  const [searchType, setSearchType] = useState(
+    searchParams.get("type") || "file"
+  );
   const [showFilters, setShowFilters] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -30,9 +35,7 @@ const NotesListPage = () => {
   const searchTimeoutRef = useRef(null);
   const itemsPerPage = 10;
 
-  const toggleFilters = useCallback(() => {
-    setShowFilters((prev) => !prev);
-  }, []);
+  const toggleFilters = useCallback(() => setShowFilters((prev) => !prev), []);
 
   const {
     files,
@@ -41,6 +44,10 @@ const NotesListPage = () => {
     universities,
     getCollegesByUniversity,
     totalNotes,
+    searchUsers,
+    users,
+    totalUsers,
+    loading: isLoadingUsers,
   } = useFileStore();
 
   const [filters, setFilters] = useState({
@@ -52,7 +59,7 @@ const NotesListPage = () => {
     sortBy: searchParams.get("sortBy") || "default",
   });
 
-  // Initialize state from URL params
+  // init page + filters
   useEffect(() => {
     const page = parseInt(searchParams.get("page")) || 1;
     setCurrentPage(page);
@@ -66,64 +73,61 @@ const NotesListPage = () => {
     );
   }, [searchParams]);
 
+  // main search handler
   const performSearch = useCallback(async () => {
     try {
-      await searchNotes(searchQuery, filters, currentPage, itemsPerPage);
+      if (searchType === "file") {
+        await searchNotes(searchQuery, filters, currentPage, itemsPerPage);
+      } else {
+        await searchUsers(searchQuery, currentPage, itemsPerPage);
+      }
       setError(null);
     } catch (err) {
-      setError("فشل في تحميل الملاحظات");
+      setError("فشل في تحميل النتائج");
       console.error("Error:", err);
     } finally {
       setIsTyping(false);
       setIsInitialLoad(false);
     }
-  }, [searchQuery, filters, currentPage, searchNotes]);
+  }, [searchQuery, filters, currentPage, searchNotes, searchUsers, searchType]);
 
-  // Debounced search
+  // debounce search
   useEffect(() => {
-    if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current);
-    }
-
+    if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
     setIsTyping(true);
     searchTimeoutRef.current = setTimeout(performSearch, 500);
-
-    return () => {
-      if (searchTimeoutRef.current) {
-        clearTimeout(searchTimeoutRef.current);
-      }
-    };
+    return () => clearTimeout(searchTimeoutRef.current);
   }, [performSearch]);
 
-  // Update URL when filters change
+  // update URL params
   useEffect(() => {
     const params = new URLSearchParams();
-
     if (searchQuery) params.set("search", searchQuery);
     if (currentPage > 1) params.set("page", currentPage);
+    if (searchType) params.set("type", searchType);
 
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value && (key !== "sortBy" || value !== "default")) {
-        params.set(key, value);
-      }
-    });
-
+    if (searchType === "file") {
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value && (key !== "sortBy" || value !== "default")) {
+          params.set(key, value);
+        }
+      });
+    }
     router.replace(`?${params.toString()}`);
-  }, [searchQuery, filters, currentPage, router]);
+  }, [searchQuery, filters, currentPage, searchType, router]);
 
-  // Fetch colleges when university changes
+  // load colleges if file search
   useEffect(() => {
     const fetchColleges = async () => {
-      if (!filters?.university) return;
+      if (!filters?.university || searchType !== "file") return;
       try {
         await getCollegesByUniversity(filters?.university);
       } catch (err) {
         console.error("Error fetching colleges:", err);
       }
     };
-
     fetchColleges();
-  }, [filters?.university, getCollegesByUniversity]);
+  }, [filters?.university, getCollegesByUniversity, searchType]);
 
   const years = useMemo(
     () =>
@@ -134,10 +138,7 @@ const NotesListPage = () => {
   );
 
   const handleFilterChange = useCallback((key, value) => {
-    setFilters((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
+    setFilters((prev) => ({ ...prev, [key]: value }));
     setCurrentPage(1);
   }, []);
 
@@ -173,8 +174,11 @@ const NotesListPage = () => {
     [filters, searchQuery]
   );
 
-  // Determine when to show loading state
-  const showLoadingState = (isLoadingNotes && !isTyping) || isInitialLoad;
+  // loading state
+  const isLoading =
+    (searchType === "file" && isLoadingNotes) ||
+    (searchType === "user" && isLoadingUsers);
+  const showLoadingState = (isLoading && !isTyping) || isInitialLoad;
 
   if (error && !isTyping) {
     return (
@@ -185,64 +189,96 @@ const NotesListPage = () => {
   }
 
   return (
-    <>
-      <div className="py-12 px-4 md:px-6">
-        <NotesListHeader
-          onToggleFilters={toggleFilters}
-          showFilters={showFilters}
-          itemCount={files.length}
-          totalCount={totalNotes || 0}
-          hasActiveFilters={hasActiveFilters}
-          onClearFilters={clearFilters}
-        />
+    <div className="py-12 px-4 md:px-6">
+      <NotesListHeader
+        onToggleFilters={toggleFilters}
+        showFilters={showFilters}
+        itemCount={searchType === "file" ? files.length : users.length}
+        totalCount={searchType === "file" ? totalNotes || 0 : totalUsers || 0}
+        hasActiveFilters={hasActiveFilters}
+        onClearFilters={clearFilters}
+      />
 
-        <div className="flex flex-col md:flex-row gap-4 mb-6 items-center">
-          <NotesSearchBar
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            isLoading={isTyping}
-          />
+      <div className="flex flex-col md:flex-row gap-4 mb-6 items-center">
+        <NotesSearchBar
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          setSearchType={setSearchType}
+          searchType={searchType}
+        />
+        {searchType === "file" && (
           <NotesSortDropdown
             sortBy={filters.sortBy}
             onSortChange={handleSortChange}
           />
-        </div>
-
-        {showFilters && (
-          <div className="mb-6 transition-all duration-300 ease-in-out">
-            <NotesFilterSection
-              filters={filters}
-              onFilterChange={handleFilterChange}
-              onClearFilters={clearFilters}
-              universities={universities}
-              years={years}
-            />
-          </div>
-        )}
-
-        {showLoadingState ? (
-          <LoadingSpinner message="جاري البحث..." />
-        ) : (
-          <>
-            <NotesResultsSection
-              filteredNotes={files}
-              hasActiveFilters={hasActiveFilters}
-              onClearFilters={clearFilters}
-            />
-
-            {totalNotes > itemsPerPage && (
-              <div className="mt-8">
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={Math.ceil(totalNotes / itemsPerPage)}
-                  onPageChange={handlePageChange}
-                />
-              </div>
-            )}
-          </>
         )}
       </div>
-    </>
+
+      {showFilters && searchType === "file" && (
+        <NotesFilterSection
+          filters={filters}
+          onFilterChange={handleFilterChange}
+          onClearFilters={clearFilters}
+          universities={universities}
+          years={years}
+        />
+      )}
+
+      {showLoadingState ? (
+        <LoadingSpinner message="جاري البحث..." />
+      ) : searchType === "file" ? (
+        <>
+          <NotesResultsSection
+            filteredNotes={files}
+            hasActiveFilters={hasActiveFilters}
+            onClearFilters={clearFilters}
+          />
+          {totalNotes > itemsPerPage && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={Math.ceil(totalNotes / itemsPerPage)}
+              onPageChange={handlePageChange}
+            />
+          )}
+        </>
+      ) : (
+        <>
+          <div className="flex justify-around items-center flex-wrap gap-4">
+            {users.map((user) => (
+              <div
+                key={user.id}
+                className="p-4 border rounded-lg shadow-sm bg-white w-fit flex justify-around items-center flex-col"
+              >
+                <Avatar className="h-16 w-16">
+                  <AvatarImage
+                    src={`https://api.dicebear.com/6.x/initials/svg?seed=${user.full_name}`}
+                    alt={user.full_name}
+                  />
+                  <AvatarFallback>
+                    {user.full_name?.charAt(0)?.toUpperCase() || "?"}
+                  </AvatarFallback>
+                </Avatar>
+                <h3 className="font-semibold">{user.full_name}</h3>
+                <p className="text-sm text-gray-500">{user.email}</p>
+                <Link
+                  className="text-blue-500 hover:underline"
+                  href={`/seller/${user.id}`}
+                >
+                  ملف المستخدم
+                </Link>
+              </div>
+            ))}
+          </div>
+          {totalUsers > itemsPerPage && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={Math.ceil(totalUsers / itemsPerPage)}
+              onPageChange={handlePageChange}
+            />
+          )}
+        </>
+      )}
+    </div>
   );
 };
 
