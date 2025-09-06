@@ -114,10 +114,6 @@ const NotesLikedTab = () => {
               <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
                 <div>
                   <div className="flex flex-col sm:flex-row justify-between items-start mb-3 gap-2">
-                    <h2 className="font-bold text-lg sm:text-xl text-gray-900 dark:text-white line-clamp-2 sm:line-clamp-1">
-                      {note.title}
-                    </h2>
-
                     <div className="hidden sm:block">
                       <Badge
                         variant="primary"
@@ -151,21 +147,19 @@ const NotesLikedTab = () => {
                 <div className="flex flex-col xs:flex-row justify-between items-start xs:items-center gap-3 pt-3 sm:pt-4 border-t border-gray-100 dark:border-gray-700">
                   <div className="flex flex-col xs:flex-row gap-2 w-full xs:w-auto">
                     <Button
-                      variant="outline"
+                      variant="default"
                       size="sm"
-                      className="w-full xs:w-auto rounded-full px-4 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                      className="w-full xs:w-auto py-5 text-white transition-colors"
                       onClick={() => router.push(`/notes/${note?.id}`)}
                     >
-                      <Eye className="h-4 w-4 ml-1 text-blue-600 dark:text-blue-400" />
-                      <span className="text-gray-700 dark:text-gray-300">
-                        عرض التفاصيل
-                      </span>
+                      <Eye className="h-4 w-4 ml-1 text-white" />
+                      <span className="text-white">عرض التفاصيل</span>
                     </Button>
 
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="w-full xs:w-auto rounded-full px-4 text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30 transition-colors"
+                      className="w-full xs:w-auto py-5 px-4 text-white bg-red-600 hover:bg-red-700 hover:text-white transition-colors"
                     >
                       <Heart className="h-4 w-4 ml-1 fill-current" />
                       <span>إزالة الإعجاب</span>

@@ -39,22 +39,22 @@ const UserNotesTab = ({
           className="py-0 overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300"
         >
           <div className="flex flex-col sm:flex-row">
-            <div className="sm:w-1/3 lg:w-1/4 aspect-video sm:aspect-auto bg-gray-100 dark:bg-gray-800">
+            <div className="relative w-full sm:w-1/3 lg:w-1/4 py-0 aspect-video sm:aspect-[4/3] bg-gradient-to-br from-blue-50 to-blue-50 dark:from-gray-700 dark:to-gray-900">
               <Image
                 loading="lazy"
                 alt={note.title}
-                className="w-full h-full object-cover"
-                src={note.cover_url}
                 width={500}
                 height={500}
+                src={note?.cover_url}
+                className="object-cover w-full h-full py-0"
+                placeholder="blur"
+                blurDataURL="/placeholder-image.jpg"
+                sizes="(max-width: 639px) 100vw, (max-width: 1023px) 33vw, 25vw"
               />
             </div>
             <div className="p-4 flex-1 flex flex-col justify-between">
               <div>
                 <div className="flex justify-between items-start mb-1">
-                  <h3 className="font-bold text-lg text-gray-800 dark:text-white">
-                    {note.title}
-                  </h3>
                   <Badge className="bg-primary text-primary-foreground">
                     {note.price} ريال
                   </Badge>
