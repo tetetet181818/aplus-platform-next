@@ -93,7 +93,7 @@ export const MAX_NOTES_PER_USER = 50;
 export const MAX_FILE_SIZE_MB = 30;
 export const MAX_PAGES_PER_NOTE = 300;
 export const ALLOWED_FILE_TYPES = ["application/pdf"];
-export const ALLOWED_FILE_TYPES_STRING = "application/pdf";
+export const ALLOWED_FILE_TYPES_STRING = "pdf";
 
 export const SAUDI_BANKS = [
   { name: "البنك الأهلي التجاري", code: "NCB" },

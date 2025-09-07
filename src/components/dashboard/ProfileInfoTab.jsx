@@ -41,6 +41,7 @@ const ProfileInfoTab = ({
   const handleDeleteAccount = async () => {
     let res = await deleteAccount();
   };
+  console.log(user);
   return (
     <>
       <motion.div
@@ -55,7 +56,10 @@ const ProfileInfoTab = ({
               المعلومات الشخصية
             </CardTitle>
             <CardDescription className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
-              تفاصيل حسابك في منصة أ+
+              <div className="flex gap-1">
+                <span>+أ</span>
+                <span>تفاصيل حسابك في منصة</span>
+              </div>
             </CardDescription>
           </CardHeader>
 
