@@ -35,24 +35,27 @@ export const useAuthStore = create((set, get) => ({
         data: { user },
         error: authError,
       } = await supabase.auth.getUser();
+
       if (authError || !user) throw authError || new Error("User not found");
-      console.log("user -------> ", user);
-      const { data, error } = await supabase
+
+      const { data: updatedUser, error: updateError } = await supabase
         .from("users")
-        .select("*")
+        .update({ full_name: user.user_metadata?.name })
         .eq("id", user.id)
+        .select()
         .single();
 
-      if (error) throw error;
+      if (updateError) throw updateError;
 
       set({
-        user: data,
+        user: updatedUser,
         loading: false,
         isAuthenticated: true,
       });
 
-      return data;
+      return updatedUser;
     } catch (error) {
+      console.error("getUser error:", error);
       set({
         loading: false,
         isAuthenticated: false,
