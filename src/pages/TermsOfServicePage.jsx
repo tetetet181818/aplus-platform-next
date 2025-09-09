@@ -184,7 +184,7 @@ const TermsOfServicePage = () => {
                 </li>
                 <li>
                   {2}
-                  <span> ريال رسوم اضافيه</span>
+                  <span> ريال رسوم اضافية</span>
                 </li>
               </ul>
             </li>

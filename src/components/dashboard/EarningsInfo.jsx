@@ -213,7 +213,7 @@ const FinanceDashboard = ({ availableBalance, withdrawalHistory }) => {
 
                     <li className="flex items-start gap-2">
                       <div className="h-2 w-2 rounded-full bg-primary mt-2"></div>
-                      <span> ريال رسوم اضافيه</span>
+                      <span> ريال رسوم اضافية</span>
                       {2}
                     </li>
                   </ul>
