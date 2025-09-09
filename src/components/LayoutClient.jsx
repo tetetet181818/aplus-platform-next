@@ -13,10 +13,9 @@ export default function LayoutClient({ children }) {
 
   useEffect(() => {
     async function fetchData() {
-      let res = await getUser();
-      console.log("res -------> ", res);
-      fetchNotifications();
-      fetchTheNumberOfUnreadNotifications();
+      await getUser();
+      await fetchNotifications();
+      await fetchTheNumberOfUnreadNotifications();
     }
     fetchData();
   }, []);
