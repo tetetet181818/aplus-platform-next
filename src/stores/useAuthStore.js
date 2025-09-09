@@ -36,7 +36,7 @@ export const useAuthStore = create((set, get) => ({
         error: authError,
       } = await supabase.auth.getUser();
       if (authError || !user) throw authError || new Error("User not found");
-
+      console.log("user -------> ", user);
       const { data, error } = await supabase
         .from("users")
         .select("*")

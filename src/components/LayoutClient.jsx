@@ -12,9 +12,13 @@ export default function LayoutClient({ children }) {
     useAuthStore((state) => state);
 
   useEffect(() => {
-    getUser();
-    fetchNotifications();
-    fetchTheNumberOfUnreadNotifications();
+    async function fetchData() {
+      let res = await getUser();
+      console.log("res -------> ", res);
+      fetchNotifications();
+      fetchTheNumberOfUnreadNotifications();
+    }
+    fetchData();
   }, []);
 
   return (
