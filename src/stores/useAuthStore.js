@@ -38,14 +38,14 @@ export const useAuthStore = create((set, get) => ({
 
       if (authError || !user) throw authError || new Error("User not found");
 
-      const { data: updatedUser, error: updateError } = await supabase
-        .from("users")
-        .update({ full_name: user.user_metadata?.name })
-        .eq("id", user.id)
-        .select()
-        .single();
+      // const { data: updatedUser, error: updateError } = await supabase
+      //   .from("users")
+      //   .update({ full_name: user.user_metadata?.name })
+      //   .eq("id", user.id)
+      //   .select()
+      //   .single();
 
-      if (updateError) throw updateError;
+      // if (updateError) throw updateError;
 
       set({
         user: updatedUser,
