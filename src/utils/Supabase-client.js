@@ -1,15 +1,12 @@
 "use client";
 
-import { useAuthStore } from "@/stores/useAuthStore";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_SERVICE_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error(
-    "Supabase URL and Anon Key must be provided in environment variables"
-  );
+if (!supabaseUrl && !supabaseAnonKey) {
+  throw new Error("Supabase URL and Anon Key must be provided in env vars");
 }
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey, {
