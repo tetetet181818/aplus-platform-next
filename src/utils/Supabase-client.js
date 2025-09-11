@@ -21,18 +21,4 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   },
 });
 
-supabase.auth.onAuthStateChange((event, session) => {
-  if (session) {
-    useAuthStore.getState().set({
-      user: session.user,
-      isAuthenticated: true,
-    });
-  } else {
-    useAuthStore.getState().set({
-      user: null,
-      isAuthenticated: false,
-    });
-  }
-});
-
 export default supabase;
