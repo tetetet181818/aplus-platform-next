@@ -32,20 +32,34 @@ export const useAuthStore = create((set, get) => ({
       set({ loading: true });
 
       const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        set({ loading: false, isAuthenticated: false, user: null });
+        return null;
+      }
+
+      if (sessionError || !session) {
+        throw new Error("No active session");
+      }
+
+      const {
         data: { user },
-        error: authError,
+        error: userError,
       } = await supabase.auth.getUser();
 
-      if (authError || !user) throw authError || new Error("User not found");
+      if (userError || !user) throw userError || new Error("User not found");
 
-      // const { data: updatedUser, error: updateError } = await supabase
-      //   .from("users")
-      //   .update({ full_name: user.user_metadata?.name })
-      //   .eq("id", user.id)
-      //   .select()
-      //   .single();
+      const { data: updatedUser, error: updateError } = await supabase
+        .from("users")
+        .update({ full_name: user.user_metadata?.name })
+        .eq("id", user.id)
+        .select()
+        .single();
 
-      // if (updateError) throw updateError;
+      if (updateError) throw updateError;
 
       set({
         user: updatedUser,
