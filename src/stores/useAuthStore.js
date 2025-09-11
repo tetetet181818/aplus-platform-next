@@ -21,30 +21,29 @@ export const useAuthStore = create((set, get) => ({
   notificationsLoading: false,
   unread: [],
   handleError: (error, customMessage = null) => {
-    console.log(error?.message);
     const message = customMessage || error.message || "حدث خطأ غير متوقع";
     set({ loading: false, error: message });
     return null;
   },
 
-  init: async () => {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    if (session?.user) {
-      set({ user: session.user, isAuthenticated: true, loading: false });
-    } else {
-      set({ user: null, isAuthenticated: false, loading: false });
-    }
+  // init: async () => {
+  //   const {
+  //     data: { session },
+  //   } = await supabase.auth.getSession();
+  //   if (session?.user) {
+  //     set({ isAuthenticated: true, loading: false });
+  //   } else {
+  //     set({ user: null, isAuthenticated: false, loading: false });
+  //   }
 
-    supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        set({ user: session.user, isAuthenticated: true });
-      } else {
-        set({ user: null, isAuthenticated: false });
-      }
-    });
-  },
+  //   supabase.auth.onAuthStateChange((_event, session) => {
+  //     if (session?.user) {
+  //       set({ isAuthenticated: true });
+  //     } else {
+  //       set({ user: null, isAuthenticated: false });
+  //     }
+  //   });
+  // },
 
   getUser: async () => {
     try {
@@ -70,28 +69,20 @@ export const useAuthStore = create((set, get) => ({
       } = await supabase.auth.getUser();
 
       if (userError || !user) throw userError || new Error("User not found");
+      const { data, error } = await supabase
+        .from("users")
+        .select()
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (error) throw error;
+      if (!data) throw new Error("User not found");
 
       set({
-        user: user,
+        user: data,
         loading: false,
         isAuthenticated: true,
       });
-      // const { data: updatedUser, error: updateError } = await supabase
-      //   .from("users")
-      //   .update({ full_name: user.user_metadata?.name })
-      //   .eq("id", user.id)
-      //   .select()
-      //   .single();
-
-      // if (updateError) throw updateError;
-
-      // set({
-      //   user: updatedUser,
-      //   loading: false,
-      //   isAuthenticated: true,
-      // });
-
-      // return updatedUser;
     } catch (error) {
       console.error("getUser error:", error);
       set({

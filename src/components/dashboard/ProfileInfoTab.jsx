@@ -41,7 +41,6 @@ const ProfileInfoTab = ({
   const handleDeleteAccount = async () => {
     let res = await deleteAccount();
   };
-  console.log(user);
   return (
     <>
       <motion.div

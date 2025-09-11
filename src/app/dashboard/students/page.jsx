@@ -206,7 +206,6 @@ export default function StudentsDashboard() {
   }, [handleSearch])();
 
   const handleDeleteUser = async ({ id }) => {
-    console.log(id);
     try {
       await deleteUserById({ id });
       fetchUsers(currentPage);
