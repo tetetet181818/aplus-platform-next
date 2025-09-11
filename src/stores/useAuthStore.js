@@ -71,22 +71,27 @@ export const useAuthStore = create((set, get) => ({
 
       if (userError || !user) throw userError || new Error("User not found");
 
-      const { data: updatedUser, error: updateError } = await supabase
-        .from("users")
-        .update({ full_name: user.user_metadata?.name })
-        .eq("id", user.id)
-        .select()
-        .single();
-
-      if (updateError) throw updateError;
-
       set({
-        user: updatedUser,
+        user: user,
         loading: false,
         isAuthenticated: true,
       });
+      // const { data: updatedUser, error: updateError } = await supabase
+      //   .from("users")
+      //   .update({ full_name: user.user_metadata?.name })
+      //   .eq("id", user.id)
+      //   .select()
+      //   .single();
 
-      return updatedUser;
+      // if (updateError) throw updateError;
+
+      // set({
+      //   user: updatedUser,
+      //   loading: false,
+      //   isAuthenticated: true,
+      // });
+
+      // return updatedUser;
     } catch (error) {
       console.error("getUser error:", error);
       set({
@@ -143,6 +148,10 @@ export const useAuthStore = create((set, get) => ({
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          data: { full_name, university },
+        },
       });
 
       if (authError) {
