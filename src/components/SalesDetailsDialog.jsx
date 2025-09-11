@@ -31,7 +31,6 @@ export default function SalesDetailsDialog({ open, onClose, salesId }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [saleDetails, setSaleDetails] = useState(null);
-  console.log(saleDetails);
   const statusVariantMap = {
     paid: "default",
     pending: "secondary",
@@ -181,7 +180,6 @@ export default function SalesDetailsDialog({ open, onClose, salesId }) {
       </Dialog>
     );
   }
-  console.log("Rendered with saleDetails:", saleDetails);
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto sm:max-w-2xl p-0">

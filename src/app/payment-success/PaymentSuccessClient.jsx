@@ -30,7 +30,6 @@ const PaymentSuccessClient = () => {
             message,
             buyerId,
           });
-          console.log("purchaseNote returned:", success);
 
           if (success) {
             toast({

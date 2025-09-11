@@ -78,7 +78,6 @@ export default function SalesDashboard() {
     setCurrentPage,
     setItemsPerPage,
   } = useSalesStore();
-  console.log("sales data:", sales);
   const [statusFilter, setStatusFilter] = useState("all");
   const [dateFilter, setDateFilter] = useState(null);
   const [showDetailsDialog, setShowDetailsDialog] = useState(false);

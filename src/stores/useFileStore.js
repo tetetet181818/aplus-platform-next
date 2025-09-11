@@ -196,7 +196,6 @@ export const useFileStore = create((set, get) => ({
         error: null,
         files: files || [],
       });
-      console.log(files);
       return {
         data: files,
         totalItems: count,
@@ -1013,7 +1012,6 @@ export const useFileStore = create((set, get) => ({
         throw error;
       }
       set({ loading: false, error: null, users: data || [] });
-      console.log("data", data);
       return data;
     } catch (error) {
       console.error("Error in searchUsers:", error);

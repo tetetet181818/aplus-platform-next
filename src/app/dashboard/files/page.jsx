@@ -187,7 +187,6 @@ export default function FilesDashboard() {
             onClick={() => {
               setIsDialogOpen(true);
               setSelectedFile(item);
-              console.log(item);
             }}
           >
             <Eye className="size-4 " />
