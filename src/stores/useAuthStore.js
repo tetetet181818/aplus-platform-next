@@ -27,6 +27,25 @@ export const useAuthStore = create((set, get) => ({
     return null;
   },
 
+  init: async () => {
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (session?.user) {
+      set({ user: session.user, isAuthenticated: true, loading: false });
+    } else {
+      set({ user: null, isAuthenticated: false, loading: false });
+    }
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        set({ user: session.user, isAuthenticated: true });
+      } else {
+        set({ user: null, isAuthenticated: false });
+      }
+    });
+  },
+
   getUser: async () => {
     try {
       set({ loading: true });
