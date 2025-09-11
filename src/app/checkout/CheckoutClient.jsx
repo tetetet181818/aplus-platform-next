@@ -45,8 +45,7 @@ export default function CheckoutClient() {
     } catch (error) {
       toast({
         title: "حدث خطأ",
-        description:
-          error.message || "فشل في إنشاء رابط الدفع، يرجى المحاولة لاحقًا",
+        description: "فشل في إنشاء رابط الدفع، يرجى المحاولة لاحقًا",
         variant: "destructive",
       });
     } finally {

@@ -55,20 +55,10 @@ const SellerProfilePage = ({ userId }) => {
 
   useEffect(() => {
     if (sellerError) {
-      toast({
-        title: "Error",
-        description: sellerError,
-        variant: "destructive",
-      });
       clearSellerError();
     }
 
     if (notesError) {
-      toast({
-        title: "Error",
-        description: notesError,
-        variant: "destructive",
-      });
       clearNotesError();
     }
   }, [sellerError, notesError]);
