@@ -66,7 +66,7 @@ const AddNoteForm = ({ universities, userNotesCount, edit }) => {
         } catch (err) {
           toast({
             title: "خطأ في جلب الملخص",
-            description: err.message || "حدث خطأ أثناء جلب بيانات الملخص.",
+            description: "حدث خطأ أثناء جلب بيانات الملخص.",
             variant: "destructive",
           });
         }
@@ -130,9 +130,9 @@ const AddNoteForm = ({ universities, userNotesCount, edit }) => {
       } catch (err) {
         toast({
           title: isEditMode ? "خطأ في تحديث الملخص" : "خطأ في إضافة الملخص",
-          description:
-            err.message ||
-            `حدث خطأ أثناء ${isEditMode ? "تحديث" : "إضافة"} الملخص.`,
+          description: `حدث خطأ أثناء ${
+            isEditMode ? "تحديث" : "إضافة"
+          } الملخص.`,
           variant: "destructive",
         });
       }

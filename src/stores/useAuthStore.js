@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import supabase from "@/utils/Supabase-client.js";
+import { toast } from "@/components/ui/use-toast";
 export const useAuthStore = create((set, get) => ({
   user: null,
   seller: null,
@@ -25,25 +26,6 @@ export const useAuthStore = create((set, get) => ({
     set({ loading: false, error: message });
     return null;
   },
-
-  // init: async () => {
-  //   const {
-  //     data: { session },
-  //   } = await supabase.auth.getSession();
-  //   if (session?.user) {
-  //     set({ isAuthenticated: true, loading: false });
-  //   } else {
-  //     set({ user: null, isAuthenticated: false, loading: false });
-  //   }
-
-  //   supabase.auth.onAuthStateChange((_event, session) => {
-  //     if (session?.user) {
-  //       set({ isAuthenticated: true });
-  //     } else {
-  //       set({ user: null, isAuthenticated: false });
-  //     }
-  //   });
-  // },
 
   getUser: async () => {
     try {
@@ -145,19 +127,50 @@ export const useAuthStore = create((set, get) => ({
         },
       });
 
-      if (authError) {
-        const errorMessages = {
-          "User already registered": "هذا البريد الإلكتروني مسجل بالفعل",
-          "rate limit": "لقد حاولت التسجيل مرات كثيرة، يرجى الانتظار قليلاً",
-          password: "كلمة المرور غير صالحة",
-          email: "البريد الإلكتروني غير صالح",
-        };
+      const errorMessages = {
+        "user already registered": "هذا البريد الإلكتروني مسجل بالفعل",
+        "email already registered": "هذا البريد الإلكتروني مسجل بالفعل",
+        "invalid login credentials":
+          "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+        "invalid email": "البريد الإلكتروني غير صالح",
+        "invalid password": "كلمة المرور غير صالحة",
+        password: "كلمة المرور غير صالحة",
+        email: "البريد الإلكتروني غير صالح",
+        "rate limit":
+          "لقد حاولت مرات عديدة، يرجى الانتظار قليلاً قبل المحاولة مجددًا",
+        "session not found": "الجلسة غير صالحة أو منتهية",
+        "user not found": "المستخدم غير موجود",
+        "invalid refresh token":
+          "رمز التحديث غير صالح، برجاء تسجيل الدخول مرة أخرى",
+        "email not confirmed":
+          "يرجى تفعيل بريدك الإلكتروني أولًا قبل تسجيل الدخول",
 
+        "duplicate key value":
+          "البيانات المدخلة موجودة بالفعل (قد يكون البريد الإلكتروني أو اسم المستخدم)",
+        "database error":
+          "البيانات المدخلة موجودة بالفعل (قد يكون البريد الإلكتروني أو اسم المستخدم)",
+        "json object requested":
+          "تعذر العثور على البيانات المطلوبة، برجاء المحاولة مرة أخرى",
+        "row not found": "لا يوجد سجل مطابق",
+        "permission denied": "ليس لديك الصلاحيات لتنفيذ هذه العملية",
+        "violates foreign key constraint":
+          "محاولة إدخال بيانات غير مرتبطة صحيحة (علاقة غير موجودة)",
+
+        "network error": "فشل الاتصال بالخادم، برجاء التحقق من الإنترنت",
+        "fetch failed": "تعذر الوصول إلى الخادم، حاول لاحقًا",
+        "unexpected error": "حدث خطأ غير متوقع، برجاء المحاولة مرة أخرى",
+      };
+
+      if (authError) {
         const friendlyMessage =
           Object.entries(errorMessages).find(([key]) =>
             authError.message.toLowerCase().includes(key.toLowerCase())
           )?.[1] || authError.message;
-
+        toast({
+          title: "حدث خطأ اثناء تسجيل الدخول",
+          description: friendlyMessage,
+          variant: "destructive",
+        });
         throw new Error(friendlyMessage);
       }
 
@@ -177,6 +190,15 @@ export const useAuthStore = create((set, get) => ({
         .single();
 
       if (profileError) {
+        const friendlyMessage =
+          Object.entries(errorMessages).find(([key]) =>
+            profileError.message.toLowerCase().includes(key.toLowerCase())
+          )?.[1] || profileError.message;
+        toast({
+          title: "حدث خطأ اثناء تسجيل الدخول",
+          description: friendlyMessage,
+          variant: "destructive",
+        });
         try {
           await supabase.auth.admin.deleteUser(authData.user.id);
         } catch (deleteError) {

@@ -42,13 +42,6 @@ const LoginDialog = ({ isOpen, onClose, onSwitchToRegister }) => {
 
   useEffect(() => {
     if (error) {
-      toast({
-        title: "فشل تسجيل الدخول",
-        description: error,
-        variant: "destructive",
-      });
-
-      // تنظيف الايرور بعد ثانيتين
       const timeout = setTimeout(() => {
         clearError();
       }, 2000);

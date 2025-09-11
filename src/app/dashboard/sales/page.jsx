@@ -155,7 +155,11 @@ export default function SalesDashboard() {
   useEffect(() => {
     fetchData();
     if (error) {
-      toast({ title: "خطأ", description: error, variant: "destructive" });
+      toast({
+        title: "خطأ",
+        description: error.message,
+        variant: "destructive",
+      });
       clearError();
     }
   }, [fetchData, error, clearError, toast]);

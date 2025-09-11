@@ -77,11 +77,6 @@ const RegisterDialog = ({ isOpen, onClose, onSwitchToLogin }) => {
 
   useEffect(() => {
     if (error) {
-      toast({
-        title: "فشل التسجيل",
-        description: error,
-        variant: "destructive",
-      });
       const timer = setTimeout(() => {
         clearError();
       }, 2000);
