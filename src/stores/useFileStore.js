@@ -762,6 +762,7 @@ export const useFileStore = create((set, get) => ({
       return [];
     }
   },
+
   updateNote: async (noteId, formData) => {
     try {
       set({ loading: true, error: null });
@@ -952,6 +953,7 @@ export const useFileStore = create((set, get) => ({
       return null;
     }
   },
+
   makeUnPublished: async ({ noteId }) => {
     try {
       set({ loading: true, error: null });
@@ -976,6 +978,7 @@ export const useFileStore = create((set, get) => ({
       return false;
     }
   },
+
   makePublished: async ({ noteId }) => {
     try {
       set({ loading: true, error: null });
@@ -1000,6 +1003,7 @@ export const useFileStore = create((set, get) => ({
       return false;
     }
   },
+
   searchUsers: async (searchQuery) => {
     try {
       set({ loading: true, error: null });
@@ -1019,5 +1023,6 @@ export const useFileStore = create((set, get) => ({
       return null;
     }
   },
+
   clearError: () => set({ error: null }),
 }));

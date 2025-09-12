@@ -52,6 +52,8 @@ const RegisterDialog = ({ isOpen, onClose, onSwitchToLogin }) => {
       university: "",
     },
     validationSchema: registerSchema,
+    validateOnChange: false,
+    validateOnBlur: false,
     onSubmit: async (values, { resetForm }) => {
       if (!termsAccepted) {
         toast({
@@ -102,6 +104,7 @@ const RegisterDialog = ({ isOpen, onClose, onSwitchToLogin }) => {
 
           <TabsContent value="register">
             <form onSubmit={formik.handleSubmit} className="mt-4 space-y-4">
+              {/* Full Name */}
               <div className="space-y-2">
                 <Label htmlFor="full_name">اسم المستخدم</Label>
                 <div className="relative">
@@ -123,6 +126,7 @@ const RegisterDialog = ({ isOpen, onClose, onSwitchToLogin }) => {
                 )}
               </div>
 
+              {/* Email */}
               <div className="space-y-2">
                 <Label htmlFor="email">البريد الإلكتروني</Label>
                 <div className="relative">
@@ -135,7 +139,7 @@ const RegisterDialog = ({ isOpen, onClose, onSwitchToLogin }) => {
                     value={formik.values.email}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    placeholder={"اكتب بريدك الإلكتروني هنا"}
+                    placeholder="اكتب بريدك الإلكتروني هنا"
                   />
                 </div>
                 {formik.touched.email && formik.errors.email && (
@@ -145,6 +149,7 @@ const RegisterDialog = ({ isOpen, onClose, onSwitchToLogin }) => {
                 )}
               </div>
 
+              {/* University */}
               <div className="space-y-2">
                 <Label htmlFor="university">الجامعة</Label>
                 <div className="relative">
@@ -152,21 +157,19 @@ const RegisterDialog = ({ isOpen, onClose, onSwitchToLogin }) => {
                   <Select
                     name="university"
                     value={formik.values.university}
-                    onValueChange={(value) =>
-                      formik.setFieldValue("university", value)
-                    }
-                    onOpenChange={(open) =>
-                      !open && formik.setFieldTouched("university", true)
-                    }
+                    onValueChange={(value) => {
+                      formik.setFieldValue("university", value);
+                      formik.setFieldTouched("university", true, true);
+                    }}
                   >
                     <SelectTrigger
-                      dir={"rtl"}
+                      dir="rtl"
                       id="university"
                       className="pr-10 w-full"
                     >
                       <SelectValue placeholder="اختر الجامعة" />
                     </SelectTrigger>
-                    <SelectContent dir={"rtl"}>
+                    <SelectContent dir="rtl">
                       {universities?.map((uni) => (
                         <SelectItem key={uni} value={uni}>
                           {uni}
@@ -182,6 +185,7 @@ const RegisterDialog = ({ isOpen, onClose, onSwitchToLogin }) => {
                 )}
               </div>
 
+              {/* Password */}
               <div className="space-y-2">
                 <Label htmlFor="password">كلمة المرور</Label>
                 <div className="relative">
@@ -216,6 +220,7 @@ const RegisterDialog = ({ isOpen, onClose, onSwitchToLogin }) => {
                 )}
               </div>
 
+              {/* Terms */}
               <div className="flex items-start gap-2">
                 <Checkbox
                   id="terms"
@@ -240,6 +245,7 @@ const RegisterDialog = ({ isOpen, onClose, onSwitchToLogin }) => {
                 </label>
               </div>
 
+              {/* Submit Button */}
               <Button
                 type="submit"
                 className="w-full"
@@ -281,6 +287,7 @@ const RegisterDialog = ({ isOpen, onClose, onSwitchToLogin }) => {
             </div>
           </TabsContent>
 
+          {/* Verify Tab */}
           <TabsContent value="verify" className="py-6 text-center space-y-4">
             <h3 className="text-lg font-semibold">تحقق من بريدك الإلكتروني</h3>
             <p className="text-sm text-muted-foreground">

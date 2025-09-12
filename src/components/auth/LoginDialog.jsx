@@ -26,6 +26,8 @@ const LoginDialog = ({ isOpen, onClose, onSwitchToRegister }) => {
   const formik = useFormik({
     initialValues: { email: "", password: "" },
     validationSchema: loginSchema,
+    validateOnChange: false,
+    validateOnBlur: false,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       const user = await login(values);
       if (user) {
