@@ -63,7 +63,7 @@ function DialogContent({
         {showCloseButton && (
           <DialogClose
             className={cn(
-              "absolute top-4 right-4 p-2 rounded-full bg-red-700 hover:bg-red-600",
+              "absolute top-4 right-4 p-2 mb-5  rounded-full bg-red-700 hover:bg-red-600",
               "text-white transition-colors duration-200",
               "focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2",
               "[&_svg]:size-5"
