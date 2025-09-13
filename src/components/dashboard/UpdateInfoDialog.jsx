@@ -3,6 +3,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogDescription,
+  DialogHeader,
 } from "@/components/ui/dialog";
 import { useFormik } from "formik";
 import { updateSchema } from "../../utils/validation/authValidation";
@@ -45,8 +46,10 @@ export default function UpdateInfoDialog({
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
-        <DialogTitle>تحديث المعلومات</DialogTitle>
-        <DialogDescription>قم بتحديث معلومات حسابك</DialogDescription>
+        <DialogHeader>
+          <DialogTitle>تحديث المعلومات</DialogTitle>
+          <DialogDescription>قم بتحديث معلومات حسابك</DialogDescription>
+        </DialogHeader>
         <form onSubmit={formik.handleSubmit} className="mt-4 space-y-4">
           {/* Username */}
           <div className="space-y-2">
