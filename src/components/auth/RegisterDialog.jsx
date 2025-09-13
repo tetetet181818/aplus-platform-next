@@ -35,7 +35,9 @@ import {
 import { universities } from "../../constants/index";
 import Link from "next/link";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+import Image from "next/image";
+import successImage from "../../../public/success-icon.png";
 
 const RegisterDialog = ({ isOpen, onClose, onSwitchToLogin }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -68,8 +70,8 @@ const RegisterDialog = ({ isOpen, onClose, onSwitchToLogin }) => {
         setRegisteredEmail(values.email);
         setActiveTab("verify");
         toast({
-          title: "تم إنشاء الحساب",
-          description: "يرجى التحقق من بريدك الإلكتروني",
+          title: "تم إنشاء الحساب بنجاح",
+          description: "يرجى التحقق من بريدك الإلكتروني لتفعيل الحساب",
           variant: "success",
         });
         resetForm();
@@ -90,18 +92,18 @@ const RegisterDialog = ({ isOpen, onClose, onSwitchToLogin }) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>إنشاء حساب جديد</DialogTitle>
-          <DialogDescription>
-            قم بإنشاء حساب جديد للوصول إلى كافة الميزات
-          </DialogDescription>
+          {activeTab === "register" && (
+            <>
+              <DialogTitle>إنشاء حساب جديد</DialogTitle>
+              <DialogDescription>
+                قم بإنشاء حساب جديد للوصول إلى كافة الميزات
+              </DialogDescription>
+            </>
+          )}
         </DialogHeader>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4">
-          <TabsList className="grid grid-cols-2 w-full">
-            <TabsTrigger value="register">التسجيل</TabsTrigger>
-            <TabsTrigger value="verify">التحقق</TabsTrigger>
-          </TabsList>
-
+          {/* Register Tab */}
           <TabsContent value="register">
             <form onSubmit={formik.handleSubmit} className="mt-4 space-y-4">
               {/* Full Name */}
@@ -212,7 +214,9 @@ const RegisterDialog = ({ isOpen, onClose, onSwitchToLogin }) => {
                     )}
                   </button>
                 </div>
-                <p>كلمة المرور يجب أن تحتوي على 8 أحرف على الأقل</p>
+                <p className="text-xs text-muted-foreground">
+                  كلمة المرور يجب أن تحتوي على 8 أحرف على الأقل
+                </p>
                 {formik.touched.password && formik.errors.password && (
                   <p className="text-sm text-destructive">
                     {formik.errors.password}
@@ -289,16 +293,28 @@ const RegisterDialog = ({ isOpen, onClose, onSwitchToLogin }) => {
 
           {/* Verify Tab */}
           <TabsContent value="verify" className="py-6 text-center space-y-4">
+            <div className="w-full flex justify-center items-center">
+              <Image
+                src={successImage}
+                alt="success icon"
+                width={50}
+                height={50}
+              />
+            </div>
+
             <h3 className="text-lg font-semibold">تحقق من بريدك الإلكتروني</h3>
+
             <p className="text-sm text-muted-foreground">
-              لقد أرسلنا رسالة تحقق إلى:
+              تم إرسال رسالة تحقق إلى بريدك الإلكتروني:
               <span className="font-medium block mt-1">{registeredEmail}</span>
             </p>
+
             <p className="text-sm">
-              افتح البريد واضغط على رابط التفعيل لتتمكن من تسجيل الدخول.
+              يرجى فتح الرسالة والضغط على رابط التفعيل لإكمال التسجيل وتسجيل
+              الدخول.
             </p>
-            <Button onClick={() => setActiveTab("register")} variant="outline">
-              العودة للتسجيل
+            <Button onClick={() => setActiveTab("register")} variant="default">
+              العودة إلى التسجيل
             </Button>
           </TabsContent>
         </Tabs>
